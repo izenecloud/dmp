@@ -9,6 +9,10 @@
     <url>http://maven.apache.org</url>
 
     <repositories>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
         <!-- TODO put our nexus here -->
     </repositories>
 
