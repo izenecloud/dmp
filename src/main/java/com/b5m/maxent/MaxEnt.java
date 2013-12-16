@@ -98,7 +98,7 @@ public class MaxEnt {
 	public void trainModel(String trainDir) {
 		File directory = new File(trainDir);
 		File[] fList = directory.listFiles();
-		String modelFileName = trainDir + "Model.txt";
+		String modelFileName = directory.getParent()+ "/Model.txt";
 		log.info("Training Model...");
 
 		for (File trainFile : fList) {
@@ -161,9 +161,6 @@ public class MaxEnt {
 	public String eval(String document) {
 		String[] context = cg.getContext(document);
 		double[] outcome = model.eval(context);
-		// for (int i = 0; i < outcome.length; ++i) {
-		// System.out.println(model.getOutcome(i));
-		// }
 		return model.getBestOutcome(outcome);
 	}
 
