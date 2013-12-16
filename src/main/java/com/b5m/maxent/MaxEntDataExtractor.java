@@ -1,4 +1,4 @@
-package com.b5m.pig.udf;
+package com.b5m.maxent;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

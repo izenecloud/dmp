@@ -1,4 +1,4 @@
-package com.b5m.pig.udf;
+package com.b5m.maxent;
 
 import opennlp.maxent.ContextGenerator;
 
