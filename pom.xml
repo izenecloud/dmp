@@ -15,6 +15,7 @@
     <properties>
         <hadoop.version>0.20.2</hadoop.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <udf.dir>dist</udf.dir>
     </properties>
 
     <dependencies>
@@ -95,8 +96,30 @@
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.12.4</version>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.7</version>
+                </plugin>
             </plugins>
         </pluginManagement>
+         <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <target>
+                                <copy file="target/${project.build.finalName}.jar" tofile="${udf.dir}/pig-udfs.jar" overwrite="true"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>
 
