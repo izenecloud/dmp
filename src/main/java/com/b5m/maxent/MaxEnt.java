@@ -158,9 +158,11 @@ public class MaxEnt implements CategoryClassifier {
 				+ "\n");
 	}
 
-	static public void run(String[] args) {
-		MaxEnt maxent = new MaxEnt();
-		maxent.trainModel(args[0] + "/train/");
-		maxent.testModel(args[0] + "/test/");
-	}
+    @Deprecated // TODO no static, rename
+    static public void run(String trainDir, String testDir) {
+        MaxEnt maxent = new MaxEnt();
+        maxent.trainModel(trainDir);
+        maxent.testModel(testDir);
+    }
 }
+
