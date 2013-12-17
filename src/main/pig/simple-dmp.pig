@@ -8,8 +8,9 @@ REGISTER /usr/lib/pig/lib/json-simple-*.jar
 REGISTER /usr/lib/pig/lib/snappy-java-*.jar
 REGISTER ./dist/pig-udfs.jar
 
--- shorter alias
+-- shorter aliases
 DEFINE CATEGORY com.b5m.pig.udf.CategoryUDF();
+DEFINE CATEGORY_MAP com.b5m.pig.udf.ConvertToMap();
 
 -- load log files in avro format
 records = LOAD './src/test/resources/sample-logs.avro' USING org.apache.pig.piggybank.storage.avro.AvroStorage();
@@ -39,18 +40,12 @@ data2 = GROUP data1 BY (uuid, category);
 data3 = FOREACH data2 GENERATE group.uuid, group.category, COUNT(data1) AS counts;
 -- group by user
 data4 = GROUP data3 BY uuid;
---dump data4;
-describe data4;
-store data4 into 'output/data4';
 
--- TODO udf here
 -- generate bag-of-words
---data5 = FOREACH data4 {
-    --a = FOREACH data3 GENERATE TOMAP(category, counts);
-    --generate group, a AS categorycounts;
---}
+data5 = FOREACH data4 GENERATE group, CATEGORY_MAP(data3) AS categorycounts;
 --dump data5;
 --describe data5;
 
---store what into 'output/dmp';
+-- TODO output storage?
+store data5 into 'output/dmp';
 
