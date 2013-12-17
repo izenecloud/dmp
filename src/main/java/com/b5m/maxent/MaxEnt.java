@@ -19,7 +19,12 @@ import opennlp.model.GenericModelReader;
 import opennlp.model.MaxentModel;
 import opennlp.model.OnePassDataIndexer;
 
-public class MaxEnt {
+public class MaxEnt implements CategoryClassifier {
+
+    public String getCategory(String title) {
+        return eval(title);
+    }
+
 	private static final Logger log = LoggerFactory.getLogger(MaxEnt.class);
 	
 	public static MaxEnt instance() {

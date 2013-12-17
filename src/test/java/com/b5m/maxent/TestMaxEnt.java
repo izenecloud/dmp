@@ -28,7 +28,7 @@ public class TestMaxEnt {
 
     @Test(dataProvider="titles")
     public void testMaxEnt(String title, String expected) {
-        String category = maxent.eval(title);
+        String category = maxent.getCategory(title);
         assertEquals(category, expected);
     }
 
