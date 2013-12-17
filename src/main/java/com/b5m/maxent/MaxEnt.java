@@ -26,9 +26,9 @@ public class MaxEnt {
 		return new MaxEnt();
 	}
 
-	MaxentModel model;
-	ContextGenerator cg = new MaxEntContextGenerator();
 
+	private MaxentModel model;
+	private ContextGenerator cg = new MaxEntContextGenerator();
 	static class MaxEnThread extends Thread {
 		private MaxEnt model;
 		private File file;
