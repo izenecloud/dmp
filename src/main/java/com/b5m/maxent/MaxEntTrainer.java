@@ -1,5 +1,7 @@
 package com.b5m.maxent;
 
+import com.b5m.executors.Shutdown;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +13,7 @@ import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class MaxEntTrainer {
 
@@ -67,21 +70,23 @@ public class MaxEntTrainer {
         int trainedFiles = 0;
 
         // submit jobs to thread pool
-        ExecutorService executor = Executors.newCachedThreadPool();
+        ExecutorService pool = Executors.newCachedThreadPool();
 
         log.info("Extracting Training Data and Test Data from SCD Files...");
         for (File file : fList) {
             if (trainedFiles < trainFiles) {
-                executor.submit(new MaxEntDataExtractor(file, trainDir));
+                pool.submit(new MaxEntDataExtractor(file, trainDir));
             }
             else {
-                executor.submit(new MaxEntDataExtractor(file, testDir));
+                pool.submit(new MaxEntDataExtractor(file, testDir));
             }
             trainedFiles++;
         }
 
-        executor.shutdown();
-        log.info("Extracting Training Data and Test Data from SCD Files finished");
+        Shutdown.andWait(pool, 60, TimeUnit.SECONDS);
+
+        log.info("SCD data extracted");
     }
 
 }
+

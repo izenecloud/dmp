@@ -1,5 +1,7 @@
 package com.b5m.maxent;
 
+import com.b5m.executors.Shutdown;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
@@ -11,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +99,7 @@ public class MaxEnt implements CategoryClassifier {
             results.add(executor.submit(new MaxEnThread(maxent, file)));
         }
 
-        executor.shutdown();
+        Shutdown.andWait(executor, 60, TimeUnit.SECONDS);
 
         TrainResults trainResults = new TrainResults();
 
