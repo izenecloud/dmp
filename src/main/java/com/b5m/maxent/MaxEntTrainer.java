@@ -57,6 +57,8 @@ public class MaxEntTrainer {
     }
 
     private static void getData(File scdDir, File trainDir, File testDir) {
+        log.info("Getting data from SCD ...");
+
         // get SCD files in directory
         File[] fList = scdDir.listFiles(new FileFilter() {
             @Override
@@ -64,6 +66,12 @@ public class MaxEntTrainer {
                 return file.isFile() && file.getName().matches("^.+\\.(SCD|scd)$");
             }
         });
+
+        log.info("Found {} files in {}", fList.length, scdDir);
+        if (log.isDebugEnabled()) {
+            for (File file : fList)
+                log.debug("found file: " + file);
+        }
 
         // split files: XXX 1/3 for train and 2/3 for test
         final int trainFiles = (int) (fList.length * 0.3) + 1;

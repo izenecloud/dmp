@@ -38,8 +38,8 @@ class MaxEntDataExtractor implements Callable<File> {
 
     @Override
     public File call() throws IOException {
+        log.debug("creating empty output file: " + outputFile);
         outputFile.createNewFile();
-        log.debug("created empty output file: " + outputFile);
 
         BufferedReader reader = new BufferedReader(new FileReader(scdFile));
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));

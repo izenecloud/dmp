@@ -55,13 +55,15 @@ public class MaxEnt implements CategoryClassifier {
     }
 
     public static File trainModel(File directory) throws IOException {
-        log.info("Training Model...");
+        log.info("Training model ...");
 
         File outputFile = new File(directory, MODEL_FILENAME);
 
         File[] fList = directory.listFiles();
+        log.info("Found {} training files in {}", fList.length, directory);
+
         for (File trainFile : fList) {
-            log.info("input file: " + trainFile);
+            log.info("Input file: " + trainFile);
 
             FileReader datafr = new FileReader(trainFile);
             EventStream es = new MaxEntEventStream(new PlainTextByLineDataStream(datafr));
@@ -74,13 +76,13 @@ public class MaxEnt implements CategoryClassifier {
 
             datafr.close();
         }
-        log.info("Train Model FINISHED");
+        log.info("Model written to file: {}", outputFile);
 
         return outputFile;
     }
 
     public static void testModel(File model, File directory) throws IOException, ExecutionException {
-        log.info("Testing Model...");
+        log.info("Testing model file: {} ...", model);
 
         MaxEnt maxent = new MaxEnt(model); // is this thread-safe?
 
@@ -94,6 +96,11 @@ public class MaxEnt implements CategoryClassifier {
                 return file.isFile() && file.getName().endsWith(".out");
             }
         });
+        log.info("Found {} training files in {}", fList.length, directory);
+        if (log.isDebugEnabled()) {
+            for (File file : fList)
+                log.debug("found file: " + file);
+        }
 
         for (File file : fList) {
             results.add(executor.submit(new MaxEnThread(maxent, file)));
