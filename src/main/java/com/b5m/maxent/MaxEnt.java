@@ -21,24 +21,32 @@ import opennlp.model.OnePassDataIndexer;
 
 public class MaxEnt implements CategoryClassifier {
 
+    private static final Logger log = LoggerFactory.getLogger(MaxEnt.class);
+
+    private MaxentModel model;
+    private ContextGenerator cg = new MaxEntContextGenerator();
+
+    @Deprecated
+    private MaxEnt() {
+        model = null;
+    }
+
     public MaxEnt(File modelFile) throws IOException {
         log.info("Loading model from: " +  modelFile);
         model = new GenericModelReader(modelFile).getModel();
     }
 
     public String getCategory(String title) {
-        return eval(title);
+        String[] context = cg.getContext(title);
+        return eval(context);
     }
 
-	private static final Logger log = LoggerFactory.getLogger(MaxEnt.class);
-	
-	public static MaxEnt instance() {
-		return new MaxEnt();
-	}
+    private String eval(String[] context) {
+        double[] outcome = model.eval(context);
+        return model.getBestOutcome(outcome);
+    }
 
-
-	private MaxentModel model;
-	private ContextGenerator cg = new MaxEntContextGenerator();
+    @Deprecated // TODO move to trainer
 	static class MaxEnThread extends Thread {
 		private MaxEnt model;
 		private File file;
@@ -85,19 +93,7 @@ public class MaxEnt implements CategoryClassifier {
 		}
 	}
 
-	public MaxEnt() {
-		model = null;
-	}
-
-
-	public void loadModel(String modelFileName) {
-		try {
-			model = new GenericModelReader(new File(modelFileName)).getModel();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
+    @Deprecated // TODO move to trainer
 	public void trainModel(String trainDir) {
 		File directory = new File(trainDir);
 		File[] fList = directory.listFiles();
@@ -126,6 +122,7 @@ public class MaxEnt implements CategoryClassifier {
 		log.info("Train Model FINISHED");
 	}
 
+    @Deprecated // TODO move to trainer
 	public void testModel(String testDir) {
 		File directory = new File(testDir);
 		File[] fList = directory.listFiles();
@@ -159,17 +156,6 @@ public class MaxEnt implements CategoryClassifier {
 		log.info("Model Test Result:\n \tTest Case\t=" + testCase
 				+ "\n\tGood Case\t=" + goodCase + "\n\tBad Case\t=" + badCase
 				+ "\n");
-	}
-
-	public String eval(String document) {
-		String[] context = cg.getContext(document);
-		double[] outcome = model.eval(context);
-		return model.getBestOutcome(outcome);
-	}
-
-	public String eval(String[] context) {
-		double[] outcome = model.eval(context);
-		return model.getBestOutcome(outcome);
 	}
 
 	static public void run(String[] args) {
