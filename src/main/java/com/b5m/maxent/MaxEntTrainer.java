@@ -1,7 +1,5 @@
 package com.b5m.maxent;
 
-import com.b5m.maxent.MaxEntDataExtractor.MaxEntThread;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,10 +39,10 @@ public class MaxEntTrainer {
         for (File file : fList) {
             if (file.isFile()) {
                 if (trainedFiles < trainFiles) {
-                    threadGroup[trainedFiles] = new Thread(new MaxEntThread(file.getAbsolutePath(), trainDir));
+                    threadGroup[trainedFiles] = new Thread(new MaxEntDataExtractor(file.getAbsolutePath(), trainDir));
                 }
                 else {
-                    threadGroup[trainedFiles] = new Thread(new MaxEntThread(file.getAbsolutePath(), testDir));
+                    threadGroup[trainedFiles] = new Thread(new MaxEntDataExtractor(file.getAbsolutePath(), testDir));
                 }
                 trainedFiles++;
             }

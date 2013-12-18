@@ -14,36 +14,26 @@ import org.slf4j.LoggerFactory;
 /**
  * Get data from SCD file.
  */
-public class MaxEntDataExtractor {
+// TODO use Callable
+class MaxEntDataExtractor implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(MaxEntDataExtractor.class);
 
-    // TODO use Callable
-    // TODO merge with container class
-    static class MaxEntThread implements Runnable {
-
-        private String scdFile;
-        private String output;
-        private MaxEntDataExtractor extractor;
-
-        MaxEntThread(String scd, String out) {
-            scdFile = scd;
-            output = out;
-            extractor = new MaxEntDataExtractor();
-        }
-
-        @Override
-        public void run() {
-            extractor.extract(scdFile, output);
-        }
-    }
+    private String scdFile;
+    private String output;
 
     private String title;
     private String category;
     private boolean firstDocument = true;
 
     // TODO use File instead of String
-    private void extract(String scdFile, String output) {
+    MaxEntDataExtractor(String scdFile, String output) {
+        this.scdFile = scdFile;
+        this.output = output;
+    }
+
+    @Override
+    public void run() {
         String trainDir = output;
         File file = new File(scdFile);
         try {
