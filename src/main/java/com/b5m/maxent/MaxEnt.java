@@ -1,6 +1,7 @@
 package com.b5m.maxent;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
@@ -84,10 +85,14 @@ public class MaxEnt implements CategoryClassifier {
         ExecutorService executor = Executors.newCachedThreadPool();
         List<Future<TrainResults>> results = new LinkedList<Future<TrainResults>>();
 
-        File[] fList = directory.listFiles();
-        for (File file : fList) {
-            if (!file.isFile()) continue;  // TODO use file filter to remove this if
+        File[] fList = directory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isFile();
+            }
+        });
 
+        for (File file : fList) {
             results.add(executor.submit(new MaxEnThread(maxent, file)));
         }
 

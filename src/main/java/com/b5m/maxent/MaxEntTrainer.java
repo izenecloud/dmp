@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
@@ -37,9 +37,10 @@ public class MaxEntTrainer {
 
     private static void getData(File scdDir, File trainDir, File testDir) {
         // get SCD files in directory
-        File[] fList = scdDir.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.matches("^.\\.(SCD|scd)^");
+        File[] fList = scdDir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isFile() && file.getName().matches("^.+\\.(SCD|scd)$");
             }
         });
 
@@ -52,8 +53,6 @@ public class MaxEntTrainer {
 
         log.info("Extracting Training Data and Test Data from SCD Files...");
         for (File file : fList) {
-            if (!file.isFile()) continue;  // TODO use file filter to remove this if
-
             if (trainedFiles < trainFiles) {
                 executor.submit(new MaxEntDataExtractor(file, trainDir));
             }
