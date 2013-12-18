@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ExecutionException;
 
 public class MaxEntTrainer {
 
@@ -17,7 +18,7 @@ public class MaxEntTrainer {
 
     // args[0]  SCD Directory
     // args[1]  Model Directory
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ExecutionException {
         if (args.length < 2) {
             System.out.println("usage: MaxEntTrainer scdDir outDir");
             System.exit(1);
@@ -51,7 +52,7 @@ public class MaxEntTrainer {
 
         log.info("Extracting Training Data and Test Data from SCD Files...");
         for (File file : fList) {
-            if (!file.isFile()) continue;
+            if (!file.isFile()) continue;  // TODO use file filter to remove this if
 
             if (trainedFiles < trainFiles) {
                 executor.submit(new MaxEntDataExtractor(file, trainDir));

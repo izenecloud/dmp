@@ -5,6 +5,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,32 +75,32 @@ public class MaxEnt implements CategoryClassifier {
         return outputFile;
     }
 
-    public static void testModel(File model, File directory) throws IOException {
+    public static void testModel(File model, File directory) throws IOException, ExecutionException {
         log.info("Testing Model...");
 
         MaxEnt maxent = new MaxEnt(model); // is this thread-safe?
 
+        // submit jobs to thread pool
+        ExecutorService executor = Executors.newCachedThreadPool();
+        List<Future<TrainResults>> results = new LinkedList<Future<TrainResults>>();
+
         File[] fList = directory.listFiles();
-        List<MaxEnThread> threadGroup = new LinkedList<MaxEnThread>();
         for (File file : fList) {
-            if (file.isFile()) {
-                threadGroup.add(new MaxEnThread(maxent, file));
-            }
+            if (!file.isFile()) continue;  // TODO use file filter to remove this if
+
+            results.add(executor.submit(new MaxEnThread(maxent, file)));
         }
 
-        for (MaxEnThread thread : threadGroup) {
-            thread.start();
-        }
+        executor.shutdown();
 
-        long goodCases = 0L;
-        long badCases  = 0L;
+        TrainResults trainResults = new TrainResults();
 
-        for (MaxEnThread thread : threadGroup) {
+        for (Future<TrainResults> future : results) {
             try {
-                thread.join();
+                TrainResults res = future.get();
 
-                goodCases += thread.results.goodCases;
-                badCases  += thread.results.badCases;
+                trainResults.goodCases += res.goodCases;
+                trainResults.badCases  += res.badCases;
             } catch (InterruptedException e) {
                 log.error("Interrupted", e);
             }
@@ -103,9 +108,9 @@ public class MaxEnt implements CategoryClassifier {
         log.info("Train Model FINISHED");
 
         System.out.println("Model Test Results:");
-        System.out.printf("Test Cases: %d\n", goodCases + badCases);
-        System.out.printf("      Good: %d\n", goodCases);
-        System.out.printf("       Bad: %d\n", badCases);
+        System.out.printf("Test Cases: %d\n", trainResults.goodCases + trainResults.badCases);
+        System.out.printf("      Good: %d\n", trainResults.goodCases);
+        System.out.printf("       Bad: %d\n", trainResults.badCases);
     }
 }
 
@@ -114,11 +119,11 @@ class TrainResults {
     long badCases  = 0L;
 }
 
-class MaxEnThread extends Thread {
+class MaxEnThread implements Callable<TrainResults> {
     private final MaxEnt model;
     private final File file;
 
-    /*private*/ TrainResults results;
+    private TrainResults results = new TrainResults();
 
     MaxEnThread(MaxEnt maxent, File testFile) {
         model = maxent;
@@ -126,24 +131,21 @@ class MaxEnThread extends Thread {
     }
 
     @Override
-    public void run() {
-        try {
-            FileReader datafr = new FileReader(file);
-            EventStream es = new MaxEntEventStream(
-                    new PlainTextByLineDataStream(datafr));
+    public TrainResults call() throws IOException {
+        FileReader datafr = new FileReader(file);
+        EventStream es = new MaxEntEventStream(new PlainTextByLineDataStream(datafr));
 
-            while (es.hasNext()) {
-                Event event = es.next();
-                String outcome = model.eval(event.getContext());
-                if (event.getOutcome().equalsIgnoreCase(outcome)) {
-                    results.goodCases++;
-                } else {
-                    results.badCases++;
-                }
+        while (es.hasNext()) {
+            Event event = es.next();
+            String outcome = model.eval(event.getContext());
+            if (event.getOutcome().equalsIgnoreCase(outcome)) {
+                results.goodCases++;
+            } else {
+                results.badCases++;
             }
-        } catch (Exception e) {
-            //log.error(e.getMessage(), e);
         }
+
+        return results;
     }
 }
 
