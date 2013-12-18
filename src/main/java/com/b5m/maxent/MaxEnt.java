@@ -40,45 +40,9 @@ public class MaxEnt implements CategoryClassifier {
         return eval(context);
     }
 
-    private String eval(String[] context) {
+    String eval(String[] context) {
         double[] outcome = model.eval(context);
         return model.getBestOutcome(outcome);
-    }
-
-    static class MaxEnThread extends Thread {
-        private final MaxEnt model;
-        private final File file;
-
-        long testCases = 0L;
-        long goodCases = 0L;
-        long badCases  = 0L;
-
-        MaxEnThread(MaxEnt maxent, File testFile) {
-            model = maxent;
-            file = testFile;
-        }
-
-        @Override
-        public void run() {
-            try {
-                FileReader datafr = new FileReader(file);
-                EventStream es = new MaxEntEventStream(
-                        new PlainTextByLineDataStream(datafr));
-
-                while (es.hasNext()) {
-                    Event event = es.next();
-                    String outcome = model.eval(event.getContext());
-                    if (event.getOutcome().equalsIgnoreCase(outcome)) {
-                        goodCases++;
-                    } else {
-                        badCases++;
-                    }
-                    testCases++;
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        }
     }
 
     public static File trainModel(File directory) throws IOException {
@@ -123,7 +87,6 @@ public class MaxEnt implements CategoryClassifier {
             thread.start();
         }
 
-        long testCases = 0L;
         long goodCases = 0L;
         long badCases  = 0L;
 
@@ -131,20 +94,57 @@ public class MaxEnt implements CategoryClassifier {
             try {
                 thread.join();
 
-                testCases += thread.testCases;
-                goodCases += thread.goodCases;
-                badCases  += thread.badCases;
+                goodCases += thread.results.goodCases;
+                badCases  += thread.results.badCases;
             } catch (InterruptedException e) {
                 log.error("Interrupted", e);
             }
         }
         log.info("Train Model FINISHED");
 
-        log.info("Model Test Results:"
-                + "\n\tTest Cases\t=" + testCases
-                + "\n\tGood Case\t=" + goodCases
-                + "\n\tBad Case\t=" + badCases
-                + "\n\n");
+        System.out.println("Model Test Results:");
+        System.out.printf("Test Cases: %d\n", goodCases + badCases);
+        System.out.printf("      Good: %d\n", goodCases);
+        System.out.printf("       Bad: %d\n", badCases);
     }
 }
+
+class TrainResults {
+    long goodCases = 0L;
+    long badCases  = 0L;
+}
+
+class MaxEnThread extends Thread {
+    private final MaxEnt model;
+    private final File file;
+
+    /*private*/ TrainResults results;
+
+    MaxEnThread(MaxEnt maxent, File testFile) {
+        model = maxent;
+        file = testFile;
+    }
+
+    @Override
+    public void run() {
+        try {
+            FileReader datafr = new FileReader(file);
+            EventStream es = new MaxEntEventStream(
+                    new PlainTextByLineDataStream(datafr));
+
+            while (es.hasNext()) {
+                Event event = es.next();
+                String outcome = model.eval(event.getContext());
+                if (event.getOutcome().equalsIgnoreCase(outcome)) {
+                    results.goodCases++;
+                } else {
+                    results.badCases++;
+                }
+            }
+        } catch (Exception e) {
+            //log.error(e.getMessage(), e);
+        }
+    }
+}
+
 
