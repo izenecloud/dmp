@@ -3,6 +3,8 @@ package com.b5m.maxent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
+import java.util.LinkedList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +25,10 @@ public class MaxEnt implements CategoryClassifier {
 
     private static final Logger log = LoggerFactory.getLogger(MaxEnt.class);
 
+    public static final String MODEL_FILENAME = "Model.txt";
+
     private MaxentModel model;
     private ContextGenerator cg = new MaxEntContextGenerator();
-
-    @Deprecated
-    private MaxEnt() {
-        model = null;
-    }
 
     public MaxEnt(File modelFile) throws IOException {
         log.info("Loading model from: " +  modelFile);
@@ -46,121 +45,106 @@ public class MaxEnt implements CategoryClassifier {
         return model.getBestOutcome(outcome);
     }
 
-    @Deprecated // TODO move to trainer
-	static class MaxEnThread extends Thread {
-		private MaxEnt model;
-		private File file;
-		long testCase = 0;
-		long goodCase = 0;
-		long badCase = 0;
+    static class MaxEnThread extends Thread {
+        private final MaxEnt model;
+        private final File file;
 
-		public MaxEnThread(MaxEnt maxent, File testFile) {
-			model = maxent;
-			file = testFile;
-		}
+        long testCases = 0L;
+        long goodCases = 0L;
+        long badCases  = 0L;
 
-		public void run() {
-			try {
-				FileReader datafr = new FileReader(file);
-				EventStream es;
-				es = new MaxEntEventStream(
-						new PlainTextByLineDataStream(datafr));
-				while (es.hasNext()) {
-					Event event = es.next();
-					String outcome = model.eval(event.getContext());
-					if (event.getOutcome().equalsIgnoreCase(outcome)) {
-						goodCase++;
-					} else {
-						badCase++;
-					}
-					testCase++;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+        MaxEnThread(MaxEnt maxent, File testFile) {
+            model = maxent;
+            file = testFile;
+        }
 
-		public long testCase() {
-			return testCase;
-		}
+        @Override
+        public void run() {
+            try {
+                FileReader datafr = new FileReader(file);
+                EventStream es = new MaxEntEventStream(
+                        new PlainTextByLineDataStream(datafr));
 
-		public long goodCase() {
-			return goodCase;
-		}
+                while (es.hasNext()) {
+                    Event event = es.next();
+                    String outcome = model.eval(event.getContext());
+                    if (event.getOutcome().equalsIgnoreCase(outcome)) {
+                        goodCases++;
+                    } else {
+                        badCases++;
+                    }
+                    testCases++;
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
 
-		public long badCase() {
-			return badCase;
-		}
-	}
+    public static File trainModel(File directory) throws IOException {
+        log.info("Training Model...");
 
-    @Deprecated // TODO move to trainer
-	public void trainModel(File directory) {
-		File[] fList = directory.listFiles();
-		String modelFileName = directory.getParent()+ "/Model.txt";
-		log.info("Training Model...");
+        File outputFile = new File(directory, MODEL_FILENAME);
 
-		for (File trainFile : fList) {
+        File[] fList = directory.listFiles();
+        for (File trainFile : fList) {
+            log.info("input file: " + trainFile);
 
-			try {
-				FileReader datafr = new FileReader(trainFile);
-				EventStream es;
-				es = new MaxEntEventStream(
-						new PlainTextByLineDataStream(datafr));
+            FileReader datafr = new FileReader(trainFile);
+            EventStream es = new MaxEntEventStream(new PlainTextByLineDataStream(datafr));
 
-				model = GIS.trainModel(100, new OnePassDataIndexer(es, 0),
-						false);
+            MaxentModel model = GIS.trainModel(100, new OnePassDataIndexer(es, 0), false);
 
-				File outputFile = new File(modelFileName);
-				GISModelWriter writer = new SuffixSensitiveGISModelWriter(
-						(AbstractModel) model, outputFile);
-				writer.persist();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		log.info("Train Model FINISHED");
-	}
+            GISModelWriter writer = new SuffixSensitiveGISModelWriter(
+                    (AbstractModel) model, outputFile);
+            writer.persist();
 
-    @Deprecated // TODO move to trainer
-	public void testModel(File directory) {
-		File[] fList = directory.listFiles();
-		MaxEnThread[] threadGroup = new MaxEnThread[fList.length];
-		int n = 0;
-		for (File file : fList) {
-			if (file.isFile()) {
-				threadGroup[n] = new MaxEnThread(this, file);
-				n++;
-			}
-		}
+            datafr.close();
+        }
+        log.info("Train Model FINISHED");
 
-		log.info("Test Model...");
-		for (MaxEnThread thread : threadGroup) {
-			thread.start();
-		}
+        return outputFile;
+    }
 
-		long testCase = 0;
-		long goodCase = 0;
-		long badCase = 0;
-		for (MaxEnThread thread : threadGroup) {
-			try {
-				thread.join();
-				testCase += thread.testCase();
-				goodCase += thread.goodCase();
-				badCase += thread.badCase();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		log.info("Model Test Result:\n \tTest Case\t=" + testCase
-				+ "\n\tGood Case\t=" + goodCase + "\n\tBad Case\t=" + badCase
-				+ "\n");
-	}
+    public static void testModel(File model, File directory) throws IOException {
+        log.info("Testing Model...");
 
-    @Deprecated // TODO no static, rename
-    static public void run(File trainDir, File testDir) {
-        MaxEnt maxent = new MaxEnt();
-        maxent.trainModel(trainDir);
-        maxent.testModel(testDir);
+        MaxEnt maxent = new MaxEnt(model); // is this thread-safe?
+
+        File[] fList = directory.listFiles();
+        List<MaxEnThread> threadGroup = new LinkedList<MaxEnThread>();
+        for (File file : fList) {
+            if (file.isFile()) {
+                threadGroup.add(new MaxEnThread(maxent, file));
+            }
+        }
+
+        for (MaxEnThread thread : threadGroup) {
+            thread.start();
+        }
+
+        long testCases = 0L;
+        long goodCases = 0L;
+        long badCases  = 0L;
+
+        for (MaxEnThread thread : threadGroup) {
+            try {
+                thread.join();
+
+                testCases += thread.testCases;
+                goodCases += thread.goodCases;
+                badCases  += thread.badCases;
+            } catch (InterruptedException e) {
+                log.error("Interrupted", e);
+            }
+        }
+        log.info("Train Model FINISHED");
+
+        log.info("Model Test Results:"
+                + "\n\tTest Cases\t=" + testCases
+                + "\n\tGood Case\t=" + goodCases
+                + "\n\tBad Case\t=" + badCases
+                + "\n\n");
     }
 }
 

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -14,7 +15,7 @@ public class MaxEntTrainer {
 
     // args[0]  SCD Directory
     // args[1]  Model Directory
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length < 2) {
             System.out.println("usage: MaxEntTrainer scdDir outDir");
             System.exit(1);
@@ -26,7 +27,9 @@ public class MaxEntTrainer {
         File testDir = new File(outDir, "test");
 
         getData(scdDir, trainDir, testDir);
-        MaxEnt.run(trainDir, testDir);
+
+        File model = MaxEnt.trainModel(trainDir);
+        MaxEnt.testModel(model, testDir);
     }
 
     private static void getData(File scdDir, File trainDir, File testDir) {
