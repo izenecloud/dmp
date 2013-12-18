@@ -19,30 +19,38 @@ class MaxEntDataExtractor implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(MaxEntDataExtractor.class);
 
     private final File scdFile;
-    private final File output;
+    private final File outputDir;
+    private final File outputFile;
 
     private String title;
     private String category;
     private boolean firstDocument = true;
 
-    MaxEntDataExtractor(File scdFile, File output) {
+    MaxEntDataExtractor(File scdFile, File outputDir) {
         this.scdFile = scdFile;
-        this.output = output;
+        this.outputDir = outputDir;
+        outputFile = new File(outputDir, scdFile.getName());
+
+        log.debug("scdFile   : " + scdFile);
+        log.debug("outputFile: " + outputFile);
+    }
+
+    File getOutputFile() {
+        return outputFile;
     }
 
     @Override
     public void run() {
         try {
-            File trainFile = new File(output, scdFile.getName());
-            trainFile.createNewFile();
-            log.debug("train file: " + trainFile);
+            outputFile.createNewFile();
 
             BufferedReader reader = new BufferedReader(new FileReader(scdFile));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(trainFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
 
             // parse
             while (nextDocument(reader)) {
                 if (title.isEmpty() || category.isEmpty()) {
+                    log.debug("skipping current document due to empty title/category");
                     continue;
                 }
                 int topLevelIndex = category.indexOf('>');
