@@ -30,7 +30,7 @@ class MaxEntDataExtractor implements Callable<File> {
     MaxEntDataExtractor(File scdFile, File outputDir) {
         this.scdFile = scdFile;
         this.outputDir = outputDir;
-        outputFile = new File(outputDir, scdFile.getName());
+        outputFile = new File(outputDir, scdFile.getName() + ".out");
 
         log.debug("scdFile   : " + scdFile);
         log.debug("outputFile: " + outputFile);

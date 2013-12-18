@@ -88,7 +88,7 @@ public class MaxEnt implements CategoryClassifier {
         File[] fList = directory.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.isFile();
+                return file.isFile() && file.getName().endsWith(".out");
             }
         });
 

@@ -29,6 +29,7 @@ public class TestMaxEntDataExtractor {
 
         File out = de.call();
         assertTrue(out.exists() && out.isFile());
+        assertEquals(out.getName(), "B-00-201312091124-16026-U-C.SCD.out");
 
         checkOutput(out);
     }
