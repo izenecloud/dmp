@@ -3,6 +3,8 @@ package com.b5m.maxent;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -28,8 +30,17 @@ public class TestMaxEntDataExtractor {
 
         File out = de.getOutputFile();
         assertTrue(out.exists() && out.isFile());
+
+        checkOutput(out);
     }
 
+    private void checkOutput(File file) {
+        try {
+            System.out.println(FileUtils.readFileToString(file));
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+    }
 
     private File tmpdir() {
         return new File(System.getProperty("java.io.tmpdir"));
