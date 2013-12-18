@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.List;
 import java.util.LinkedList;
-import java.util.regex.Pattern;
 
 public class MaxEntTrainer {
 
@@ -31,7 +31,11 @@ public class MaxEntTrainer {
 
     private static void getData(File scdDir, File trainDir, File testDir) {
         // get SCD files in directory
-        File[] fList = scdDir.listFiles();
+        File[] fList = scdDir.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.matches("^.\\.(SCD|scd)^");
+            }
+        });
 
         // split files: XXX 1/3 for train and 2/3 for test
         final int trainFiles = (int) (fList.length * 0.3) + 1;
