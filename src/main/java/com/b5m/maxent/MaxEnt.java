@@ -81,7 +81,7 @@ public class MaxEnt implements CategoryClassifier {
         return outputFile;
     }
 
-    public static void testModel(File model, File directory) throws IOException, ExecutionException {
+    public static TrainResults testModel(File model, File directory) throws IOException, ExecutionException {
         log.info("Testing model file: {} ...", model);
 
         MaxEnt maxent = new MaxEnt(model); // is this thread-safe?
@@ -120,12 +120,9 @@ public class MaxEnt implements CategoryClassifier {
                 log.error("Interrupted", e);
             }
         }
-        log.info("Train Model FINISHED");
 
-        System.out.println("Model Test Results:");
-        System.out.printf("Test Cases: %d\n", trainResults.goodCases + trainResults.badCases);
-        System.out.printf("      Good: %d\n", trainResults.goodCases);
-        System.out.printf("       Bad: %d\n", trainResults.badCases);
+        log.info("Train Model FINISHED");
+        return trainResults;
     }
 }
 

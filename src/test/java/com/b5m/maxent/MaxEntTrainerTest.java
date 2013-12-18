@@ -22,8 +22,13 @@ public class MaxEntTrainerTest {
 
     @Test
     public void test() throws Exception {
-        String[] args = { scdDir.toString(), outDir.toString() };
-        MaxEntTrainer.main(args);
+        MaxEntTrainer trainer = new MaxEntTrainer(scdDir, outDir);
+
+        File model = trainer.train();
+        assertTrue(model.exists() && model.isFile());
+
+        TrainResults results = trainer.test();
+        //assertTrue(results.goodCases + results.badCases > 0);
     }
 
 }

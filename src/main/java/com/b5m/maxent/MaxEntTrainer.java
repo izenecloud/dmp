@@ -19,44 +19,38 @@ public class MaxEntTrainer {
 
     private static final Logger log = LoggerFactory.getLogger(MaxEntTrainer.class);
 
-    // args[0]  SCD Directory
-    // args[1]  Model Directory
-    public static void main(String[] args) throws IOException, ExecutionException {
-        if (args.length < 2) {
-            System.out.println("usage: MaxEntTrainer scdDir outDir");
-            System.exit(1);
-        }
+    private final File scdDir;
+    private final File trainDir;
+    private final File testDir;
 
-        File scdDir = new File(args[0]);
-        if (!scdDir.exists() || !scdDir.isDirectory()) {
-            System.out.printf("%s is not a directory\n", args[0]);
-            System.exit(2);
-        }
+    private File model;
 
-        File outDir = new File(args[1]);
-        if (!outDir.exists() || !outDir.isDirectory()) {
-            System.out.printf("%s is not a directory\n", args[1]);
-            System.exit(2);
-        }
+    MaxEntTrainer(File scdDir, File outDir) {
+        this.scdDir = scdDir;
+        trainDir = new File(outDir, "train");
+        testDir = new File(outDir, "test");
+    }
 
-        File trainDir = new File(outDir, "train");
+    File train() throws IOException {
         trainDir.mkdir();
-
-        File testDir = new File(outDir, "test");
         testDir.mkdir();
 
         if (!testDir.isDirectory() || !trainDir.isDirectory()) {
-            System.out.println("Cannot create output directories");
-            System.exit(3);
+            throw new IOException("Cannot create output directories");
         }
 
-        getData(scdDir, trainDir, testDir);
+        // extract data from SCD files
+        getData();
 
-        File model = MaxEnt.trainModel(trainDir);
-        MaxEnt.testModel(model, testDir);
+        model = MaxEnt.trainModel(trainDir);
+        return model;
     }
 
-    private static void getData(File scdDir, File trainDir, File testDir) {
+    TrainResults test() throws IOException, ExecutionException {
+        return MaxEnt.testModel(model, testDir);
+    }
+
+    private void getData() {
         log.info("Getting data from SCD ...");
 
         // get SCD files in directory
@@ -94,6 +88,34 @@ public class MaxEntTrainer {
         Shutdown.andWait(pool, 60, TimeUnit.SECONDS);
 
         log.info("SCD data extracted");
+    }
+
+    public static void main(String[] args) throws IOException, ExecutionException {
+        if (args.length < 2) {
+            System.out.println("usage: MaxEntTrainer scdDir outDir");
+            System.exit(1);
+        }
+
+        File scdDir = new File(args[0]);
+        if (!scdDir.exists() || !scdDir.isDirectory()) {
+            System.out.printf("%s is not a directory\n", args[0]);
+            System.exit(2);
+        }
+
+        File outDir = new File(args[1]);
+        if (!outDir.exists() || !outDir.isDirectory()) {
+            System.out.printf("%s is not a directory\n", args[1]);
+            System.exit(2);
+        }
+
+        MaxEntTrainer trainer = new MaxEntTrainer(scdDir, outDir);
+        File model = trainer.train();
+        TrainResults results = trainer.test();
+
+        System.out.println("Model Test Results:");
+        System.out.printf("Test Cases: %d\n", results.goodCases + results.badCases);
+        System.out.printf("      Good: %d\n", results.goodCases);
+        System.out.printf("       Bad: %d\n", results.badCases);
     }
 
 }
