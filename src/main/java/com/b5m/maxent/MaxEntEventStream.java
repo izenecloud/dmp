@@ -6,50 +6,56 @@ import opennlp.maxent.DataStream;
 import opennlp.model.AbstractEventStream;
 import opennlp.model.Event;
 
-public class MaxEntEventStream extends AbstractEventStream {
-	ContextGenerator cg;
-	DataStream ds;
-	Event next;
-	private String separator = " ";
+class MaxEntEventStream extends AbstractEventStream {
+    final static String DEFAULT_SEPARATOR = " ";
 
-	public MaxEntEventStream(DataStream ds, String sep) {
-		separator = sep;
-		cg = new MaxEntContextGenerator();
-		this.ds = ds;
-		if (this.ds.hasNext())
-			next = createEvent((String) this.ds.nextToken());
-	}
+    private final DataStream dataStream;
+    private final String separator;
+    private final ContextGenerator cg;
 
-	public MaxEntEventStream(DataStream ds) {
-		this(ds, " ");
-	}
+    private Event next;
 
-	public boolean hasNext() throws IOException {
-		while (next == null && ds.hasNext())
-			next = createEvent((String) ds.nextToken());
-		return next != null;
-	}
+    public MaxEntEventStream(DataStream dataStream, String separator) {
+        this.separator = separator;
+        this.cg = new MaxEntContextGenerator();
+        this.dataStream = dataStream;
 
-	public Event next() throws IOException {
-		while (next == null && this.ds.hasNext())
-			next = createEvent((String) this.ds.nextToken());
+        if (dataStream.hasNext())
+            next = createEvent((String) dataStream.nextToken());
+    }
 
-		Event current = next;
-		if (this.ds.hasNext()) {
-			next = createEvent((String) this.ds.nextToken());
-		} else {
-			next = null;
-		}
-		return current;
-	}
+    public MaxEntEventStream(DataStream dataStream) {
+        this(dataStream, DEFAULT_SEPARATOR);
+    }
 
-	private Event createEvent(String obs) {
-		int lastSpace = obs.lastIndexOf(separator);
-		if (lastSpace == -1)
-			return null;
-		else
-			return new Event(obs.substring(lastSpace + 1), cg.getContext(obs
-					.substring(0, lastSpace)));
-	}
+    @Override
+    public boolean hasNext() throws IOException {
+        while (next == null && dataStream.hasNext())
+            next = createEvent((String) dataStream.nextToken());
+        return next != null;
+    }
+
+    @Override
+    public Event next() throws IOException {
+        while (next == null && dataStream.hasNext())
+            next = createEvent((String) dataStream.nextToken());
+
+        Event current = next;
+        if (dataStream.hasNext()) {
+            next = createEvent((String) dataStream.nextToken());
+        } else {
+            next = null;
+        }
+        return current;
+    }
+
+    private Event createEvent(String obs) {
+        int lastSpace = obs.lastIndexOf(separator);
+        if (lastSpace == -1)
+            return null;
+
+        return new Event(obs.substring(lastSpace + 1),
+                         cg.getContext(obs.substring(0, lastSpace)));
+    }
 
 }
