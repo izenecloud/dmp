@@ -25,9 +25,27 @@ public class MaxEntTrainer {
         }
 
         File scdDir = new File(args[0]);
+        if (!scdDir.exists() || !scdDir.isDirectory()) {
+            System.out.printf("%s is not a directory\n", args[0]);
+            System.exit(2);
+        }
+
         File outDir = new File(args[1]);
+        if (!outDir.exists() || !outDir.isDirectory()) {
+            System.out.printf("%s is not a directory\n", args[1]);
+            System.exit(2);
+        }
+
         File trainDir = new File(outDir, "train");
+        trainDir.mkdir();
+
         File testDir = new File(outDir, "test");
+        testDir.mkdir();
+
+        if (!testDir.isDirectory() || !trainDir.isDirectory()) {
+            System.out.println("Cannot create output directories");
+            System.exit(3);
+        }
 
         getData(scdDir, trainDir, testDir);
 
