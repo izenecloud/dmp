@@ -5,6 +5,8 @@ import org.testng.annotations.Test;
 
 import org.apache.commons.io.FileUtils;
 
+import com.b5m.utils.Files;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -18,9 +20,7 @@ public class TestMaxEntDataExtractor {
         URL url =  getClass().getResource("/B-00-201312091124-16026-U-C.SCD");
         scdFile = new File(url.getFile());
 
-        outputDir = new File(tmpdir(), "test");
-        outputDir.mkdir();
-        outputDir.deleteOnExit();
+        outputDir = Files.tempDir("MaxEntDataExtractor", true);
     }
 
     @Test
@@ -39,10 +39,6 @@ public class TestMaxEntDataExtractor {
         } catch (IOException e) {
             fail(e.getMessage());
         }
-    }
-
-    private File tmpdir() {
-        return new File(System.getProperty("java.io.tmpdir"));
     }
 }
 
