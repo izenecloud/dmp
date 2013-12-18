@@ -4,15 +4,18 @@ import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class TestMaxEnt {
 
     private MaxEnt maxent;
 
     public TestMaxEnt() throws IOException {
-        String modelFile = "src/test/resources/Model.txt";
-        maxent = new MaxEnt(modelFile);
+        URL url =  getClass().getResource("/Model.txt");
+        File file = new File(url.getFile());
+        maxent = new MaxEnt(file);
     }
 
     @DataProvider(name="titles")

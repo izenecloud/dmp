@@ -21,6 +21,11 @@ import opennlp.model.OnePassDataIndexer;
 
 public class MaxEnt implements CategoryClassifier {
 
+    public MaxEnt(File modelFile) throws IOException {
+        log.info("Loading model from: " +  modelFile);
+        model = new GenericModelReader(modelFile).getModel();
+    }
+
     public String getCategory(String title) {
         return eval(title);
     }
@@ -84,13 +89,6 @@ public class MaxEnt implements CategoryClassifier {
 		model = null;
 	}
 
-	public MaxEnt(String modelFileName) {
-		try {
-			model = new GenericModelReader(new File(modelFileName)).getModel();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public void loadModel(String modelFileName) {
 		try {
