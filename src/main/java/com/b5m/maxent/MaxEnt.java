@@ -94,8 +94,7 @@ public class MaxEnt implements CategoryClassifier {
 	}
 
     @Deprecated // TODO move to trainer
-	public void trainModel(String trainDir) {
-		File directory = new File(trainDir);
+	public void trainModel(File directory) {
 		File[] fList = directory.listFiles();
 		String modelFileName = directory.getParent()+ "/Model.txt";
 		log.info("Training Model...");
@@ -123,8 +122,7 @@ public class MaxEnt implements CategoryClassifier {
 	}
 
     @Deprecated // TODO move to trainer
-	public void testModel(String testDir) {
-		File directory = new File(testDir);
+	public void testModel(File directory) {
 		File[] fList = directory.listFiles();
 		MaxEnThread[] threadGroup = new MaxEnThread[fList.length];
 		int n = 0;
@@ -159,7 +157,7 @@ public class MaxEnt implements CategoryClassifier {
 	}
 
     @Deprecated // TODO no static, rename
-    static public void run(String trainDir, String testDir) {
+    static public void run(File trainDir, File testDir) {
         MaxEnt maxent = new MaxEnt();
         maxent.trainModel(trainDir);
         maxent.testModel(testDir);

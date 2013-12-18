@@ -3,7 +3,6 @@ package com.b5m.maxent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,31 +18,27 @@ class MaxEntDataExtractor implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(MaxEntDataExtractor.class);
 
-    private String scdFile;
-    private String output;
+    private final File scdFile;
+    private final File output;
 
     private String title;
     private String category;
     private boolean firstDocument = true;
 
-    // TODO use File instead of String
-    MaxEntDataExtractor(String scdFile, String output) {
+    MaxEntDataExtractor(File scdFile, File output) {
         this.scdFile = scdFile;
         this.output = output;
     }
 
     @Override
     public void run() {
-        String trainDir = output;
-        File file = new File(scdFile);
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String trainFile = trainDir + file.getName();
+            File trainFile = new File(output, scdFile.getName());
+            trainFile.createNewFile();
             log.debug("train file: " + trainFile);
 
-            File tFile = new File(trainFile);
-            tFile.createNewFile();
-            BufferedWriter writer = new BufferedWriter(new FileWriter(tFile));
+            BufferedReader reader = new BufferedReader(new FileReader(scdFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(trainFile));
 
             // parse
             while (nextDocument(reader)) {
@@ -60,8 +55,6 @@ class MaxEntDataExtractor implements Runnable {
 
             reader.close();
             writer.close();
-        } catch (FileNotFoundException e) {
-            log.error(e.getMessage(), e);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

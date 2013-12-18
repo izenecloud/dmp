@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 public class MaxEntTrainer {
 
@@ -17,35 +20,37 @@ public class MaxEntTrainer {
             System.exit(1);
         }
 
-        String scdDir = args[0];
-        String outDir = args[1];
-        String trainDir = outDir + "/train/"; // FIXME use File
-        String testDir = outDir + "/test/";   // FIXME use File
+        File scdDir = new File(args[0]);
+        File outDir = new File(args[1]);
+        File trainDir = new File(outDir, "train");
+        File testDir = new File(outDir, "test");
 
         getData(scdDir, trainDir, testDir);
         MaxEnt.run(trainDir, testDir);
     }
 
-    // FIXME pass File not String
-    private static void getData(String scdDir, String trainDir, String testDir) {
-        File directory = new File(scdDir);
+    private static void getData(File scdDir, File trainDir, File testDir) {
+        // get SCD files in directory
+        File[] fList = scdDir.listFiles();
 
-        File[] fList = directory.listFiles();
-        Thread[] threadGroup = new Thread[fList.length];
-
-        // split files: 1/3 for train and 2/3 for test
-        int trainFiles = (int) (fList.length * 0.3) + 1;
+        // split files: XXX 1/3 for train and 2/3 for test
+        final int trainFiles = (int) (fList.length * 0.3) + 1;
         int trainedFiles = 0;
+
+        // assign processing to threads
+        // XXX each file processed by one thread!
+        List<Thread> threadGroup = new LinkedList<Thread>();
+
         for (File file : fList) {
-            if (file.isFile()) {
-                if (trainedFiles < trainFiles) {
-                    threadGroup[trainedFiles] = new Thread(new MaxEntDataExtractor(file.getAbsolutePath(), trainDir));
-                }
-                else {
-                    threadGroup[trainedFiles] = new Thread(new MaxEntDataExtractor(file.getAbsolutePath(), testDir));
-                }
-                trainedFiles++;
+            if (!file.isFile()) continue;
+
+            if (trainedFiles < trainFiles) {
+                threadGroup.add(new Thread(new MaxEntDataExtractor(file, trainDir)));
             }
+            else {
+                threadGroup.add(new Thread(new MaxEntDataExtractor(file, testDir)));
+            }
+            trainedFiles++;
         }
 
         // TODO use java.util.concurrent
