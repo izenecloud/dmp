@@ -8,6 +8,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 public class MaxEntTrainer {
 
@@ -44,35 +46,23 @@ public class MaxEntTrainer {
         final int trainFiles = (int) (fList.length * 0.3) + 1;
         int trainedFiles = 0;
 
-        // assign processing to threads
-        // XXX each file processed by one thread!
-        List<Thread> threadGroup = new LinkedList<Thread>();
+        // submit jobs to thread pool
+        ExecutorService executor = Executors.newCachedThreadPool();
 
+        log.info("Extracting Training Data and Test Data from SCD Files...");
         for (File file : fList) {
             if (!file.isFile()) continue;
 
             if (trainedFiles < trainFiles) {
-                threadGroup.add(new Thread(new MaxEntDataExtractor(file, trainDir)));
+                executor.submit(new MaxEntDataExtractor(file, trainDir));
             }
             else {
-                threadGroup.add(new Thread(new MaxEntDataExtractor(file, testDir)));
+                executor.submit(new MaxEntDataExtractor(file, testDir));
             }
             trainedFiles++;
         }
 
-        // TODO use java.util.concurrent
-        log.info("Extracting Training Data and Test Data from SCD Files...");
-        for (Thread thread : threadGroup) {
-            thread.start();
-        }
-
-        for (Thread thread : threadGroup) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                log.error("Interrupted", e);
-            }
-        }
+        executor.shutdown();
         log.info("Extracting Training Data and Test Data from SCD Files finished");
     }
 

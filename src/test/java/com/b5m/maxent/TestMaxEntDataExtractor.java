@@ -24,11 +24,10 @@ public class TestMaxEntDataExtractor {
     }
 
     @Test
-    public void test() {
+    public void test() throws IOException {
         MaxEntDataExtractor de = new MaxEntDataExtractor(scdFile, outputDir);
-        de.run();
 
-        File out = de.getOutputFile();
+        File out = de.call();
         assertTrue(out.exists() && out.isFile());
 
         checkOutput(out);

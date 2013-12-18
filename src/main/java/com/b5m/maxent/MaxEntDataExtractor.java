@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * Get data from SCD file.
  */
 // TODO use Callable
-class MaxEntDataExtractor implements Runnable {
+class MaxEntDataExtractor implements Callable<File> {
 
     private static final Logger log = LoggerFactory.getLogger(MaxEntDataExtractor.class);
 
@@ -35,37 +36,33 @@ class MaxEntDataExtractor implements Runnable {
         log.debug("outputFile: " + outputFile);
     }
 
-    File getOutputFile() {
-        return outputFile;
-    }
-
     @Override
-    public void run() {
-        try {
-            outputFile.createNewFile();
+    public File call() throws IOException {
+        outputFile.createNewFile();
+        log.debug("created empty output file: " + outputFile);
 
-            BufferedReader reader = new BufferedReader(new FileReader(scdFile));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+        BufferedReader reader = new BufferedReader(new FileReader(scdFile));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
 
-            // parse
-            while (nextDocument(reader)) {
-                if (title.isEmpty() || category.isEmpty()) {
-                    log.debug("skipping current document due to empty title/category");
-                    continue;
-                }
-                int topLevelIndex = category.indexOf('>');
-                if (-1 == topLevelIndex)
-                    writer.write(title + " " + category + "\n");
-                else
-                    writer.write(title + " "
-                            + category.substring(0, topLevelIndex) + "\n");
+        // parse
+        while (nextDocument(reader)) {
+            if (title.isEmpty() || category.isEmpty()) {
+                log.debug("skipping current document due to empty title/category");
+                continue;
             }
-
-            reader.close();
-            writer.close();
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
+            int topLevelIndex = category.indexOf('>');
+            if (-1 == topLevelIndex)
+                writer.write(title + " " + category + "\n");
+            else
+                writer.write(title + " "
+                        + category.substring(0, topLevelIndex) + "\n");
         }
+
+        reader.close();
+        writer.close();
+
+        log.debug("done");
+        return outputFile;
     }
 
     private boolean nextDocument(BufferedReader reader) throws IOException {
