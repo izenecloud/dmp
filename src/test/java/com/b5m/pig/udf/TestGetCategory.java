@@ -1,5 +1,7 @@
 package com.b5m.pig.udf;
 
+import com.b5m.utils.Files;
+
 import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -18,9 +20,7 @@ public class TestGetCategory {
     private final GetCategory func;
 
     public TestGetCategory() throws IOException {
-        URL url =  getClass().getResource("/Model.txt");
-        File file = new File(url.getFile());
-        func = new GetCategory(file);
+        func = new GetCategory(Files.getResource("/Model.txt"));
     }
 
     @DataProvider(name="titles")
