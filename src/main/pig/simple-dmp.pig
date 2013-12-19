@@ -9,7 +9,7 @@ REGISTER /usr/lib/pig/lib/snappy-java-*.jar
 REGISTER ./dist/pig-udfs.jar
 
 -- shorter aliases
-DEFINE CATEGORY com.b5m.pig.udf.CategoryUDF();
+DEFINE GET_CATEGORY com.b5m.pig.udf.GetCategory();
 DEFINE CATEGORY_MAP com.b5m.pig.udf.ConvertToMap();
 
 -- load log files in avro format
@@ -32,7 +32,7 @@ clean2 = FILTER clean1 BY (url MATCHES '.*(taobao.com|tmall.com|yixun.com|jd.com
 -- TODO more filtering here
 
 -- classify page using the title
-data1 = FOREACH clean2 GENERATE uuid, CATEGORY(title) AS category;
+data1 = FOREACH clean2 GENERATE uuid, GET_CATEGORY(title) AS category;
 
 -- group by user and category
 data2 = GROUP data1 BY (uuid, category);

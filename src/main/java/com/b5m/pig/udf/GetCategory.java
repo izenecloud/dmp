@@ -9,7 +9,7 @@ import org.apache.pig.data.Tuple;
  * UDF that maps a string to a product category.
  * @author Paolo D'Apice
  */
-public class CategoryUDF extends EvalFunc<String> {
+public class GetCategory extends EvalFunc<String> {
 
     @Override
     public String exec(Tuple tuple) throws IOException {
