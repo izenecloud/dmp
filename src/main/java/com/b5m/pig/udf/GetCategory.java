@@ -18,10 +18,17 @@ import java.util.List;
 public class GetCategory extends EvalFunc<String> {
 
     private final String filename;
+    private final boolean isLocal;
+
     private CategoryClassifier classifier = null;
 
-    public GetCategory(String filename) {
+    /**
+     * @param filename file containing the MaxEnt model
+     * @param local flag indicating whether the model is on local filesystem
+     */
+    public GetCategory(String filename, String local) {
         this.filename = filename;
+        this.isLocal = local.equals("local");
     }
 
     @Override
@@ -32,21 +39,24 @@ public class GetCategory extends EvalFunc<String> {
 
         String title = (String) tuple.get(0);
 
-        if (classifier == null) // TODO move to constructor?
-            classifier = new MaxEnt(new File(MaxEnt.MODEL_FILENAME));
+        if (classifier == null) init();
 
         return classifier.getCategory(title);
     }
 
+    /*
+     * XXX Note that cache is disabled when Pig is running in local mode.
+     * https://issues.apache.org/jira/browse/PIG-1752
+     */
+
     @Override
     public List<String> getCacheFiles() {
-        String name = String.format("%s#%s", filename, MaxEnt.MODEL_FILENAME);
+        String name = String.format("%s#maxent", filename);
         return Arrays.asList(name);
     }
 
-    /* for tests only */
-    GetCategory(File file) throws IOException {
-        filename = file.toString();
+    private void init() throws IOException {
+        File file = new File(isLocal ? filename : "./maxent");
         classifier = new MaxEnt(file);
     }
 

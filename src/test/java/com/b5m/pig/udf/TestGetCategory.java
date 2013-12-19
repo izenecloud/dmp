@@ -20,7 +20,8 @@ public class TestGetCategory {
     private final GetCategory func;
 
     public TestGetCategory() throws IOException {
-        func = new GetCategory(Files.getResource("/Model.txt"));
+        File file = Files.getResource("/Model.txt");
+        func = new GetCategory(file.toString(), "local");
     }
 
     @DataProvider(name="titles")
