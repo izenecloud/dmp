@@ -152,6 +152,7 @@
                                 <configuration>
                                     <includes>
                                         <include>**/*onPig.java</include>
+                                        <include>**/*OnPig.java</include>
                                     </includes>
                                 </configuration>
                             </execution>
