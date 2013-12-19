@@ -34,12 +34,8 @@ public class TestMaxEntDataExtractor {
         checkOutput(out);
     }
 
-    private void checkOutput(File file) {
-        try {
-            System.out.println(FileUtils.readFileToString(file));
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+    private void checkOutput(File file) throws IOException {
+        System.out.println(FileUtils.readFileToString(file));
     }
 }
 
