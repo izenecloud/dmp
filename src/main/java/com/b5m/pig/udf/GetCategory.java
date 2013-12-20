@@ -29,6 +29,14 @@ public class GetCategory extends EvalFunc<String> {
     public GetCategory(String filename, String local) {
         this.filename = filename;
         this.isLocal = local.equals("local");
+        getLogger().info(String.format("UDF registered with filename %s (%s)", filename, local));
+    }
+
+    /**
+     * @param filename file containing the MaxEnt model
+     */
+    public GetCategory(String filename) {
+        this(filename, "cluster");
     }
 
     @Override
@@ -51,12 +59,12 @@ public class GetCategory extends EvalFunc<String> {
 
     @Override
     public List<String> getCacheFiles() {
-        String name = String.format("%s#maxent", filename);
-        return Arrays.asList(name);
+        return Arrays.asList(filename + "#maxent");
     }
 
     private void init() throws IOException {
         File file = new File(isLocal ? filename : "./maxent");
+        getLogger().info(String.format("initializing with file: %s (%s)", file, file.exists()));
         classifier = new MaxEnt(file);
     }
 
