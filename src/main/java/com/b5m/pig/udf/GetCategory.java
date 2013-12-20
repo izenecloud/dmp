@@ -36,7 +36,7 @@ public class GetCategory extends EvalFunc<String> {
      * @param filename file containing the MaxEnt model
      */
     public GetCategory(String filename) {
-        this(filename, "cluster");
+        this(filename, "cluster"); // actually any string but "local" is ok here
     }
 
     @Override
@@ -64,7 +64,7 @@ public class GetCategory extends EvalFunc<String> {
 
     private void init() throws IOException {
         File file = new File(isLocal ? filename : "./maxent");
-        getLogger().info(String.format("initializing with file: %s (%s)", file, file.exists()));
+        getLogger().info(String.format("initializing with file: %s (%s)", file, isLocal ? "local" : "cached"));
         classifier = new MaxEnt(file);
     }
 
