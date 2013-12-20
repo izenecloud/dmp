@@ -132,7 +132,7 @@
 
     <profiles>
         <profile>
-            <id>pig-test</id>
+            <id>pig</id>
             <build>
                 <plugins>
                     <plugin>
