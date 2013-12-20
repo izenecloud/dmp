@@ -12,7 +12,11 @@ public class GetCategoryOnPig {
 
     @Test
     public void test() throws IOException, ParseException {
-        PigTest test = new PigTest("./src/test/pig/getCategory.pig");
+        String[] args = {
+            "model_file=./src/test/resources/Model.txt",
+        };
+
+        PigTest test = new PigTest("./src/test/pig/getCategory.pig", args);
 
         String[] input = {
             "蔻玲2013冬新款女狐狸毛领羊绒呢子短款大衣寇玲原价1999专柜正品",

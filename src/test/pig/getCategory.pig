@@ -2,7 +2,7 @@
 REGISTER ./dist/pig-udfs.jar
 
 -- alias function name
-DEFINE GET_CATEGORY com.b5m.pig.udf.GetCategory('./src/test/resources/Model.txt', 'local');
+DEFINE GET_CATEGORY com.b5m.pig.udf.GetCategory('$model_file', 'local');
 
 -- load input passed to this script
 titles = LOAD 'input' as (title:chararray);
