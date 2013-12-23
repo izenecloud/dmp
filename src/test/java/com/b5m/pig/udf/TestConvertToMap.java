@@ -12,10 +12,10 @@ import org.apache.pig.backend.executionengine.ExecException;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class TestConvertToMap {
 
@@ -28,17 +28,17 @@ public class TestConvertToMap {
     public Object[][] titles() throws ExecException {
         /*
         sample data:
-        0b3d1bd97a0fcc4eb307882a2754e8c0        {(0b3d1bd97a0fcc4eb307882a2754e8c0,41,1)}
-        0c6d8636f8be87e657f9b14ed07b54de        {(0c6d8636f8be87e657f9b14ed07b54de,11,1),(0c6d8636f8be87e657f9b14ed07b54de,13,1)}
+        0b3d1bd97a0fcc4eb307882a2754e8c0        {(0b3d1bd97a0fcc4eb307882a2754e8c0,服装服饰,1)}
+        0c6d8636f8be87e657f9b14ed07b54de        {(0c6d8636f8be87e657f9b14ed07b54de,服装服饰,1),(0c6d8636f8be87e657f9b14ed07b54de,图书音像,2),(0c6d8636f8be87e657f9b14ed07b54de,母婴童装,1)}
          */
         return new Object[][] {
             {
-                newTuple("0b3d1bd97a0fcc4eb307882a2754e8c0", "41", 1),
-                newMap("41", 1)
+                newTuple("0b3d1bd97a0fcc4eb307882a2754e8c0", "服装服饰", 1),
+                newMap("服装服饰", 1)
             },
             {
-                newTuple("0c6d8636f8be87e657f9b14ed07b54de", "11", 1, "13", 1),
-                newMap("11", 1, "13", 1)
+                newTuple("0c6d8636f8be87e657f9b14ed07b54de", "服装服饰", 1, "图书音像", 2, "母婴童装", 1),
+                newMap("服装服饰", 1, "图书音像", 2, "母婴童装", 1)
             }
         };
     }
@@ -66,7 +66,7 @@ public class TestConvertToMap {
     }
 
     private Map<Object, Integer> newMap(Object ... args) throws ExecException {
-        Map<Object, Integer> map = new HashMap<Object, Integer>();
+        Map<Object, Integer> map = new TreeMap<Object, Integer>();
         List<Object> list = Arrays.asList(args);
         for (Iterator<Object> it = list.iterator(); it.hasNext();) {
             Object key = it.next();
