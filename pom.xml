@@ -126,6 +126,7 @@
                         <fileset>
                             <directory>${basedir}</directory>
                             <includes>
+                                <include>dist/*</include>
                                 <include>dist</include>
                             </includes>
                         </fileset>
