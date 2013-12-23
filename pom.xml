@@ -173,10 +173,15 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target name="copy-jar">
+                                    <target name="copy-files">
                                         <copy file="target/${project.build.finalName}-jar-for-pig.jar"
-                                              tofile="${udf.outputDir}/pig-udfs.jar"
-                                              overwrite="true"/>
+                                            tofile="${udf.outputDir}/pig-udfs.jar" overwrite="true"/>
+                                        <copy todir="${udf.outputDir}" overwrite="true" flatten="true">
+                                            <resources>
+                                                <file file="src/main/pig/simple-dmp.pig"/>
+                                                <file file="src/main/pig/simple-dmp.properties.example"/>
+                                            </resources>
+                                        </copy>
                                     </target>
                                 </configuration>
                             </execution>
