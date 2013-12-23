@@ -1,21 +1,19 @@
 package com.b5m.maxent;
 
+import com.b5m.utils.Files;
+
 import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 public class TestMaxEnt {
 
     private MaxEnt maxent;
 
     public TestMaxEnt() throws IOException {
-        URL url =  getClass().getResource("/Model.txt");
-        File file = new File(url.getFile());
-        maxent = new MaxEnt(file);
+        maxent = new MaxEnt(Files.getResource("/Model.txt"));
     }
 
     @DataProvider(name="titles")

@@ -1,15 +1,14 @@
 package com.b5m.maxent;
 
+import com.b5m.utils.Files;
+
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
 import org.apache.commons.io.FileUtils;
 
-import com.b5m.utils.Files;
-
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 public class TestMaxEntDataExtractor {
 
@@ -17,9 +16,7 @@ public class TestMaxEntDataExtractor {
     private final File outputDir;
 
     public TestMaxEntDataExtractor() throws IOException {
-        URL url =  getClass().getResource("/B-00-201312091124-16026-U-C.SCD");
-        scdFile = new File(url.getFile());
-
+        scdFile = Files.getResource("/B-00-201312091124-16026-U-C.SCD");
         outputDir = Files.tempDir("MaxEntDataExtractor", true);
     }
 

@@ -1,13 +1,12 @@
 package com.b5m.maxent;
 
+import com.b5m.utils.Files;
+
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-import com.b5m.utils.Files;
-
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 public class MaxEntTrainerTest {
 
@@ -15,8 +14,8 @@ public class MaxEntTrainerTest {
     private final File outDir;
 
     public MaxEntTrainerTest() throws IOException {
-        URL url =  getClass().getResource("/B-00-201312091124-16026-U-C.SCD");
-        scdDir = new File(url.getFile()).getParentFile();
+        File scd = Files.getResource("/B-00-201312091124-16026-U-C.SCD");
+        scdDir = scd.getParentFile();
         outDir = Files.tempDir("MaxEntTrainerTest", false);
     }
 
