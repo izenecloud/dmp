@@ -21,6 +21,9 @@ REGISTER $pigdir/lib/json-simple-*.jar
 REGISTER $pigdir/lib/snappy-java-*.jar
 REGISTER $udfdir/pig-udfs.jar
 
+-- ensure can write output
+rmf $output
+
 -- shorter aliases
 DEFINE GET_CATEGORY com.b5m.pig.udf.GetCategory('$model_file', '$mode');
 DEFINE CATEGORY_MAP com.b5m.pig.udf.ConvertToMap();
