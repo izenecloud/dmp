@@ -58,8 +58,8 @@ data3 = FOREACH data2 GENERATE group.uuid, group.category, COUNT(data1) AS count
 data4 = GROUP data3 BY uuid;
 
 -- generate bag-of-words
-data5 = FOREACH data4 GENERATE group, CATEGORY_MAP(data3) AS categorycounts;
+data5 = FOREACH data4 GENERATE group AS uuid, CATEGORY_MAP(data3) AS categories;
 
--- TODO output storage?
-STORE data5 INTO '$output';
+-- store into Json as required by CouchBase
+STORE data5 INTO '$output' USING JsonStorage();
 
