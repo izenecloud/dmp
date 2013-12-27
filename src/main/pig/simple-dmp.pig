@@ -8,13 +8,17 @@
 --   bucket         Couchbase bucket name
 --   password       Couchbase password
 
+-- default values
 %default mode cluster
 %default pigdir /usr/lib/pig
 %default udfdir dist
 %default password ''
 
+-- other parameters
+%declare uuid_filter_regex '(undefined|guest|false)'
+%declare url_match_regex '.*(taobao.com|tmall.com|yixun.com|jd.com|dangdang.com|suning.com|yhd.com).*'
+
 -- required libraries
--- TODO use placeholders so that the script can be pre-processed
 REGISTER $pigdir/piggybank.jar
 REGISTER $pigdir/lib/avro-*.jar
 REGISTER $pigdir/lib/jackson-core-asl-*.jar
@@ -38,14 +42,13 @@ entries = FOREACH records GENERATE
             args#'tt'  AS title:chararray;
 
 -- ignore records without uuid
-clean0 = FILTER entries BY NOT (uuid == 'undefined');
+clean0 = FILTER entries BY NOT (uuid MATCHES '$uuid_filter_regex');
 -- ignore records without title
 clean1 = FILTER clean0 BY title IS NOT NULL;
 -- ignore records not in e-commerce websites
--- TODO more websites here (use parameter)
-clean2 = FILTER clean1 BY (url MATCHES '.*(taobao.com|tmall.com|yixun.com|jd.com|dangdang.com|suning.com|yhd.com).*');
+clean2 = FILTER clean1 BY (url MATCHES '$url_match_regex');
 
--- TODO more filtering here
+/* TODO more filtering here*/
 
 -- classify page using the title
 data1 = FOREACH clean2 GENERATE uuid, GET_CATEGORY(title) AS category;
