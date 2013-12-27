@@ -1,0 +1,2 @@
+uuid1	[cat1#1,cat2#2]
+uuid2	[cat1#3,cat4#1]
