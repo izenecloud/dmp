@@ -201,6 +201,7 @@
                                             <resources>
                                                 <file file="src/main/pig/simple-dmp.pig"/>
                                                 <file file="src/main/pig/simple-dmp.properties.example"/>
+                                                <file file="src/test/resources/Model.txt"/>
                                             </resources>
                                         </copy>
                                     </target>
