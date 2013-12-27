@@ -1,9 +1,21 @@
+# model_file: path to Model.txt on HDFS
 model_file = /path/to/Model.txt
-input = /path/to/logs
-pigdir = /path/to/pig/dir
-udfdir = /path/to/pig-udfs/dir
-hosts = couchbase1,couchbase2
-bucket = bucketname
-password = secret
 
+# input: path to file or directory on HDFS
+input = /path/to/logs
+
+# pigdir: path to Pig directory on local machine
+pigdir = /path/to/pig/dir
+
+# udfdir = path to directory containing pig-udfs.jar on local machine
+udfdir = /path/to/pig-udfs/dir
+
+# hosts: URIs to couchbase servers
+hosts = couchbase1,couchbase2
+
+# bucket: couchbase bucket
+bucket = bucketname
+
+# password: couchbase password (if required)
+password = secret
 
