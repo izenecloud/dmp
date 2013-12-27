@@ -3,7 +3,7 @@
 --   mode           'cluster' (default) or 'local' (only for testing)
 --   input          path to input file or directory
 --   pigdir         path to pig libraries
---   udfdir         path to the pig-udfs.jar
+--   udf_file       path to pig-udfs.jar
 --   hosts          comma-separated list of Couchbase servers
 --   bucket         Couchbase bucket name
 --   password       Couchbase password
@@ -11,7 +11,6 @@
 -- default values
 %default mode cluster
 %default pigdir /usr/lib/pig
-%default udfdir dist
 %default password ''
 
 -- other parameters
@@ -25,7 +24,7 @@ REGISTER $pigdir/lib/jackson-core-asl-*.jar
 REGISTER $pigdir/lib/jackson-mapper-asl-*.jar
 REGISTER $pigdir/lib/json-simple-*.jar
 REGISTER $pigdir/lib/snappy-java-*.jar
-REGISTER $udfdir/pig-udfs.jar
+REGISTER $udf_file
 
 -- shorter aliases
 DEFINE GET_CATEGORY com.b5m.pig.udf.GetCategory('$model_file', '$mode');

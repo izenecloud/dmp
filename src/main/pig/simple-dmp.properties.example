@@ -7,8 +7,8 @@ input = /path/to/logs
 # pigdir: path to Pig directory on local machine
 pigdir = /path/to/pig/dir
 
-# udfdir = path to directory containing pig-udfs.jar on local machine
-udfdir = /path/to/pig-udfs/dir
+# udfdir = path to pig-udfs.jar on local machine
+udf_file = /path/to/pig-udfs.jar
 
 # hosts: URIs to couchbase servers
 hosts = couchbase1,couchbase2
