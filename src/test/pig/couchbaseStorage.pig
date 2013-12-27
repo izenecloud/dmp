@@ -6,6 +6,6 @@ DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$
 
 data = LOAD '$input' as (uuid:chararray, categories:map[int]);
 
-STORE data INTO 'output' USING CouchbaseStorage();
+STORE data USING CouchbaseStorage();
 
 -- vim: set ft=pig nospell:

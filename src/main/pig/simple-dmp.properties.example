@@ -1,7 +1,9 @@
 model_file = /path/to/Model.txt
 input = /path/to/logs
-output = /path/to/output
 pigdir = /path/to/pig/dir
-udfdir = /path/to/pig-udfs.dir
+udfdir = /path/to/pig-udfs/dir
+hosts = couchbase1,couchbase2
+bucket = bucketname
+password = secret
 
 

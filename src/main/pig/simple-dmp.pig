@@ -2,14 +2,16 @@
 --   model_file     path to the MaxEnt model file
 --   mode           'cluster' (default) or 'local' (only for testing)
 --   input          path to input file or directory
---   output         path to output file
 --   pigdir         path to pig libraries
 --   udfdir         path to the pig-udfs.jar
+--   hosts          comma-separated list of Couchbase servers
+--   bucket         Couchbase bucket name
+--   password       Couchbase password
 
 %default mode cluster
-%default output output/dmp
 %default pigdir /usr/lib/pig
 %default udfdir dist
+%default password ''
 
 -- required libraries
 -- TODO use placeholders so that the script can be pre-processed
@@ -21,12 +23,10 @@ REGISTER $pigdir/lib/json-simple-*.jar
 REGISTER $pigdir/lib/snappy-java-*.jar
 REGISTER $udfdir/pig-udfs.jar
 
--- ensure can write output
-rmf $output
-
 -- shorter aliases
 DEFINE GET_CATEGORY com.b5m.pig.udf.GetCategory('$model_file', '$mode');
 DEFINE CATEGORY_MAP com.b5m.pig.udf.ConvertToMap();
+DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password');
 
 -- load log files in avro format
 records = LOAD '$input' USING org.apache.pig.piggybank.storage.avro.AvroStorage();
@@ -60,6 +60,6 @@ data4 = GROUP data3 BY uuid;
 -- generate bag-of-words
 data5 = FOREACH data4 GENERATE group AS uuid, CATEGORY_MAP(data3) AS categories;
 
--- store into Json as required by CouchBase
-STORE data5 INTO '$output' USING JsonStorage();
+-- store into CouchBase
+STORE data5 INTO 'output/dmp' USING CouchbaseStorage();
 
