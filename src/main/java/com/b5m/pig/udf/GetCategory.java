@@ -4,7 +4,12 @@ import com.b5m.maxent.CategoryClassifier;
 import com.b5m.maxent.MaxEnt;
 
 import org.apache.pig.EvalFunc;
+import org.apache.pig.data.DataType;
 import org.apache.pig.data.Tuple;
+import org.apache.pig.impl.logicalLayer.FrontendException;
+import org.apache.pig.impl.logicalLayer.schema.Schema;
+import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
+import org.apache.pig.impl.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +22,7 @@ import java.util.List;
  */
 public class GetCategory extends EvalFunc<String> {
 
+    final static Schema SCHEMA = new Schema(new FieldSchema("category", DataType.CHARARRAY));
     private final String filename;
     private final boolean isLocal;
 
@@ -50,6 +56,28 @@ public class GetCategory extends EvalFunc<String> {
         if (classifier == null) init();
 
         return classifier.getCategory(title);
+    }
+
+    @Override
+    public Schema outputSchema(Schema input) {
+        if (input.size() != 1) {
+            String message = String.format("Expected input tuple of size 1, received %d",
+                                           input.size());
+            throw new IllegalArgumentException(message);
+        }
+
+        try {
+            FieldSchema field = input.getField(0);
+            if (field.type != DataType.CHARARRAY) {
+                String message = String.format("Expected input (chararray), received schema (%s)",
+                                               DataType.findTypeName(field.type));
+                throw new IllegalArgumentException(message);
+            }
+        } catch (FrontendException e) {
+            throw new RuntimeException(e);
+        }
+
+        return SCHEMA;
     }
 
     /*

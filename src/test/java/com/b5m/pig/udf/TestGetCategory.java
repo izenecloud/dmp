@@ -8,6 +8,8 @@ import org.testng.annotations.Test;
 
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
+import org.apache.pig.impl.logicalLayer.schema.Schema;
+import org.apache.pig.impl.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,14 +26,12 @@ public class TestGetCategory {
         func = new GetCategory(file.toString(), "local");
     }
 
-    @DataProvider(name="titles")
+    @DataProvider
     public Object[][] titles() {
         return new Object[][] {
             // input title, output category
             { "蔻玲2013冬新款女狐狸毛领羊绒呢子短款大衣寇玲原价1999专柜正品", "服装服饰" },
             { "深部条带煤柱长期稳定性基础实验研究 正版包邮", "图书音像" },
-            // TODO { "", "" },
-            // TODO { null, "" },
         };
     }
 
@@ -40,6 +40,29 @@ public class TestGetCategory {
         Tuple tuple = tupleFactory.newTuple(title);
         String output = func.exec(tuple);
         assertEquals(output, category);
+    }
+
+    @DataProvider
+    public Object[][] schemas() throws Exception {
+        return new Object[][] {
+            { Utils.getSchemaFromString("chararray"), true },
+            { Utils.getSchemaFromString("category: chararray"), true },
+            { Utils.getSchemaFromString("long"), false },
+            { Utils.getSchemaFromString("(chararray)"), false },
+            { Utils.getSchemaFromString("(long)"), false },
+            { Utils.getSchemaFromString("(chararray,long)"), false },
+        };
+    }
+
+    @Test(dataProvider="schemas")
+    public void schemaOutput(Schema input, boolean valid) throws IOException {
+        try {
+            Schema output = func.outputSchema(input);
+            assertTrue(valid);
+            assertEquals(output, GetCategory.SCHEMA);
+        } catch (IllegalArgumentException e) {
+            assertFalse(valid);
+        }
     }
 
 }
