@@ -19,3 +19,6 @@ bucket = bucketname
 # password: couchbase password (if required)
 password = secret
 
+# batchSize: how many records to write at once
+batchSize = 10000
+

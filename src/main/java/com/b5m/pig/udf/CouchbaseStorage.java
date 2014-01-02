@@ -33,12 +33,8 @@ public final class CouchbaseStorage extends StoreFunc {
 
     private RecordWriter<Text, Object> writer = null;
 
-    public CouchbaseStorage(String uris, String bucket) {
-        this(uris, bucket, "");
-    }
-
-    public CouchbaseStorage(String uris, String bucket, String password) {
-        conf = new CouchbaseConfiguration(uris, bucket, password);
+    public CouchbaseStorage(String uris, String bucket, String password, String batchSize) {
+        conf = new CouchbaseConfiguration(uris, bucket, password, batchSize);
     }
 
     @Override

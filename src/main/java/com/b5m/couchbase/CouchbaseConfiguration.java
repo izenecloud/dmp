@@ -15,12 +15,6 @@ public class CouchbaseConfiguration {
     private final String password;
     private final int batchSize;
 
-    public static String DEFAULT_BATCH_SIZE = "10000";
-
-    public CouchbaseConfiguration(String uris, String bucket, String password) {
-        this(uris, bucket, password, DEFAULT_BATCH_SIZE);
-    }
-
     public CouchbaseConfiguration(String uris, String bucket, String password, String batchSize) {
         this.uris = Arrays.asList(uris.split(","));
         this.bucket = bucket;

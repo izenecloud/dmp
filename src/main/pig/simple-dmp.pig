@@ -7,11 +7,13 @@
 --   hosts          comma-separated list of Couchbase servers
 --   bucket         Couchbase bucket name
 --   password       Couchbase password
+--   batchSize      Couchbase batch size
 
 -- default values
 %default mode cluster
 %default pigdir /usr/lib/pig
 %default password ''
+%default batchSize 10000
 
 -- other parameters
 %declare uuid_filter_regex '(undefined|guest|false)'
@@ -29,7 +31,7 @@ REGISTER $udf_file
 -- shorter aliases
 DEFINE GET_CATEGORY com.b5m.pig.udf.GetCategory('$model_file', '$mode');
 DEFINE CATEGORY_MAP com.b5m.pig.udf.ConvertToMap();
-DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password');
+DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password', '$batchSize');
 
 -- load log files in avro format
 records = LOAD '$input' USING org.apache.pig.piggybank.storage.avro.AvroStorage();
