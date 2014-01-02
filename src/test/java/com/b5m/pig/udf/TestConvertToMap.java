@@ -5,10 +5,13 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import org.apache.pig.data.DataBag;
+import org.apache.pig.data.DataType;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.BagFactory;
 import org.apache.pig.data.TupleFactory;
-import org.apache.pig.backend.executionengine.ExecException;
+import org.apache.pig.impl.logicalLayer.schema.Schema;
+import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
+import static org.apache.pig.impl.logicalLayer.schema.SchemaUtil.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,9 +26,10 @@ public class TestConvertToMap {
     private TupleFactory tupleFactory = TupleFactory.getInstance();
 
     private ConvertToMap func = new ConvertToMap();
+    private Schema schema = new Schema(new FieldSchema(null, DataType.MAP));
 
-    @DataProvider(name="tuples")
-    public Object[][] titles() throws ExecException {
+    @DataProvider
+    public Object[][] tuples() throws Exception {
         /*
         sample data:
         0b3d1bd97a0fcc4eb307882a2754e8c0        {(0b3d1bd97a0fcc4eb307882a2754e8c0,服装服饰,1)}
@@ -44,13 +48,42 @@ public class TestConvertToMap {
     }
 
     @Test(dataProvider="tuples")
-    public void testConvertToMap(Tuple input, Map<Object, Integer> expected) throws IOException {
+    public void convertToMap(Tuple input, Map<Object, Integer> expected) throws IOException {
         Map output = func.exec(input);
         assertEquals(expected, output);
     }
 
+    @DataProvider
+    public Object[][] badSchemas() throws Exception {
+        return new Object[][] {
+            { newTupleSchema(Arrays.asList(DataType.CHARARRAY)) },
+            { newTupleSchema(Arrays.asList(DataType.CHARARRAY, DataType.CHARARRAY)) },
+            { newBagSchema(Arrays.asList(DataType.CHARARRAY, DataType.CHARARRAY, DataType.INTEGER)) },
+        };
+    }
 
-    private Tuple newTuple(String uid, Object ... args) throws ExecException {
+    @Test(dataProvider="badSchemas", expectedExceptions={IllegalArgumentException.class})
+    public void schemaOutputFail(Schema input) throws IOException {
+        func.outputSchema(input);
+    }
+
+    @DataProvider
+    public Object[][] schemas() throws Exception {
+        /* {data3: {(uuid: chararray,category: chararray,counts: long)}} */
+        return new Object[][] {
+            { newBagSchema("data3", null,
+                    Arrays.asList("uuid", "category", "counts"),
+                    Arrays.asList(DataType.CHARARRAY, DataType.CHARARRAY, DataType.LONG)) },
+        };
+    }
+
+    @Test(dataProvider="schemas")
+    public void schemaOutput(Schema input) throws IOException {
+        Schema output = func.outputSchema(input);
+        assertEquals(output, schema);
+    }
+
+    private Tuple newTuple(String uid, Object ... args) throws Exception {
         DataBag bag = bagFactory.newDefaultBag();
         List<Object> list = Arrays.asList(args);
         for (Iterator<Object> it = list.iterator(); it.hasNext();) {
@@ -65,7 +98,7 @@ public class TestConvertToMap {
         return tupleFactory.newTuple(bag);
     }
 
-    private Map<Object, Integer> newMap(Object ... args) throws ExecException {
+    private Map<Object, Integer> newMap(Object ... args) throws Exception {
         Map<Object, Integer> map = new TreeMap<Object, Integer>();
         List<Object> list = Arrays.asList(args);
         for (Iterator<Object> it = list.iterator(); it.hasNext();) {
