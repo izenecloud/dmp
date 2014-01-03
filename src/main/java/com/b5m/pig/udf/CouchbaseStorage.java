@@ -12,8 +12,10 @@ import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.RecordWriter;
 
 import org.apache.pig.ResourceSchema;
+import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.StoreFunc;
 import org.apache.pig.data.Tuple;
+import org.apache.pig.impl.util.UDFContext;
 import org.apache.pig.impl.util.Utils;
 
 import java.io.IOException;
@@ -28,10 +30,13 @@ import java.util.Properties;
 public final class CouchbaseStorage extends StoreFunc {
 
     private final static Log log = LogFactory.getLog(CouchbaseStorage.class);
+    private final static String SCHEMA_PROPERTY = "pig.couchbasestorage.schema";
 
     private final CouchbaseConfiguration conf;
 
+    private String udfcSignature = null;
     private RecordWriter<Text, Object> writer = null;
+    private ResourceFieldSchema[] fields = null;
 
     public CouchbaseStorage(String uris, String bucket, String password, String batchSize) {
         conf = new CouchbaseConfiguration(uris, bucket, password, batchSize);
@@ -43,13 +48,25 @@ public final class CouchbaseStorage extends StoreFunc {
     }
 
     @Override
-    public void setStoreLocation(String location,Job job) throws IOException {
+    public void setStoreLocation(String location, Job job) throws IOException {
         // nothing to do because we are storing into Couchbase
+        // the location specified by the store command is basically ignored
+    }
+
+    @Override
+    public void setStoreFuncUDFContextSignature(String signature) {
+        // store the signature so we can use it later
+        udfcSignature = signature;
     }
 
     @Override
     public void checkSchema(ResourceSchema schema) throws IOException {
-        // TODO check that the tuple has the correct schema
+        // not checking the schema here, just storing it in UDFContext properties
+        UDFContext udfc = UDFContext.getUDFContext();
+        Properties p = udfc.getUDFProperties(getClass(), new String[]{ udfcSignature });
+        p.setProperty(SCHEMA_PROPERTY, schema.toString());
+
+        log.info("stored schema into UDF context: " + schema);
     }
 
     /*
@@ -62,6 +79,18 @@ public final class CouchbaseStorage extends StoreFunc {
     @Override
     public void prepareToWrite(RecordWriter writer) throws IOException {
         this.writer = writer;
+
+        UDFContext udfc = UDFContext.getUDFContext();
+        Properties p = udfc.getUDFProperties(getClass(), new String[]{ udfcSignature });
+        String strSchema = p.getProperty(SCHEMA_PROPERTY);
+        if (strSchema == null) {
+            throw new IOException("Could not find schema in UDF context");
+        }
+
+        ResourceSchema schema = new ResourceSchema(Utils.getSchemaFromString(strSchema));
+        fields = schema.getFields();
+
+        log.info("loaded schema into UDF context: " + schema);
     }
 
     @Override
@@ -90,7 +119,7 @@ public final class CouchbaseStorage extends StoreFunc {
 
     @Override
     public void cleanupOnFailure(String location, Job job) throws IOException {
-        // TODO
+        // data already stored can be deleted directly on Couchbase
     }
 }
 
