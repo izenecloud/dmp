@@ -14,6 +14,7 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.pig.ResourceSchema;
 import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.StoreFunc;
+import org.apache.pig.data.DataType;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.util.UDFContext;
 import org.apache.pig.impl.util.Utils;
@@ -68,7 +69,22 @@ public final class CouchbaseStorage extends StoreFunc {
 
     @Override
     public void checkSchema(ResourceSchema schema) throws IOException {
-        // not checking the schema here, just storing it in UDFContext properties
+        if (log.isDebugEnabled()) log.debug("schema: " + schema);
+        ResourceFieldSchema[] fields = schema.getFields();
+
+        if (fields.length != 2) {
+            String message = String.format("Expected input tuple of size 2, received %d",
+                                           fields.length);
+            throw new IOException(message);
+        }
+
+        if (fields[0].getType() != DataType.CHARARRAY) {
+            String message = String.format("Expected first value to be chararray, received %s",
+                                           DataType.findTypeName(fields[0].getType()));
+            throw new IOException(message);
+        }
+
+        // store the schema in UDF context
         UDFContext udfc = UDFContext.getUDFContext();
         Properties p = udfc.getUDFProperties(getClass(), new String[]{ udfcSignature });
         p.setProperty(SCHEMA_PROPERTY, schema.toString());
@@ -103,10 +119,7 @@ public final class CouchbaseStorage extends StoreFunc {
     @Override
     public void putNext(Tuple tuple) throws IOException {
         /*
-         * TODO rewrite this after checking the schema:
-         * should have a textual key (likely first value of the tuple
-         * and all other records in tuple should be packed and serialized
-         * to Json.
+         * TODO serialize the value using json
          */
 
         String key = (String) tuple.get(0);
@@ -127,6 +140,11 @@ public final class CouchbaseStorage extends StoreFunc {
     @Override
     public void cleanupOnFailure(String location, Job job) throws IOException {
         // data already stored can be deleted directly on Couchbase
+    }
+
+    // for tests only
+    CouchbaseStorage() {
+        conf = null;
     }
 }
 
