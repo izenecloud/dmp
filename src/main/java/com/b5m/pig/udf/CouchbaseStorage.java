@@ -5,7 +5,7 @@ import com.b5m.couchbase.CouchbaseOutputFormat;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.OutputFormat;
@@ -45,6 +45,13 @@ public final class CouchbaseStorage extends StoreFunc {
     @Override
     public OutputFormat getOutputFormat() throws IOException {
         return new CouchbaseOutputFormat<Text, Object>(conf);
+    }
+
+    @Override
+    public String relToAbsPathForStoreLocation(String location, Path curDir)
+    throws IOException {
+        // no relative/absolute path conversion required since we are storing into Couchbase
+        return location;
     }
 
     @Override

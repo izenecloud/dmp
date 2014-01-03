@@ -6,8 +6,6 @@ import org.apache.hadoop.mapreduce.OutputCommitter;
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
 
@@ -18,7 +16,7 @@ import java.io.IOException;
  */
 public final class CouchbaseOutputFormat<K extends Text, V> extends OutputFormat<K, V> {
 
-    private CouchbaseConfiguration conf;
+    private final CouchbaseConfiguration conf;
 
     public CouchbaseOutputFormat(CouchbaseConfiguration conf) {
         this.conf = conf;
@@ -33,7 +31,29 @@ public final class CouchbaseOutputFormat<K extends Text, V> extends OutputFormat
     @Override
     public OutputCommitter getOutputCommitter(TaskAttemptContext context)
     throws IOException, InterruptedException {
-        return new FileOutputCommitter(FileOutputFormat.getOutputPath(context), context);
+        return new OutputCommitter() {
+            @Override
+            public void abortTask(TaskAttemptContext context) throws IOException {
+                // nothing to do
+            }
+            @Override
+            public void commitTask(TaskAttemptContext context) throws IOException {
+                // nothing to do
+            }
+            @Override
+            public boolean needsTaskCommit(TaskAttemptContext context) throws IOException {
+                // nothing to do
+                return false;
+            }
+            @Override
+            public void setupJob(JobContext context) throws IOException {
+                // nothing to do
+            }
+            @Override
+            public void setupTask(TaskAttemptContext context) throws IOException {
+                // nothing to do
+            }
+        };
     }
 
     @Override
