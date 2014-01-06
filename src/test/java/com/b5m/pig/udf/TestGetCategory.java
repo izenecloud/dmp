@@ -1,6 +1,7 @@
 package com.b5m.pig.udf;
 
 import com.b5m.utils.Files;
+import com.b5m.utils.Tuples;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
@@ -9,7 +10,6 @@ import org.testng.annotations.Test;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
-import org.apache.pig.impl.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,12 +45,12 @@ public class TestGetCategory {
     @DataProvider
     public Object[][] schemas() throws Exception {
         return new Object[][] {
-            { Utils.getSchemaFromString("chararray"), true },
-            { Utils.getSchemaFromString("category: chararray"), true },
-            { Utils.getSchemaFromString("long"), false },
-            { Utils.getSchemaFromString("(chararray)"), false },
-            { Utils.getSchemaFromString("(long)"), false },
-            { Utils.getSchemaFromString("(chararray,long)"), false },
+            { Tuples.schema("chararray"), true },
+            { Tuples.schema("category: chararray"), true },
+            { Tuples.schema("long"), false },
+            { Tuples.schema("(chararray)"), false },
+            { Tuples.schema("(long)"), false },
+            { Tuples.schema("(chararray,long)"), false },
         };
     }
 

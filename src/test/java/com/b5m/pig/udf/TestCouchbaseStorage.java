@@ -1,11 +1,12 @@
 package com.b5m.pig.udf;
 
+import com.b5m.utils.Tuples;
+
 import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import org.apache.pig.ResourceSchema;
-import org.apache.pig.impl.util.Utils;
 
 import java.io.IOException;
 
@@ -16,14 +17,14 @@ public class TestCouchbaseStorage {
     @DataProvider
     public Object[][] schemas() throws Exception {
         return new Object[][] {
-            { newResourceSchema("chararray"), false },
-            { newResourceSchema("chararray, chararray"), true },
-            { newResourceSchema("chararray, int"), true },
-            { newResourceSchema("int, int"), false },
-            { newResourceSchema("chararray, chararray, int"), false },
-            { newResourceSchema("chararray, (chararray, int)"), true },
-            { newResourceSchema("chararray, {(chararray, int)}"), true },
-            { newResourceSchema("chararray, map[]"), true },
+            { Tuples.resourceSchema("chararray"), false },
+            { Tuples.resourceSchema("chararray, chararray"), true },
+            { Tuples.resourceSchema("chararray, int"), true },
+            { Tuples.resourceSchema("int, int"), false },
+            { Tuples.resourceSchema("chararray, chararray, int"), false },
+            { Tuples.resourceSchema("chararray, (chararray, int)"), true },
+            { Tuples.resourceSchema("chararray, {(chararray, int)}"), true },
+            { Tuples.resourceSchema("chararray, map[]"), true },
         };
     }
 
@@ -37,8 +38,5 @@ public class TestCouchbaseStorage {
         }
     }
 
-    private ResourceSchema newResourceSchema(String string) throws Exception {
-        return new ResourceSchema(Utils.getSchemaFromString(string));
-    }
 }
 
