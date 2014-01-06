@@ -1,4 +1,4 @@
-package com.b5m.pig.gson;
+package com.b5m.gson;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
