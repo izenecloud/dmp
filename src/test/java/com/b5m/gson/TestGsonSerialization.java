@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TestJsonSerialization {
+public class TestGsonSerialization {
 
     private Gson gson = new Gson();
 
