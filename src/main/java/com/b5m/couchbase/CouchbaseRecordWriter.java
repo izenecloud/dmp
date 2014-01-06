@@ -5,7 +5,6 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 import com.couchbase.client.CouchbaseClient;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,13 +26,12 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Paolo D'Apice
  */
-final class CouchbaseRecordWriter<K extends Text, V> extends RecordWriter<K, V> {
+final class CouchbaseRecordWriter<K extends Text, V extends Text> extends RecordWriter<K, V> {
 
     private final int batchSize;
     private final CouchbaseClient client;
 
     private final BlockingQueue<KV> queue = new LinkedBlockingQueue<KV>();
-    private final Gson gson = new Gson();
 
     CouchbaseRecordWriter(CouchbaseConfiguration conf)
     throws IOException {
@@ -57,7 +55,7 @@ final class CouchbaseRecordWriter<K extends Text, V> extends RecordWriter<K, V> 
         }
 
         String k = key.toString();
-        String v = gson.toJson(new Document(k, value));
+        String v = value.toString();
 
         enqueue(k, v);
     }
@@ -112,16 +110,6 @@ final class KV {
         this.key = key;
         this.value = value;
         this.status = status;
-    }
-}
-
-/* Document to be written to Couchbase */
-final class Document {
-    final String key;
-    final Object value;
-    Document(String key, Object value) {
-        this.key = key;
-        this.value = value;
     }
 }
 

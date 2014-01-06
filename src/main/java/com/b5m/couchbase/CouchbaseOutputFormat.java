@@ -14,7 +14,7 @@ import java.io.IOException;
  *
  * @author Paolo D'Apice
  */
-public final class CouchbaseOutputFormat<K extends Text, V> extends OutputFormat<K, V> {
+public final class CouchbaseOutputFormat<K extends Text, V extends Text> extends OutputFormat<K, V> {
 
     private final CouchbaseConfiguration conf;
 
