@@ -9,7 +9,6 @@ import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.FrontendException;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
-import org.apache.pig.impl.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,4 +96,3 @@ public class GetCategory extends EvalFunc<String> {
     }
 
 }
-
