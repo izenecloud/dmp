@@ -53,7 +53,7 @@ public final class CouchbaseStorage extends StoreFunc {
     public String relToAbsPathForStoreLocation(String location, Path curDir)
     throws IOException {
         // no relative/absolute path conversion required since we are storing into Couchbase
-        return location;
+        return conf.toString();
     }
 
     @Override
