@@ -17,11 +17,13 @@ import java.util.List;
 
 /**
  * UDF that maps a string to a product category.
+ *
  * @author Paolo D'Apice
  */
 public class GetCategory extends EvalFunc<String> {
 
     final static Schema SCHEMA = new Schema(new FieldSchema("category", DataType.CHARARRAY));
+
     private final String filename;
     private final boolean isLocal;
 
@@ -91,7 +93,8 @@ public class GetCategory extends EvalFunc<String> {
 
     private void init() throws IOException {
         File file = new File(isLocal ? filename : "./maxent");
-        getLogger().info(String.format("initializing with file: %s (%s)", file, isLocal ? "local" : "cached"));
+        getLogger().info(String.format("initializing with file: %s (%s)",
+                                       file, isLocal ? "local" : "cached"));
         classifier = new MaxEnt(file);
     }
 

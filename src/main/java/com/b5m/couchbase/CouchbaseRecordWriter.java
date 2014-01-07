@@ -21,12 +21,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * A RecordWriter that writes the reduce output to a Couchbase server.
  *
- * Records are stored into a memory queue and then bulk written
- * to Couchbase when the queue reach a specified batch size.
- *
  * @author Paolo D'Apice
  */
-final class CouchbaseRecordWriter<K extends Text, V extends Text> extends RecordWriter<K, V> {
+final class CouchbaseRecordWriter<K extends Text, V extends Text>
+extends RecordWriter<K, V> {
 
     private final int batchSize;
     private final CouchbaseClient client;
@@ -70,12 +68,12 @@ final class CouchbaseRecordWriter<K extends Text, V extends Text> extends Record
         client.shutdown();
     }
 
-    // Adds key-value record to the queue.
+    // Writes to Couchbase and keep record into the queue.
     private void enqueue(String k, String v) {
         queue.add(new KV(k, v, client.set(k, 0, v)));
     }
 
-    // Writes queued records to Couchbase.
+    // Ensures that records has been written to Couchbase.
     private void drainQueue() {
         Queue<KV> list = new LinkedList<KV>();
         queue.drainTo(list);
@@ -83,7 +81,7 @@ final class CouchbaseRecordWriter<K extends Text, V extends Text> extends Record
         KV kv;
         while ((kv = list.poll()) != null) {
             try {
-                if (!kv.status.get().booleanValue()) { // record not inserted
+                if (!kv.status.get().booleanValue()) { // record not written
                     TimeUnit.MILLISECONDS.sleep(10); // XXX magic value
                     enqueue(kv.key, kv.value);
                 }
