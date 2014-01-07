@@ -5,7 +5,6 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 import com.couchbase.client.CouchbaseClient;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,18 +21,15 @@ import java.util.concurrent.TimeUnit;
 /**
  * A RecordWriter that writes the reduce output to a Couchbase server.
  *
- * Records are stored into a memory queue and then bulk written
- * to Couchbase when the queue reach a specified batch size.
- *
  * @author Paolo D'Apice
  */
-final class CouchbaseRecordWriter<K extends Text, V> extends RecordWriter<K, V> {
+final class CouchbaseRecordWriter<K extends Text, V extends Text>
+extends RecordWriter<K, V> {
 
     private final int batchSize;
     private final CouchbaseClient client;
 
     private final BlockingQueue<KV> queue = new LinkedBlockingQueue<KV>();
-    private final Gson gson = new Gson();
 
     CouchbaseRecordWriter(CouchbaseConfiguration conf)
     throws IOException {
@@ -57,7 +53,7 @@ final class CouchbaseRecordWriter<K extends Text, V> extends RecordWriter<K, V> 
         }
 
         String k = key.toString();
-        String v = gson.toJson(new Document(k, value));
+        String v = value.toString();
 
         enqueue(k, v);
     }
@@ -72,12 +68,12 @@ final class CouchbaseRecordWriter<K extends Text, V> extends RecordWriter<K, V> 
         client.shutdown();
     }
 
-    // Adds key-value record to the queue.
+    // Writes to Couchbase and keep record into the queue.
     private void enqueue(String k, String v) {
         queue.add(new KV(k, v, client.set(k, 0, v)));
     }
 
-    // Writes queued records to Couchbase.
+    // Ensures that records has been written to Couchbase.
     private void drainQueue() {
         Queue<KV> list = new LinkedList<KV>();
         queue.drainTo(list);
@@ -85,7 +81,7 @@ final class CouchbaseRecordWriter<K extends Text, V> extends RecordWriter<K, V> 
         KV kv;
         while ((kv = list.poll()) != null) {
             try {
-                if (!kv.status.get().booleanValue()) { // record not inserted
+                if (!kv.status.get().booleanValue()) { // record not written
                     TimeUnit.MILLISECONDS.sleep(10); // XXX magic value
                     enqueue(kv.key, kv.value);
                 }
@@ -112,16 +108,6 @@ final class KV {
         this.key = key;
         this.value = value;
         this.status = status;
-    }
-}
-
-/* Document to be written to Couchbase */
-final class Document {
-    final String key;
-    final Object value;
-    Document(String key, Object value) {
-        this.key = key;
-        this.value = value;
     }
 }
 

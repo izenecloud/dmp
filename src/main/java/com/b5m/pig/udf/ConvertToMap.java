@@ -15,6 +15,7 @@ import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 
 /**
  * UDF that convert a bag resulting from a GROUP BY to a map.
+ *
  * @author Paolo D'Apice
  */
 public class ConvertToMap extends EvalFunc<Map> {

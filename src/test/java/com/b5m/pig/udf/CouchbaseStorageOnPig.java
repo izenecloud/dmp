@@ -7,8 +7,10 @@ import org.testng.annotations.Test;
 
 import org.apache.pig.pigunit.PigTest;
 import org.apache.commons.io.FileUtils;
+
+import org.codehaus.jackson.map.ObjectMapper;
+
 import com.couchbase.client.CouchbaseClient;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.net.URI;
@@ -24,7 +26,7 @@ public class CouchbaseStorageOnPig {
 
     private static CouchbaseClient client;
     private static List<String> expected;
-    private static Gson gson = new Gson();
+    private static ObjectMapper mapper = new ObjectMapper();
 
     @BeforeClass
     public static void connect() throws Exception {
@@ -34,7 +36,7 @@ public class CouchbaseStorageOnPig {
 
     @BeforeClass
     private static void getExpected() throws Exception {
-        expected = FileUtils.readLines(new File("src/test/data/couchbase-expected.json"));
+        expected = FileUtils.readLines(new File("src/test/data/couchbase-expected.txt"));
     }
 
     @Test
@@ -65,13 +67,16 @@ public class CouchbaseStorageOnPig {
         client.shutdown();
     }
 
-    private static String parseKey(String json) {
-        return gson.fromJson(json, Expected.class).key;
+    private static String parseKey(String json) throws Exception {
+        return mapper.readValue(json, Expected.class).uuid;
     }
 }
 
 class Expected {
-    String key;
-    Map<String, Integer> value;
+    String uuid;
+    Map<String, Integer> categories;
+
+    void setUuid(String uuid) { this.uuid = uuid; }
+    void setCategories(Map<String, Integer> categories) { this.categories = categories; }
 }
 

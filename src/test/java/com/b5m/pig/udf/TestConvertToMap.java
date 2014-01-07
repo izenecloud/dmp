@@ -13,12 +13,13 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 import static org.apache.pig.impl.logicalLayer.schema.SchemaUtil.*;
 
+import com.b5m.utils.Tuples;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class TestConvertToMap {
 
@@ -38,11 +39,11 @@ public class TestConvertToMap {
         return new Object[][] {
             {
                 newTuple("0b3d1bd97a0fcc4eb307882a2754e8c0", "服装服饰", 1),
-                newMap("服装服饰", 1)
+                Tuples.newMap("服装服饰", 1)
             },
             {
                 newTuple("0c6d8636f8be87e657f9b14ed07b54de", "服装服饰", 1, "图书音像", 2, "母婴童装", 1),
-                newMap("服装服饰", 1, "图书音像", 2, "母婴童装", 1)
+                Tuples.newMap("服装服饰", 1, "图书音像", 2, "母婴童装", 1)
             }
         };
     }
@@ -96,17 +97,6 @@ public class TestConvertToMap {
             bag.add(tuple);
         }
         return tupleFactory.newTuple(bag);
-    }
-
-    private Map<Object, Integer> newMap(Object ... args) throws Exception {
-        Map<Object, Integer> map = new TreeMap<Object, Integer>();
-        List<Object> list = Arrays.asList(args);
-        for (Iterator<Object> it = list.iterator(); it.hasNext();) {
-            Object key = it.next();
-            Integer value = (Integer) it.next();
-            map.put(key, value);
-        }
-        return map;
     }
 
 }

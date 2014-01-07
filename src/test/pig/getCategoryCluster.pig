@@ -16,3 +16,5 @@ categories = FOREACH titles GENERATE GET_CATEGORY(title);
 -- store output
 STORE categories into 'output/categories' USING PigStorage();
 
+-- vim: set ft=pig nospell:
+

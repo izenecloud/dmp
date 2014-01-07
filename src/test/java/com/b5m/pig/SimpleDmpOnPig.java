@@ -35,7 +35,7 @@ public class SimpleDmpOnPig {
 
     @BeforeClass
     private static void getExpected() throws Exception {
-        List<String> lines = FileUtils.readLines(new File("src/test/resources/uuid.txt"));
+        List<String> lines = FileUtils.readLines(new File("src/test/data/uuid.txt"));
         uuids = new TreeSet<String>(lines);
     }
     @Test

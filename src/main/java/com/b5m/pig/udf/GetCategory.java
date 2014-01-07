@@ -9,7 +9,6 @@ import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.FrontendException;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
-import org.apache.pig.impl.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +17,13 @@ import java.util.List;
 
 /**
  * UDF that maps a string to a product category.
+ *
  * @author Paolo D'Apice
  */
 public class GetCategory extends EvalFunc<String> {
 
     final static Schema SCHEMA = new Schema(new FieldSchema("category", DataType.CHARARRAY));
+
     private final String filename;
     private final boolean isLocal;
 
@@ -92,9 +93,9 @@ public class GetCategory extends EvalFunc<String> {
 
     private void init() throws IOException {
         File file = new File(isLocal ? filename : "./maxent");
-        getLogger().info(String.format("initializing with file: %s (%s)", file, isLocal ? "local" : "cached"));
+        getLogger().info(String.format("initializing with file: %s (%s)",
+                                       file, isLocal ? "local" : "cached"));
         classifier = new MaxEnt(file);
     }
 
 }
-

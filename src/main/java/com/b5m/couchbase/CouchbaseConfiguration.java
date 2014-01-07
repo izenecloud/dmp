@@ -1,6 +1,9 @@
 package com.b5m.couchbase;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -37,6 +40,22 @@ public class CouchbaseConfiguration {
     public int getBatchSize() {
         return batchSize;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("couchbase://").append(bucket).append("@");
+        for (Iterator<String> it = uris.iterator(); it.hasNext();) {
+            String string = it.next();
+            try {
+                sb.append(new URI(string).getHost());
+            } catch (URISyntaxException e) {
+                sb.append(string);
+            }
+            if (it.hasNext()) sb.append(",");
+        }
+        return sb.toString();
+    }
+
 }
 
 

@@ -14,7 +14,8 @@ import java.io.IOException;
  *
  * @author Paolo D'Apice
  */
-public final class CouchbaseOutputFormat<K extends Text, V> extends OutputFormat<K, V> {
+public final class CouchbaseOutputFormat<K extends Text, V extends Text>
+extends OutputFormat<K, V> {
 
     private final CouchbaseConfiguration conf;
 
@@ -33,24 +34,29 @@ public final class CouchbaseOutputFormat<K extends Text, V> extends OutputFormat
     throws IOException, InterruptedException {
         return new OutputCommitter() {
             @Override
-            public void abortTask(TaskAttemptContext context) throws IOException {
+            public void abortTask(TaskAttemptContext context)
+            throws IOException {
                 // nothing to do
             }
             @Override
-            public void commitTask(TaskAttemptContext context) throws IOException {
+            public void commitTask(TaskAttemptContext context)
+            throws IOException {
                 // nothing to do
             }
             @Override
-            public boolean needsTaskCommit(TaskAttemptContext context) throws IOException {
+            public boolean needsTaskCommit(TaskAttemptContext context)
+            throws IOException {
                 // nothing to do
                 return false;
             }
             @Override
-            public void setupJob(JobContext context) throws IOException {
+            public void setupJob(JobContext context)
+            throws IOException {
                 // nothing to do
             }
             @Override
-            public void setupTask(TaskAttemptContext context) throws IOException {
+            public void setupTask(TaskAttemptContext context)
+            throws IOException {
                 // nothing to do
             }
         };

@@ -6,6 +6,11 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Utility methods to be used with java.util.concurrent classes.
+ *
+ * @author Paolo D'Apice
+ */
 public class Shutdown {
 
     private final static Logger log = LoggerFactory.getLogger(Shutdown.class);
