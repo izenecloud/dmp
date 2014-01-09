@@ -26,11 +26,12 @@ REGISTER $pigdir/lib/snappy-java-*.jar
 REGISTER $udf_file
 
 -- shorter aliases
-DEFINE GET_CATEGORY com.b5m.pig.udf.GetCategory('$model_file', '$mode');
-DEFINE CATEGORY_MAP com.b5m.pig.udf.ConvertToMap();
+DEFINE AvroStorage  org.apache.pig.piggybank.storage.avro.AvroStorage();
+DEFINE GetCategory com.b5m.pig.udf.GetCategory('$model_file', '$mode');
+DEFINE CategoryMap com.b5m.pig.udf.ConvertToMap();
 
 -- load log files in avro format
-records = LOAD '$input' USING org.apache.pig.piggybank.storage.avro.AvroStorage();
+records = LOAD '$input' USING AvroStorage();
 
 -- extract only required fields
 entries = FOREACH records GENERATE
@@ -48,7 +49,7 @@ clean2 = FILTER clean1 BY (url MATCHES '$url_match_regex');
 /* TODO more filtering here*/
 
 -- classify page using the title
-data1 = FOREACH clean2 GENERATE uuid, GET_CATEGORY(title) AS category;
+data1 = FOREACH clean2 GENERATE uuid, GetCategory(title) AS category;
 
 -- group by user and category
 data2 = GROUP data1 BY (uuid, category);
@@ -58,8 +59,9 @@ data3 = FOREACH data2 GENERATE group.uuid, group.category, COUNT(data1) AS count
 data4 = GROUP data3 BY uuid;
 
 -- generate bag-of-words
-data5 = FOREACH data4 GENERATE group AS uuid, CATEGORY_MAP(data3) AS categories;
+data5 = FOREACH data4 GENERATE group AS uuid, CategoryMap(data3) AS categories;
 
 -- store into CouchBase
 STORE data5 INTO '$output_dir/$today' using JsonStorage();
 
+-- vim: set ft=pig nospell:
