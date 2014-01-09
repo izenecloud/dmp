@@ -1,6 +1,7 @@
 -- Required parameters:
 --   model_file     path to the MaxEnt model file
 --   mode           'cluster' (default) or 'local' (only for testing)
+--   today          today's date in format YYYYMMDD (defaults to system current date)
 --   input          path to input file or directory
 --   output_dir     path to output directory
 --   pigdir         path to pig libraries
@@ -10,11 +11,11 @@
 %default mode cluster
 %default pigdir /usr/lib/pig
 %default output_dir dmp
+%default today `date +%Y%m%d`
 
 -- other parameters
 %declare uuid_filter_regex '(undefined|guest|false)'
 %declare url_match_regex '.*(taobao.com|tmall.com|yixun.com|jd.com|dangdang.com|suning.com|yhd.com).*'
-%declare today `date +%Y%m%d`
 
 -- required libraries
 REGISTER $pigdir/piggybank.jar
