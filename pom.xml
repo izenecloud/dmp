@@ -221,8 +221,8 @@
                                             tofile="${udf.outputDir}/pig-udfs.jar" overwrite="true"/>
                                         <copy todir="${udf.outputDir}" overwrite="true" flatten="true">
                                             <resources>
-                                                <file file="src/main/pig/simple-dmp.pig"/>
-                                                <file file="src/main/pig/simple-dmp.properties.example"/>
+                                                <file file="src/main/pig/log_analysis.pig"/>
+                                                <file file="src/main/pig/log_analysis.properties.example"/>
                                                 <file file="src/test/resources/Model.txt"/>
                                             </resources>
                                         </copy>

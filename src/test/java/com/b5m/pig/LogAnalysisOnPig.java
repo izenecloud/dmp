@@ -11,23 +11,23 @@ import java.io.IOException;
 import java.io.File;
 import java.util.List;
 
-public class SimpleDmpOnPig {
+public class LogAnalysisOnPig {
 
     private static String[] expected;
 
     @BeforeClass
     private static void getExpected() throws Exception {
-        List<String> lines = FileUtils.readLines(new File("src/test/data/simple-dmp.output"));
+        List<String> lines = FileUtils.readLines(new File("src/test/data/log_analysis.output"));
         expected = lines.toArray(new String[lines.size()]);
     }
 
     @Test
     public void test() throws Exception {
         String[] args = {
-            "src/test/pig/simple-dmp.properties"
+            "src/test/pig/log_analysis.properties"
         };
 
-        PigTest test = new PigTest("src/main/pig/simple-dmp.pig", null, args);
+        PigTest test = new PigTest("src/main/pig/log_analysis.pig", null, args);
 
         test.assertOutput("data5", expected);
     }
