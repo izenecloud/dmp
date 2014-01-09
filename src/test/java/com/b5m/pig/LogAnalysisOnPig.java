@@ -9,6 +9,9 @@ import org.apache.pig.pigunit.PigTest;
 
 import java.io.IOException;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class LogAnalysisOnPig {
@@ -17,8 +20,21 @@ public class LogAnalysisOnPig {
 
     @BeforeClass
     private static void getExpected() throws Exception {
+        SimpleDateFormat sfd = new SimpleDateFormat("yyyyMMdd");
+        String date = sfd.format(new Date());
+
         List<String> lines = FileUtils.readLines(new File("src/test/data/log_analysis.output"));
-        expected = lines.toArray(new String[lines.size()]);
+        List<String> temp = new ArrayList<String>(lines.size());
+        for (String line : lines) {
+            int i = line.indexOf(',');
+
+            StringBuilder sb = new StringBuilder(line.substring(0, i));
+            sb.append("::").append(date);
+            sb.append(line.substring(i));
+
+            temp.add(sb.toString());
+        }
+        expected = temp.toArray(new String[lines.size()]);
     }
 
     @Test

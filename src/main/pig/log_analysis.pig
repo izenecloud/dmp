@@ -14,7 +14,7 @@
 -- other parameters
 %declare uuid_filter_regex '(undefined|guest|false)'
 %declare url_match_regex '.*(taobao.com|tmall.com|yixun.com|jd.com|dangdang.com|suning.com|yhd.com).*'
-%declare today `date +%Y%d%m`
+%declare today `date +%Y%m%d`
 
 -- required libraries
 REGISTER $pigdir/piggybank.jar
@@ -26,7 +26,7 @@ REGISTER $pigdir/lib/snappy-java-*.jar
 REGISTER $udf_file
 
 -- shorter aliases
-DEFINE AvroStorage  org.apache.pig.piggybank.storage.avro.AvroStorage();
+DEFINE AvroStorage org.apache.pig.piggybank.storage.avro.AvroStorage();
 DEFINE GetCategory com.b5m.pig.udf.GetCategory('$model_file', '$mode');
 DEFINE CategoryMap com.b5m.pig.udf.ConvertToMap();
 
@@ -59,7 +59,7 @@ data3 = FOREACH data2 GENERATE group.uuid, group.category, COUNT(data1) AS count
 data4 = GROUP data3 BY uuid;
 
 -- generate bag-of-words
-data5 = FOREACH data4 GENERATE group AS uuid, CategoryMap(data3) AS categories;
+data5 = FOREACH data4 GENERATE CONCAT(group,'::$today') AS uuid, CategoryMap(data3) AS categories;
 
 -- store into CouchBase
 STORE data5 INTO '$output_dir/$today' using JsonStorage();
