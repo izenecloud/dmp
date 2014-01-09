@@ -2,11 +2,11 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.b5m</groupId>
-    <artifactId>pig-udf</artifactId>
+    <artifactId>b5m-dmp</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>PigUdf</name>
-    <url>http://maven.apache.org</url>
+    <name>B5M DMP</name>
+    <url>https://ssl.izenesoft.cn/projects/pig-udf</url>
 
     <repositories>
         <repository>
