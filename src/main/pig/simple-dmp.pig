@@ -2,22 +2,19 @@
 --   model_file     path to the MaxEnt model file
 --   mode           'cluster' (default) or 'local' (only for testing)
 --   input          path to input file or directory
+--   output_dir     path to output directory
 --   pigdir         path to pig libraries
 --   udf_file       path to pig-udfs.jar
---   hosts          comma-separated list of Couchbase servers
---   bucket         Couchbase bucket name
---   password       Couchbase password
---   batchSize      Couchbase batch size
 
 -- default values
 %default mode cluster
 %default pigdir /usr/lib/pig
-%default password ''
-%default batchSize 10000
+%default output_dir dmp
 
 -- other parameters
 %declare uuid_filter_regex '(undefined|guest|false)'
 %declare url_match_regex '.*(taobao.com|tmall.com|yixun.com|jd.com|dangdang.com|suning.com|yhd.com).*'
+%declare today `date +%Y%d%m`
 
 -- required libraries
 REGISTER $pigdir/piggybank.jar
@@ -31,7 +28,6 @@ REGISTER $udf_file
 -- shorter aliases
 DEFINE GET_CATEGORY com.b5m.pig.udf.GetCategory('$model_file', '$mode');
 DEFINE CATEGORY_MAP com.b5m.pig.udf.ConvertToMap();
-DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password', '$batchSize');
 
 -- load log files in avro format
 records = LOAD '$input' USING org.apache.pig.piggybank.storage.avro.AvroStorage();
@@ -65,5 +61,5 @@ data4 = GROUP data3 BY uuid;
 data5 = FOREACH data4 GENERATE group AS uuid, CATEGORY_MAP(data3) AS categories;
 
 -- store into CouchBase
-STORE data5 INTO 'output/dmp' USING CouchbaseStorage();
+STORE data5 INTO '$output_dir/$today' using JsonStorage();
 
