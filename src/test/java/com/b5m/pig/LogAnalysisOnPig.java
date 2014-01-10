@@ -1,5 +1,7 @@
 package com.b5m.pig;
 
+import com.b5m.utils.Dates;
+
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -9,7 +11,6 @@ import org.apache.pig.pigunit.PigTest;
 
 import java.io.IOException;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,8 +21,7 @@ public class LogAnalysisOnPig {
 
     @BeforeClass
     private static void getExpected() throws Exception {
-        SimpleDateFormat sfd = new SimpleDateFormat("yyyyMMdd");
-        String date = sfd.format(new Date());
+        String date = Dates.toString(new Date());
 
         List<String> lines = FileUtils.readLines(new File("src/test/data/log_analysis.output"));
         List<String> temp = new ArrayList<String>(lines.size());
