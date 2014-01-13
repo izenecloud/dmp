@@ -241,8 +241,8 @@
                                 </goals>
                                 <configuration>
                                     <includes>
-                                        <include>**/*onPig.java</include>
                                         <include>**/*OnPig.java</include>
+                                        <include>**/*Embedded.java</include>
                                     </includes>
                                 </configuration>
                             </execution>
