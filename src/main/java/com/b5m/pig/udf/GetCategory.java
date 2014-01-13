@@ -36,7 +36,6 @@ public class GetCategory extends EvalFunc<String> {
     public GetCategory(String filename, String local) {
         this.filename = filename;
         this.isLocal = local.equals("local");
-        getLogger().info(String.format("UDF registered with filename %s (%s)", filename, local));
     }
 
     /**
