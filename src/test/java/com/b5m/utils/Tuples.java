@@ -44,7 +44,7 @@ public final class Tuples {
     /**
      * Creates a new Tuple with given values.
      */
-    public static Tuple newTuple(Object ... args) {
+    public static Tuple with(Object ... args) {
         return tupleFactory.newTuple(Arrays.asList(args));
     }
 

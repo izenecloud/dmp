@@ -19,58 +19,60 @@ public class TestNormalizeMap {
     public Object[][] tuples() throws Exception {
         return new Object[][] {
             {
-                Tuples.newTuple(Tuples.newMap("服装服饰", 1)),
+                Tuples.with(Tuples.<Integer>newMap("服装服饰", 1)),
                 Tuples.newMap("服装服饰", 1.0)
             },
             {
-                Tuples.newTuple(Tuples.newMap("服装服饰", "1")),
+                Tuples.with(Tuples.<String>newMap("服装服饰", "1")),
                 Tuples.newMap("服装服饰", 1.0)
             },
             {
-                Tuples.newTuple(Tuples.newMap("服装服饰", 1, "图书音像", 2, "母婴童装", 1)),
+                Tuples.with(Tuples.<Integer>newMap("服装服饰", 1, "图书音像", 2, "母婴童装", 1)),
                 Tuples.newMap("服装服饰", 0.25, "图书音像", 0.5, "母婴童装", 0.25)
             },
             {
-                Tuples.newTuple(Tuples.newMap("服装服饰", "1", "图书音像", "2", "母婴童装", "1")),
+                Tuples.with(Tuples.<String>newMap("服装服饰", "1", "图书音像", "2", "母婴童装", "1")),
                 Tuples.newMap("服装服饰", 0.25, "图书音像", 0.5, "母婴童装", 0.25)
             }
         };
     }
 
     @Test(dataProvider="tuples")
-    public void normalize(Tuple input, Map<Object, Double> expected) throws Exception {
+    public void normalize(Tuple input, Map expected) throws Exception {
         Map output = func.exec(input);
         assertEquals(expected, output);
     }
 
     @DataProvider
-    public Object[][] badSchemas() throws Exception {
+    public Object[][] badSchemas() {
         return new Object[][] {
-            { Tuples.schema("(chararray)") },
-            { Tuples.schema("(chararray, int)") },
-            { Tuples.schema("([long])") },
-            { Tuples.schema("([chararray])") },
+            { "(chararray)" },
+            { "(chararray, int)" },
+            { "([long])" },
+            { "([chararray])" },
         };
     }
 
     @Test(dataProvider="badSchemas", expectedExceptions={IllegalArgumentException.class})
-    public void schemaOutputFail(Schema input) throws Exception {
-        func.outputSchema(input);
+    public void schemaOutputFail(String input) throws Exception {
+        Schema schema = Tuples.schema(input);
+        func.outputSchema(schema);
     }
 
     @DataProvider
     public Object[][] schemas() throws Exception {
         return new Object[][] {
-            { Tuples.schema("[int]") },
-            { Tuples.schema("[long]") },
-            { Tuples.schema("[]") },
-            { Tuples.schema("[chararray]") },
+            { "[int]" },
+            { "[long]" },
+            { "[]" },
+            { "[chararray]" },
         };
     }
 
     @Test(dataProvider="schemas")
-    public void schemaOutput(Schema input) throws Exception {
-        Schema output = func.outputSchema(input);
+    public void schemaOutput(String input) throws Exception {
+        Schema schema = Tuples.schema(input);
+        Schema output = func.outputSchema(schema);
         Schema expected = Tuples.schema("[double]");
         assertEquals(output, expected);
     }

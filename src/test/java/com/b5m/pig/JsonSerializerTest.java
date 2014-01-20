@@ -17,36 +17,37 @@ public class JsonSerializerTest {
     public Object[][] tuples() throws Exception {
         return new Object[][] {
             {
-                Tuples.newTuple("uuid", "value"),
-                Tuples.resourceSchema("key:chararray, value:chararray"),
+                Tuples.with("uuid", "value"),
+                "key:chararray, value:chararray",
                 "{\"key\":\"uuid\",\"value\":\"value\"}"
             },
             {
-                Tuples.newTuple("uuid", 42),
-                Tuples.resourceSchema("foo:chararray, bar:int"),
+                Tuples.with("uuid", 42),
+                "foo:chararray, bar:int",
                 "{\"foo\":\"uuid\",\"bar\":42}"
             },
             {
-                Tuples.newTuple("0123456789abcde", Tuples.newMap("cat1",1,"cat2",2)),
-                Tuples.resourceSchema("uuid:chararray, categories:map[int]"),
+                Tuples.with("0123456789abcde", Tuples.<Integer>newMap("cat1", 1, "cat2", 2)),
+                "uuid:chararray, categories:map[int]",
                 "{\"uuid\":\"0123456789abcde\",\"categories\":{\"cat1\":1,\"cat2\":2}}"
             },
             {
-                Tuples.newTuple("0123456789abcde", Tuples.newMap("cat1","1","cat2","2")),
-                Tuples.resourceSchema("uuid:chararray, categories:map[chararray]"),
+                Tuples.with("0123456789abcde", Tuples.<String>newMap("cat1", "1", "cat2", "2")),
+                "uuid:chararray, categories:map[chararray]",
                 "{\"uuid\":\"0123456789abcde\",\"categories\":{\"cat1\":\"1\",\"cat2\":\"2\"}}"
             },
             {
-                Tuples.newTuple("0123456789abcde", Tuples.newMap("cat1","1","cat2","2")),
-                Tuples.resourceSchema("uuid:chararray, categories:map[]"),
+                Tuples.with("0123456789abcde", Tuples.<Object>newMap("cat1", "1", "cat2", "2")),
+                "uuid:chararray, categories:map[]",
                 "{\"uuid\":\"0123456789abcde\",\"categories\":{\"cat1\":\"1\",\"cat2\":\"2\"}}"
             },
         };
     }
 
     @Test(dataProvider="tuples")
-    public void testSerialization(Tuple input, ResourceSchema schema,  String expected)
+    public void testSerialization(Tuple input, String schemaString, String expected)
     throws Exception {
+        ResourceSchema schema = Tuples.resourceSchema(schemaString);
         String json = serializer.toJson(input, schema.getFields());
         assertEquals(json, expected);
     }

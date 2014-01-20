@@ -12,6 +12,8 @@ import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.FrontendException;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
+import org.apache.pig.impl.util.Utils;
+import org.apache.pig.parser.ParserException;
 
 /**
  * UDF that convert a bag resulting from a GROUP BY to a map.
@@ -75,7 +77,14 @@ public class ConvertToMap extends EvalFunc<Map> {
             throw new RuntimeException(e);
         }
 
-        return new Schema(new FieldSchema(null, DataType.MAP));
+        Schema schema = null;
+        try {
+            schema = Utils.getSchemaFromString("[int]");
+        } catch (ParserException ex) {
+            // this never happens
+        }
+
+        return schema;
     }
 
 }
