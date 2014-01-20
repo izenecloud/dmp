@@ -1,10 +1,13 @@
 package com.b5m.utils;
 
 import org.apache.pig.ResourceSchema;
+import org.apache.pig.ResourceSchema.ResourceFieldSchema;
+import org.apache.pig.builtin.Utf8StorageConverter;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.util.Utils;
+import org.apache.pig.newplan.logical.relational.LogicalSchema;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -57,6 +60,14 @@ public final class Tuples {
      */
     public static ResourceSchema resourceSchema(String string) throws Exception {
         return new ResourceSchema(schema(string));
+    }
+
+    public static Tuple fromString(String tupleString, String schemaString) throws Exception {
+        LogicalSchema schema = Utils.parseSchema(schemaString);
+        Utf8StorageConverter converter = new Utf8StorageConverter();
+        ResourceFieldSchema fieldSchema = new ResourceFieldSchema(schema.getField(0));
+        Tuple tuple = converter.bytesToTuple(tupleString.getBytes("UTF-8"), fieldSchema);
+        return tuple;
     }
 
     // prevents instantiation
