@@ -3,6 +3,8 @@ package com.b5m.utils;
 import org.apache.pig.ResourceSchema;
 import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.builtin.Utf8StorageConverter;
+import org.apache.pig.data.BagFactory;
+import org.apache.pig.data.DataBag;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
@@ -21,6 +23,7 @@ import java.util.TreeMap;
  */
 public final class Tuples {
 
+    private final static BagFactory bagFactory = BagFactory.getInstance();
     private final static TupleFactory tupleFactory = TupleFactory.getInstance();
 
     /**
@@ -46,6 +49,14 @@ public final class Tuples {
      */
     public static Tuple with(Object ... args) {
         return tupleFactory.newTuple(Arrays.asList(args));
+    }
+
+    /**
+     * Creates a new Tuple containing a bag with given Tuples.
+     */
+    public static Tuple withBag(Tuple ... tuples) {
+        DataBag bag = bagFactory.newDefaultBag(Arrays.asList(tuples));
+        return tupleFactory.newTuple(bag);
     }
 
     /**
