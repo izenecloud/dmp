@@ -20,7 +20,7 @@ public final class DatesGenerator {
     private final static Log log = LogFactory.getLog(DatesGenerator.class);
 
     /** Default date format. */
-    public final static String DEFAULT_FORMAT = "yyyyMMdd";
+    public final static String DEFAULT_FORMAT = "yyyy-MM-dd";
 
     private final DateTimeFormatter format;
 
