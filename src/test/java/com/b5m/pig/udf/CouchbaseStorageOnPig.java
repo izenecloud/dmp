@@ -1,5 +1,7 @@
 package com.b5m.pig.udf;
 
+import com.b5m.pig.Record;
+
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -7,8 +9,6 @@ import org.testng.annotations.Test;
 
 import org.apache.pig.pigunit.PigTest;
 import org.apache.commons.io.FileUtils;
-
-import org.codehaus.jackson.map.ObjectMapper;
 
 import com.couchbase.client.CouchbaseClient;
 
@@ -26,7 +26,6 @@ public class CouchbaseStorageOnPig {
 
     private static CouchbaseClient client;
     private static List<String> expected;
-    private static ObjectMapper mapper = new ObjectMapper();
 
     @BeforeClass
     public static void connect() throws Exception {
@@ -53,7 +52,7 @@ public class CouchbaseStorageOnPig {
         test.runScript();
 
         for (String json : expected) {
-            String key = parseKey(json);
+            String key = Record.fromJson(json).getUuid();
             assertEquals(client.get(key), json);
         }
     }
@@ -61,22 +60,11 @@ public class CouchbaseStorageOnPig {
     @AfterClass
     public static void cleanup() throws Exception {
         for (String json : expected) {
-            String key = parseKey(json);
+            String key = Record.fromJson(json).getUuid();
             assertTrue(client.delete(key).get());
         }
         client.shutdown();
     }
 
-    private static String parseKey(String json) throws Exception {
-        return mapper.readValue(json, Expected.class).uuid;
-    }
-}
-
-class Expected {
-    String uuid;
-    Map<String, Integer> categories;
-
-    void setUuid(String uuid) { this.uuid = uuid; }
-    void setCategories(Map<String, Integer> categories) { this.categories = categories; }
 }
 
