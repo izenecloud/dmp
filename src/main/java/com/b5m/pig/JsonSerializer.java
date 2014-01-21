@@ -107,9 +107,6 @@ public class JsonSerializer {
 
             ResourceSchema s = field.getSchema();
             boolean hasValueSchema = (s != null);
-            if (hasValueSchema) {
-                log.info("Map schema is not fully specified, using default");
-            }
             ResourceFieldSchema[] fs = hasValueSchema ? s.getFields() : null;
 
             /*
