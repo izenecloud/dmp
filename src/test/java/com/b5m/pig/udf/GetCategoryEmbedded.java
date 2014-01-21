@@ -39,9 +39,12 @@ public class GetCategoryEmbedded {
         pigServer.registerQuery("titles = LOAD 'src/test/data/sample-logs.avro' AS (title:chararray);");
         pigServer.registerQuery("categories = FOREACH titles GENERATE GET_CATEGORY(title);");
 
-        pigServer.deleteFile("output");
-        ExecJob job = pigServer.store("categories", "output");
+        ExecJob job = pigServer.store("categories", "output", "JsonStorage");
         assertEquals(job.getStatus(), ExecJob.JOB_STATUS.COMPLETED);
+        assertTrue(pigServer.existsFile("output"));
+
+        pigServer.deleteFile("output");
+        assertFalse(pigServer.existsFile("output"));
     }
 
     @Test
@@ -56,9 +59,11 @@ public class GetCategoryEmbedded {
         pigServer.setBatchOn();
         List<ExecJob> jobs = pigServer.executeBatch();
         assertEquals(jobs.size(), 1);
-        for (ExecJob job : jobs) {
-            assertEquals(job.getStatus(), ExecJob.JOB_STATUS.COMPLETED);
-        }
+        assertEquals(jobs.get(0).getStatus(), ExecJob.JOB_STATUS.COMPLETED);
+        assertTrue(pigServer.existsFile("output"));
+
+        pigServer.deleteFile("output");
+        assertFalse(pigServer.existsFile("output"));
     }
 }
 
