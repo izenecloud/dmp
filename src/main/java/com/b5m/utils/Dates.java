@@ -20,9 +20,22 @@ public final class Dates {
         return ld.toString(formatter);
     }
 
+    /** Convert a date to string. */
+    public static String toString(Date date, String format) {
+        DateTimeFormatter dtf = DateTimeFormat.forPattern(format);
+        LocalDate ld = new LocalDate(date);
+        return ld.toString(dtf);
+    }
+
     /** Parse a date from string. */
     public static Date fromString(String string) {
         return formatter.parseDateTime(string).toDate();
+    }
+
+    /** Parse a date from string. */
+    public static Date fromString(String string, String format) {
+        DateTimeFormatter dtf = DateTimeFormat.forPattern(format);
+        return dtf.parseDateTime(string).toDate();
     }
 
     private Dates() {} // prevent instantiation

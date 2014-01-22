@@ -91,9 +91,6 @@ public class UserCategories implements Callable<ExecJob> {
         return fs;
     }
 
-    public static void main(String[] args) throws Exception {
-        // TODO instantiate and launch
-    }
 }
 
 // vim: set nospell:
