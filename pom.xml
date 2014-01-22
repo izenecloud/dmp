@@ -88,6 +88,14 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/pig</directory>
+                <includes>
+                    <include>user_categories.pig</include>
+                </includes>
+            </resource>
+        </resources>
         <testResources>
             <testResource>
                 <directory>${basedir}/src/test/resources</directory>
