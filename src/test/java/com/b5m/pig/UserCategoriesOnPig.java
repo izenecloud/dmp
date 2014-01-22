@@ -73,7 +73,7 @@ public class UserCategoriesOnPig {
         UserCategories job = new UserCategories("2014-01-21");
         job.addPropertiesFile("src/test/pig/user_categories.properties");
 
-        ExecJob results = job.run();
+        ExecJob results = job.call();
         check(results);
 
         for (Record record : expectedOneDay) check(record);
@@ -84,7 +84,7 @@ public class UserCategoriesOnPig {
         UserCategories job = new UserCategories("2014-01-21", 3); // three days
         job.addPropertiesFile("src/test/pig/user_categories.properties");
 
-        ExecJob results = job.run();
+        ExecJob results = job.call();
         check(results);
 
         for (Record record : expectedMultiDays) check(record);

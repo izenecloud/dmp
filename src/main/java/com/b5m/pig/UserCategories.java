@@ -17,8 +17,9 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 
-public class UserCategories {
+public class UserCategories implements Callable<ExecJob> {
 
     private final static Log log = LogFactory.getLog(UserCategories.class);
 
@@ -43,7 +44,8 @@ public class UserCategories {
         if (log.isDebugEnabled()) log.debug("loaded properties: " + properties);
     }
 
-    public ExecJob run() throws ExecException, IOException { // TODO implement Callable?
+    @Override
+    public ExecJob call() throws ExecException, IOException {
         String mode = properties.getProperty("mode");
         pig = new PigServer(mode);
 
