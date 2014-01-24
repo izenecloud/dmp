@@ -18,10 +18,6 @@ import java.io.File;
  */
 public final class UserCategoriesMain {
 
-    private static String date;
-    private static String file;
-    private static int count;
-
     /* Define command line options. */
     private static Options buildOptions() {
         Options options = new Options();
@@ -33,8 +29,15 @@ public final class UserCategoriesMain {
         return options;
     }
 
+    /* Container for command line arguments. */
+    static class Parameters {
+        String date;
+        String file;
+        int count = 1;
+    }
+
     /* Parse command line. */
-    private static boolean parseOptions(Options options, String[] args) {
+    private static boolean parseOptions(Options options, String[] args, Parameters params) {
         if (args.length < 2) return false;
 
         CommandLineParser parser = new BasicParser();
@@ -42,9 +45,10 @@ public final class UserCategoriesMain {
             CommandLine line = parser.parse(options, args);
 
             if (line.hasOption("date")) {
-                date = line.getOptionValue("date");
+                String date = line.getOptionValue("date");
                 try {
                     Dates.fromString(date, "yyyy-MM-dd");
+                    params.date = date;
                 } catch (IllegalArgumentException ex) {
                     System.out.println("Invalid date: " + date);
                     return false;
@@ -57,21 +61,20 @@ public final class UserCategoriesMain {
             if (line.hasOption("count")) {
                 String val = line.getOptionValue("count");
                 try {
-                    count = Integer.parseInt(val);
+                    params.count = Integer.parseInt(val);
                 } catch (NumberFormatException ex) {
                     System.out.println("Not a number: " + val);
                     return false;
                 }
-            } else {
-                count = 1;
             }
 
             if (line.hasOption("file")) {
-                file = line.getOptionValue("file");
+                String file = line.getOptionValue("file");
                 if (! new File(file).exists()) {
                     System.out.println("Cannot read file: " + file);
                     return false;
                 }
+                params.file = file;
             } else {
                 System.out.println("Required argument 'file'");
                 return false;
@@ -93,14 +96,15 @@ public final class UserCategoriesMain {
     /* Start the job. */
     public static void main(String[] args) throws Exception {
         Options options = buildOptions();
-        boolean ok = parseOptions(options, args);
+        Parameters params = new Parameters();
+        boolean ok = parseOptions(options, args, params);
         if (!ok) {
             usage(options);
             System.exit(1);
         }
 
-        UserCategories job = new UserCategories(date, count);
-        job.addPropertiesFile(file);
+        UserCategories job = new UserCategories(params.date, params.count);
+        job.loadProperties(params.file);
         job.call();
     }
 

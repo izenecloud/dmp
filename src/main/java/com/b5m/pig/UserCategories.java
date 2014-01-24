@@ -9,16 +9,23 @@ import org.apache.pig.FuncSpec;
 import org.apache.pig.PigServer;
 import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.executionengine.ExecJob;
+import org.apache.pig.data.Tuple;
 
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
+/**
+ * Compute user categories using daily log analysis over a period.
+ *
+ * @author Paolo D'Apice
+ */
 public class UserCategories implements Callable<ExecJob> {
 
     private final static Log log = LogFactory.getLog(UserCategories.class);
@@ -29,19 +36,47 @@ public class UserCategories implements Callable<ExecJob> {
     private Properties properties = new Properties();
     private PigServer pig = null;
 
-    public UserCategories(String date) {
-        this(date, 1);
-    }
-
+    /**
+     * Instantiate for analysis on <code>count</code> days
+     * starting from <code>date</code>.
+     */
     public UserCategories(String date, int count) {
         this.date = date;
         this.count = count;
     }
 
-    public void addPropertiesFile(String file)
+    /**
+     * Load properties from file.
+     */
+    public void loadProperties(String file)
     throws FileNotFoundException, IOException {
         properties.load(new FileInputStream(file));
         if (log.isDebugEnabled()) log.debug("loaded properties: " + properties);
+    }
+
+    private List<String> getInputs(String basedir, List<String> dates) throws IOException {
+        List<String> inputs = new ArrayList<String>(dates.size());
+        for (String d : dates) {
+            String input = String.format("%s/%s", basedir, d);
+            if (pig.existsFile(input)) {
+                if (log.isDebugEnabled()) log.debug("adding input: " + input);
+                inputs.add(input);
+            }
+        }
+        return inputs;
+    }
+
+    private String listToString(List<String> list) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : list) sb.append(s).append(",");
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    private FuncSpec function(String name, String ... args) {
+        FuncSpec fs = new FuncSpec(name, args);
+        if (log.isDebugEnabled()) log.debug("function: " + fs);
+        return fs;
     }
 
     @Override
@@ -49,27 +84,37 @@ public class UserCategories implements Callable<ExecJob> {
         String mode = properties.getProperty("mode");
         pig = new PigServer(mode);
 
+        // generate dates
         DatesGenerator dategen = new DatesGenerator();
         List<String> dates = dategen.getDates(date, count);
+        if (log.isDebugEnabled()) log.debug("dates: " + dates);
 
+        // get input filenames (if file exists)
         String basedir = properties.getProperty("basedir");
-        StringBuilder input = new StringBuilder();
-        for (String d : dates) {
-            input.append(basedir).append("/").append(d).append(",");
-        }
-        input.deleteCharAt(input.length() - 1);
+        List<String> inputs = getInputs(basedir, dates);
+        if (log.isDebugEnabled()) log.debug("inputs: " + inputs);
 
-        pig.registerQuery("a = LOAD '" + input.toString() + "' USING JsonLoader();");
-
+        // registers UDFs
         pig.registerFunction("Normalize", function("com.b5m.pig.udf.NormalizeMap"));
         pig.registerFunction("Merge", function("com.b5m.pig.udf.MergeMaps"));
 
-        pig.registerQuery("b = GROUP a BY uuid;");
-        pig.registerQuery("c = FOREACH b {"
-        + "  m = Merge(a.categories);"
-        + "  n = Normalize(m);"
-        + "  GENERATE CONCAT(group, '::" + date + "') AS uuid, n AS categories; "
-        + "}");
+        // load input files
+        pig.registerQuery(String.format("daily = LOAD '%s' USING JsonLoader();", listToString(inputs)));
+
+        StringBuilder stmt = new StringBuilder();
+
+        // compute period analytics
+        pig.registerQuery("grouped = GROUP daily BY uuid;");
+        stmt.append("analytics = FOREACH grouped {")
+            .append("  merged = Merge(daily.categories);")
+            .append("  normalized = Normalize(merged);")
+            .append("  GENERATE")
+            // TODO add date and period
+            .append("    CONCAT(group,'::").append(date).append("') AS uuid,")
+            .append("    normalized AS categories;")
+            .append("}");
+        pig.registerQuery(stmt.toString());
+        //dump("analytics");
 
         // XXX there's a bug in PigServer so it won't use previously registered
         //     functions in method store; as workaround directly use a string
@@ -79,18 +124,22 @@ public class UserCategories implements Callable<ExecJob> {
                           properties.getProperty("password"),
                           properties.getProperty("batchSize")
                     );
-        ExecJob job = pig.store("c", "output", storefunc.toString());
+
+        // FIXME CouchbaseStorage requires tuple os size 2, need refactor
+        ExecJob job = pig.store("analytics", "output", storefunc.toString());
+        if (log.isInfoEnabled()) log.info("job status: " + job.getStatus());
 
         return job;
     }
 
-    private FuncSpec function(String name, String ... args) {
-        FuncSpec fs = new FuncSpec(name, args);
-        if (log.isDebugEnabled()) log.debug("function: " + fs);
-
-        return fs;
+    /* only for tests */
+    private void dump(String alias) throws IOException {
+        pig.dumpSchema(alias);
+        Iterator<Tuple> data = pig.openIterator(alias);
+        while (data.hasNext()) {
+            System.out.println(data.next().toString());
+        }
     }
-
 }
 
 // vim: set nospell:

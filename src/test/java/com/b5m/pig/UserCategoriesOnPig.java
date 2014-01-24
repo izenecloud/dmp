@@ -27,6 +27,8 @@ public class UserCategoriesOnPig {
     private final static String PASSWORD = "";
     private final static String HOST = "http://127.0.0.1:8091/pools";
 
+    private final static String DATE = "2014-01-21";
+
     private static CouchbaseClient client;
     private static List<Record> expectedOneDay = new ArrayList<Record>();
     private static List<Record> expectedMultiDays = new ArrayList<Record>();
@@ -46,7 +48,7 @@ public class UserCategoriesOnPig {
     private static void getExpectedOneDay() throws Exception {
         List<String> lines = FileUtils.readLines(new File("src/test/data/user_categories_one.output"));
         for (String line : lines) {
-            String text = appendDate(line, "2014-01-21");
+            String text = appendDate(line, DATE);
             expectedOneDay.add(Record.fromPig(text));
         }
     }
@@ -55,7 +57,7 @@ public class UserCategoriesOnPig {
     private static void getExpectedMultiDays() throws Exception {
         List<String> lines = FileUtils.readLines(new File("src/test/data/user_categories_multi.output"));
         for (String line : lines) {
-            String text = appendDate(line, "2014-01-21");
+            String text = appendDate(line, DATE);
             expectedMultiDays.add(Record.fromPig(text));
         }
     }
@@ -70,8 +72,8 @@ public class UserCategoriesOnPig {
 
     @Test
     public void oneDay() throws Exception {
-        UserCategories job = new UserCategories("2014-01-21");
-        job.addPropertiesFile("src/test/pig/user_categories.properties");
+        UserCategories job = new UserCategories(DATE, 1);
+        job.loadProperties("src/test/pig/user_categories.properties");
 
         ExecJob results = job.call();
         check(results);
@@ -81,8 +83,8 @@ public class UserCategoriesOnPig {
 
     @Test
     public void multiDays() throws Exception {
-        UserCategories job = new UserCategories("2014-01-21", 3); // three days
-        job.addPropertiesFile("src/test/pig/user_categories.properties");
+        UserCategories job = new UserCategories(DATE, 3);
+        job.loadProperties("src/test/pig/user_categories.properties");
 
         ExecJob results = job.call();
         check(results);
@@ -96,7 +98,13 @@ public class UserCategoriesOnPig {
 
     private void check(Record record) throws Exception {
         String key = record.getUuid();
-        assertNotNull(client.get(key));
+
+        String json = (String) client.get(key);
+        assertNotNull(json);
+
+        Record retrieved = Record.fromJson(json);
+        assertEquals(retrieved, record);
+
         assertTrue(client.delete(key).get());
     }
 

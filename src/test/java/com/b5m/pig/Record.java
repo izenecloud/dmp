@@ -48,6 +48,15 @@ public final class Record {
         return mapper.readValue(json, Record.class);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (! (o instanceof Record)) return false;
+        Record r = (Record) o;
+
+        return uuid.equals(r.uuid)
+            && categories.equals(r.categories);
+    }
+
     @SuppressWarnings("unchecked")
     public static Record fromPig(String line) throws Exception {
         log.debug("pig: " + line);
