@@ -1,5 +1,8 @@
 package com.b5m.couchbase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
@@ -25,6 +28,8 @@ import java.util.concurrent.TimeUnit;
  */
 final class CouchbaseRecordWriter<K extends Text, V extends Text>
 extends RecordWriter<K, V> {
+
+    private final static Log log = LogFactory.getLog(CouchbaseRecordWriter.class);
 
     private final int batchSize;
     private final CouchbaseClient client;
@@ -69,23 +74,30 @@ extends RecordWriter<K, V> {
     }
 
     // Writes to Couchbase and keep record into the queue.
-    private void enqueue(String k, String v) {
-        queue.add(new KV(k, v, client.set(k, 0, v)));
+    private void enqueue(String key, String value) {
+        queue.add(new KV(key, value, client.set(key, 0, value)));
+        if (log.isDebugEnabled()) log.debug("enqueued: key=" + key +" value=" + value);
     }
 
     // Ensures that records has been written to Couchbase.
     private void drainQueue() {
+        if (log.isDebugEnabled()) log.debug("draining queue");
+
         Queue<KV> list = new LinkedList<KV>();
         queue.drainTo(list);
+        if (log.isDebugEnabled()) log.debug("checking " + list.size() + " records");
 
         KV kv;
         while ((kv = list.poll()) != null) {
             try {
                 if (!kv.status.get().booleanValue()) { // record not written
+                    log.warn(String.format("record with key [%s] not written, retrying", kv.key));
                     TimeUnit.MILLISECONDS.sleep(10); // XXX magic value
                     enqueue(kv.key, kv.value);
                 }
             } catch (Exception e) {
+                log.warn("error while draining queue: " + e.getMessage());
+
                 // put back into the queue this kv and all the others
                 enqueue(kv.key, kv.value);
                 while ((kv = list.poll()) != null) {

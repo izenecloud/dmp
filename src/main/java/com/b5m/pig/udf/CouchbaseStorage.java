@@ -21,6 +21,7 @@ import org.apache.pig.impl.util.UDFContext;
 import org.apache.pig.impl.util.Utils;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -37,7 +38,7 @@ public final class CouchbaseStorage extends StoreFunc {
 
     private String udfcSignature = null;
     private RecordWriter<Text, Text> writer = null;
-    private ResourceFieldSchema[] fields = null;
+    private ResourceFieldSchema[] fieldSchema = null;
     private JsonSerializer jsonSerializer = null;
 
     public CouchbaseStorage(String uris, String bucket, String password, String batchSize) {
@@ -85,12 +86,20 @@ public final class CouchbaseStorage extends StoreFunc {
             throw new IOException(message);
         }
 
-        // store the schema in UDF context
+        if (fields[1].getType() != DataType.TUPLE) {
+            String message = String.format("Expected second value to be a tuple, received %s",
+                                           DataType.findTypeName(fields[1].getType()));
+            throw new IOException(message);
+        }
+
+        // store the schema of the second field in UDF context
+        ResourceSchema fieldSchema = fields[1].getSchema();
+
         UDFContext udfc = UDFContext.getUDFContext();
         Properties p = udfc.getUDFProperties(getClass(), new String[]{ udfcSignature });
-        p.setProperty(SCHEMA_PROPERTY, schema.toString());
+        p.setProperty(SCHEMA_PROPERTY, fieldSchema.toString());
 
-        log.info("stored schema into UDF context: " + schema);
+        log.info("stored schema into UDF context: " + fieldSchema);
     }
 
     /*
@@ -112,8 +121,10 @@ public final class CouchbaseStorage extends StoreFunc {
         }
 
         ResourceSchema schema = new ResourceSchema(Utils.getSchemaFromString(strSchema));
-        fields = schema.getFields();
-        if (log.isDebugEnabled()) log.info("loaded schema into UDF context: " + schema);
+        if (log.isDebugEnabled()) log.info("loaded schema from UDF context: " + schema);
+
+        fieldSchema = schema.getFields();
+        if (log.isDebugEnabled()) log.debug("fieldSchema: " + Arrays.toString(fieldSchema));
 
         jsonSerializer = new JsonSerializer();
     }
@@ -122,7 +133,7 @@ public final class CouchbaseStorage extends StoreFunc {
     public void putNext(Tuple tuple) throws IOException {
         try {
             String key = (String) tuple.get(0);
-            String value = jsonSerializer.toJson(tuple, fields);
+            String value = jsonSerializer.toJson((Tuple) tuple.get(1), fieldSchema);
 
             if (log.isDebugEnabled()) log.debug("key=" + key +" value=" + value);
 

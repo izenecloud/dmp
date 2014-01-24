@@ -5,8 +5,9 @@ REGISTER ./dist/pig-udfs.jar
 
 DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password', '$batchSize');
 
-data = LOAD '$input' as (uuid:chararray, categories:map[int]);
+data = LOAD '$input' as (uuid:chararray, date:chararray, period:int, categories:map[int]);
+documents = FOREACH data GENERATE uuid, TOTUPLE(*);
 
-STORE data INTO 'output' USING CouchbaseStorage();
+STORE documents INTO 'output' USING CouchbaseStorage();
 
 -- vim: set ft=pig nospell:

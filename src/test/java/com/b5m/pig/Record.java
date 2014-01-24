@@ -22,6 +22,8 @@ public final class Record {
     private final static Log log = LogFactory.getLog(Record.class);
 
     private String uuid;
+    private String date;
+    private Integer period;
     private Map<String, Integer> categories = new HashMap<String, Integer>();
 
     public String getUuid() {
@@ -30,6 +32,22 @@ public final class Record {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public Integer getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(Integer period) {
+        this.period = period;
     }
 
     public Map<String, Integer> getCategories() {
@@ -54,6 +72,8 @@ public final class Record {
         Record r = (Record) o;
 
         return uuid.equals(r.uuid)
+            && date.equals(r.date)
+            && period.equals(r.period)
             && categories.equals(r.categories);
     }
 
@@ -61,10 +81,13 @@ public final class Record {
     public static Record fromPig(String line) throws Exception {
         log.debug("pig: " + line);
 
-        Tuple t = Tuples.fromString(line, "(chararray, [int])");
+        Tuple t = Tuples.fromString(line, "(chararray, chararray, int, [int])");
         Record r = new Record();
         r.setUuid((String) t.get(0));
-        r.setCategories((Map<String, Integer>) t.get(1));
+        r.setDate((String) t.get(1));
+        r.setPeriod((Integer) t.get(2));
+        r.setCategories((Map<String, Integer>) t.get(3));
+
         return r;
     }
 }

@@ -1,2 +1,2 @@
-{"uuid":"uuid1","categories":{"cat1":1,"cat2":2}}
-{"uuid":"uuid2","categories":{"cat1":3,"cat4":1}}
+{"uuid":"uuid1","date":"2014-01-24","period":7,"categories":{"cat1":1,"cat2":2}}
+{"uuid":"uuid2","date":"2014-01-24","period":7,"categories":{"cat1":3,"cat4":1}}

@@ -1,2 +1,2 @@
-uuid1	[cat1#1,cat2#2]
-uuid2	[cat1#3,cat4#1]
+uuid1	2014-01-24	7	[cat1#1,cat2#2]
+uuid2	2014-01-24	7	[cat1#3,cat4#1]

@@ -8,32 +8,37 @@ import org.testng.annotations.Test;
 
 import org.apache.pig.ResourceSchema;
 
-import java.io.IOException;
-
 public class TestCouchbaseStorage {
 
     private CouchbaseStorage func = new CouchbaseStorage();
 
     @DataProvider
-    public Object[][] schemas() throws Exception {
+    public Object[][] schemas() {
         return new Object[][] {
-            { Tuples.resourceSchema("chararray"), false },
-            { Tuples.resourceSchema("chararray, chararray"), true },
-            { Tuples.resourceSchema("chararray, int"), true },
-            { Tuples.resourceSchema("int, int"), false },
-            { Tuples.resourceSchema("chararray, chararray, int"), false },
-            { Tuples.resourceSchema("chararray, (chararray, int)"), true },
-            { Tuples.resourceSchema("chararray, {(chararray, int)}"), true },
-            { Tuples.resourceSchema("chararray, map[]"), true },
+            { "chararray", false },                 // not size 2
+            { "chararray, chararray, int", false },
+
+            { "int, (int)", false },                // 1st must be text
+
+            { "chararray, chararray", false },      // 2nd must be tuple
+            { "chararray, int", false },
+            { "chararray, map[]", false },
+            { "chararray, {(chararray, int)}", false },
+
+            { "chararray, (chararray)", true },
+            { "chararray, (int)", true },
+            { "chararray, (map[])", true },
+            { "chararray, (chararray, int)", true },
         };
     }
 
     @Test(dataProvider="schemas")
-    public void checkSchema(ResourceSchema schema, boolean valid) {
+    public void checkSchema(String schema, boolean valid) {
         try {
-            func.checkSchema(schema);
+            func.checkSchema(Tuples.resourceSchema(schema));
+            //func.prepareToWrite(null);
             assertTrue(valid);
-        } catch (IOException e) {
+        } catch (Exception e) {
             assertFalse(valid, e.getMessage());
         }
     }
