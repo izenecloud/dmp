@@ -109,12 +109,22 @@ public class UserCategories implements Callable<ExecJob> {
             .append("  merged = Merge(daily.categories);")
             .append("  normalized = Normalize(merged);")
             .append("  GENERATE")
-            // TODO add date and period
-            .append("    CONCAT(group,'::").append(date).append("') AS uuid,")
+            .append("    group AS uuid,")
             .append("    normalized AS categories;")
             .append("}");
         pig.registerQuery(stmt.toString());
         //dump("analytics");
+
+        stmt = new StringBuilder();
+
+        // prepare key-value documents for Couchbase
+        stmt.append("documents = FOREACH analytics GENERATE")
+            .append("  CONCAT(uuid, '::").append(date).append("') AS key,")
+            .append("  TOTUPLE(uuid,'").append(date).append("',").append(count).append(",categories)")
+            // explicit schema so that fields have name and can be correctly serialized to Json
+            .append("    AS value:(uuid:chararray, date:chararray, period:int, categories:[double]);");
+        pig.registerQuery(stmt.toString());
+        //dump("documents");
 
         // XXX there's a bug in PigServer so it won't use previously registered
         //     functions in method store; as workaround directly use a string
@@ -125,8 +135,7 @@ public class UserCategories implements Callable<ExecJob> {
                           properties.getProperty("batchSize")
                     );
 
-        // FIXME CouchbaseStorage requires tuple os size 2, need refactor
-        ExecJob job = pig.store("analytics", "output", storefunc.toString());
+        ExecJob job = pig.store("documents", "output", storefunc.toString());
         if (log.isInfoEnabled()) log.info("job status: " + job.getStatus());
 
         return job;

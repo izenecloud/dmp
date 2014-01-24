@@ -2,6 +2,9 @@ package com.b5m.pig;
 
 import com.b5m.utils.DatesGenerator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -20,6 +23,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class UserCategoriesOnPig {
+
+    private final static Log log = LogFactory.getLog(UserCategoriesOnPig.class);
 
     private final static DatesGenerator dategen = new DatesGenerator();
 
@@ -45,29 +50,17 @@ public class UserCategoriesOnPig {
     }
 
     @BeforeClass
-    private static void getExpectedOneDay() throws Exception {
-        List<String> lines = FileUtils.readLines(new File("src/test/data/user_categories_one.output"));
-        for (String line : lines) {
-            String text = appendDate(line, DATE);
-            expectedOneDay.add(Record.fromPig(text));
-        }
+    private static void getExpected() throws Exception {
+        getRecords("src/test/data/user_categories_one.output", expectedOneDay);
+        getRecords("src/test/data/user_categories_multi.output", expectedMultiDays);
     }
 
-    @BeforeClass
-    private static void getExpectedMultiDays() throws Exception {
-        List<String> lines = FileUtils.readLines(new File("src/test/data/user_categories_multi.output"));
+    private static void getRecords(String file, List<Record> list) throws Exception {
+        List<String> lines = FileUtils.readLines(new File(file));
         for (String line : lines) {
-            String text = appendDate(line, DATE);
-            expectedMultiDays.add(Record.fromPig(text));
+            log.debug(line);
+            list.add(Record.fromPig(line));
         }
-    }
-
-    private static String appendDate(String line, String date) {
-        int i = line.indexOf(',');
-        StringBuilder sb = new StringBuilder(line.substring(0, i));
-        sb.append("::").append(date);
-        sb.append(line.substring(i));
-        return sb.toString();
     }
 
     @Test
@@ -97,10 +90,12 @@ public class UserCategoriesOnPig {
     }
 
     private void check(Record record) throws Exception {
-        String key = record.getUuid();
+        String key = String.format("%s::%s", record.getUuid(), record.getDate());
+        log.debug("Checking for " + key + " in Couchbase");
 
         String json = (String) client.get(key);
         assertNotNull(json);
+        log.debug("Got document: " + json);
 
         Record retrieved = Record.fromJson(json);
         assertEquals(retrieved, record);
