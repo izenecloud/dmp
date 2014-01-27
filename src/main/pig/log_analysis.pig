@@ -1,6 +1,6 @@
 -- Required parameters:
 --   model_file     path to the MaxEnt model file
---   mode           'cluster' (default) or 'local' (only for testing)
+--   mode           'mapreduce' (default) or 'local' (only for testing)
 --   today          today's date in format YYYYMMDD (defaults to system current date)
 --   input          path to input file or directory
 --   output_dir     path to output directory
@@ -8,7 +8,7 @@
 --   udf_file       path to pig-udfs.jar
 
 -- default values
-%default mode cluster
+%default mode mapreduce
 %default pigdir /usr/lib/pig
 %default output_dir dmp
 %default today `date +%Y%m%d`

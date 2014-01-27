@@ -42,7 +42,7 @@ public class GetCategory extends EvalFunc<String> {
      * @param filename file containing the MaxEnt model
      */
     public GetCategory(String filename) {
-        this(filename, "cluster"); // actually any string but "local" is ok here
+        this(filename, "mapreduce"); // actually any string but "local" is ok here
     }
 
     @Override
