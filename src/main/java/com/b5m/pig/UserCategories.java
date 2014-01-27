@@ -81,7 +81,7 @@ public class UserCategories implements Callable<ExecJob> {
 
     @Override
     public ExecJob call() throws ExecException, IOException {
-        String mode = properties.getProperty("mode");
+        String mode = properties.getProperty("mode", "mapreduce");
         pig = new PigServer(mode);
 
         // generate dates
