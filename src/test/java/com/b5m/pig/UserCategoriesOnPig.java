@@ -66,7 +66,7 @@ public class UserCategoriesOnPig {
     @Test
     public void oneDay() throws Exception {
         UserCategories job = new UserCategories(DATE, 1);
-        job.loadProperties("src/test/pig/user_categories.properties");
+        job.loadProperties("src/test/properties/user_categories.properties");
 
         ExecJob results = job.call();
         check(results);
@@ -77,7 +77,7 @@ public class UserCategoriesOnPig {
     @Test
     public void multiDays() throws Exception {
         UserCategories job = new UserCategories(DATE, 3);
-        job.loadProperties("src/test/pig/user_categories.properties");
+        job.loadProperties("src/test/properties/user_categories.properties");
 
         ExecJob results = job.call();
         check(results);

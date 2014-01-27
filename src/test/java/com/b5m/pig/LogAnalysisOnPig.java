@@ -24,7 +24,7 @@ public class LogAnalysisOnPig {
     @Test
     public void test() throws Exception {
         String[] args = {
-            "src/test/pig/log_analysis.properties"
+            "src/test/properties/log_analysis.properties"
         };
 
         PigTest test = new PigTest("src/main/pig/log_analysis.pig", null, args);
