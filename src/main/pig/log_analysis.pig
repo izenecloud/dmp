@@ -1,7 +1,7 @@
 -- Required parameters:
 --   model_file     path to the MaxEnt model file
 --   mode           'mapreduce' (default) or 'local' (only for testing)
---   today          today's date in format YYYYMMDD (defaults to system current date)
+--   today          today's date in format YYYY-MM-DD (defaults to system current date)
 --   input          path to input file or directory
 --   output_dir     path to output directory
 --   pigdir         path to pig libraries
@@ -11,7 +11,7 @@
 %default mode mapreduce
 %default pigdir /usr/lib/pig
 %default output_dir dmp
-%default today `date +%Y%m%d`
+%default today `date +%Y-%m-%d`
 
 -- other parameters
 %declare uuid_filter_regex '(undefined|guest|false)'
