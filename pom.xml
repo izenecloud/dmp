@@ -236,6 +236,7 @@
                                             <resources>
                                                 <file file="src/main/pig/log_analysis.pig"/>
                                                 <file file="src/main/pig/log_analysis.properties.example"/>
+                                                <file file="src/main/pig/user_categories.properties.example"/>
                                                 <file file="src/test/resources/Model.txt"/>
                                             </resources>
                                         </copy>

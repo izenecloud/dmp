@@ -1,0 +1,15 @@
+# hosts: URIS to couchbase servers
+hosts = couchbase1,couchbase2
+
+# bucket: couchbase bucket
+bucket = bucketname
+
+# password: couchbase password (if required)
+password = secret
+
+# batchSize: how many records to write at once
+batchSize = 10000
+
+# basedir: HDFS path to logs directory
+basedir = /path/to/logs
+
