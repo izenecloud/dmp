@@ -62,7 +62,7 @@ data4 = GROUP data3 BY uuid;
 -- generate bag-of-words
 data5 = FOREACH data4 GENERATE group AS uuid, CategoryMap(data3) AS categories;
 
--- store into CouchBase
+-- store into HDFS
 STORE data5 INTO '$output_dir/$today' using JsonStorage();
 
 -- vim: set ft=pig nospell:
