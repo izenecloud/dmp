@@ -15,7 +15,7 @@ DEFINE Normalize com.b5m.pig.udf.NormalizeMap();
 DEFINE Merge com.b5m.pig.udf.MergeMaps();
 DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password', '$batchSize');
 
-daily = LOAD '$input' USING JsonLoader();
+daily = LOAD '$input' as (uuid:chararray, categories:[int]);
 grouped = GROUP daily BY uuid;
 analytics = FOREACH grouped {
                 merged = Merge(daily.categories);

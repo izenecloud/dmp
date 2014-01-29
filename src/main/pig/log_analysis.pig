@@ -51,6 +51,6 @@ uuid_categories_map = FOREACH uuid_categories GENERATE
             group AS uuid,
             CategoryMap(uuid_category_count) AS categories;
 
-STORE uuid_categories_map INTO '$output_dir/$today' using JsonStorage();
+STORE uuid_categories_map INTO '$output_dir/$today';
 
 -- vim:ft=pig:nospell:
