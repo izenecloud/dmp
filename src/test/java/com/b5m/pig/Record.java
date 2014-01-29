@@ -60,7 +60,7 @@ public final class Record {
     }
 
     public static Record fromJson(String json) throws IOException {
-        log.debug("json: " + json);
+        //log.debug("json: " + json);
 
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, Record.class);
@@ -79,7 +79,7 @@ public final class Record {
 
     @SuppressWarnings("unchecked")
     public static Record fromPig(String line) throws Exception {
-        log.debug("pig: " + line);
+        //log.debug("pig: " + line);
 
         Tuple t = Tuples.fromString(line, "(chararray, chararray, int, [int])");
         Record r = new Record();

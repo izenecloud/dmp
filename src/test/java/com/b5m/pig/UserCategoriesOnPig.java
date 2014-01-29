@@ -58,7 +58,7 @@ public class UserCategoriesOnPig {
     private static void getRecords(String file, List<Record> list) throws Exception {
         List<String> lines = FileUtils.readLines(new File(file));
         for (String line : lines) {
-            log.debug(line);
+            //log.debug(line);
             list.add(Record.fromPig(line));
         }
     }

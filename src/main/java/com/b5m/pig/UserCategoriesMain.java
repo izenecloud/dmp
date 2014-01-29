@@ -2,14 +2,18 @@ package com.b5m.pig;
 
 import com.b5m.utils.Dates;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Main class for the UserCategories job.
@@ -17,6 +21,8 @@ import java.io.File;
  * @author Paolo D'Apice
  */
 public final class UserCategoriesMain {
+
+    private final static Log log = LogFactory.getLog(UserCategoriesMain.class);
 
     /* Define command line options. */
     private static Options buildOptions() {
@@ -39,10 +45,18 @@ public final class UserCategoriesMain {
     /* Parse command line. */
     private static boolean parseOptions(Options options, String[] args, Parameters params) {
         if (args.length < 2) return false;
+        log.debug("args: " + Arrays.toString(args));
 
         CommandLineParser parser = new BasicParser();
         try {
             CommandLine line = parser.parse(options, args);
+
+            if (log.isDebugEnabled()) {
+                for (Option o : line.getOptions()) {
+                    log.debug("option: " + o.toString() + " = " + o.getValue());
+                }
+                log.debug("nonrec: " + Arrays.toString(line.getArgs()));
+            }
 
             if (line.hasOption("date")) {
                 String date = line.getOptionValue("date");

@@ -59,8 +59,10 @@ public class UserCategories implements Callable<ExecJob> {
         for (String d : dates) {
             String input = String.format("%s/%s", basedir, d);
             if (pig.existsFile(input)) {
-                if (log.isDebugEnabled()) log.debug("adding input: " + input);
+                if (log.isInfoEnabled()) log.info("adding input: " + input);
                 inputs.add(input);
+            } else {
+                if (log.isInfoEnabled()) log.info("skipping non-existing input: " + input);
             }
         }
         return inputs;
