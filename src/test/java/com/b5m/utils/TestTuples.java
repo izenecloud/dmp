@@ -7,9 +7,9 @@ import org.apache.pig.data.Tuple;
 
 import java.util.Map;
 
+@Test(groups={"utils"})
 public class TestTuples {
 
-    @Test
     public void fromString1() throws Exception {
         String in = "(aaaabbbbcccc,4)";
         String s = "(chararray,int)";
@@ -21,7 +21,6 @@ public class TestTuples {
         assertEquals((Integer) t.get(1), Integer.valueOf(4));
     }
 
-    @Test
     public void fromString2() throws Exception {
         String in = "(aaaabbbbcccc,[a#1,b#2])";
         String s = "(chararray,[int])";

@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 import org.apache.pig.ResourceSchema;
 
+@Test(groups={"pig"})
 public class TestCouchbaseStorage {
 
     private CouchbaseStorage func = new CouchbaseStorage();

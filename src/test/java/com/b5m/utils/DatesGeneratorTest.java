@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+@Test(groups={"utils"})
 public class DatesGeneratorTest {
 
     private final DatesGenerator gen = new DatesGenerator();

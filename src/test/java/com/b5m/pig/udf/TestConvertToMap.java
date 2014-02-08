@@ -11,6 +11,7 @@ import com.b5m.utils.Tuples;
 
 import java.util.Map;
 
+@Test(groups={"pig"})
 public class TestConvertToMap {
 
     private final static String SCHEMA = "({(uuid:chararray, category:chararray, count:int)})";

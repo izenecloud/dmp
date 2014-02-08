@@ -11,6 +11,7 @@ import com.b5m.utils.Tuples;
 
 import java.util.Map;
 
+@Test(groups={"pig"})
 public class TestNormalizeMap {
 
     private NormalizeMap func = new NormalizeMap();

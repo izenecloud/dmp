@@ -14,6 +14,7 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
 import java.io.File;
 import java.util.Arrays;
 
+@Test(groups={"pig"})
 public class TestGetCategory {
 
     private GetCategory func;

@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.IOException;
 
+@Test(groups={"maxent"})
 public class MaxEntTrainerTest {
 
     private final File scdDir;

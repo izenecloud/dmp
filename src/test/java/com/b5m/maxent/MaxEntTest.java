@@ -8,15 +8,16 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-public class TestMaxEnt {
+@Test(groups={"maxent"})
+public class MaxEntTest {
 
-    private MaxEnt maxent;
+    private final MaxEnt maxent;
 
-    public TestMaxEnt() throws IOException {
+    public MaxEntTest() throws IOException {
         maxent = new MaxEnt(Files.getResource("/Model.txt"));
     }
 
-    @DataProvider(name="titles")
+    @DataProvider
     public Object[][] titles() {
         return new Object[][] {
             // input title, output category
@@ -28,7 +29,7 @@ public class TestMaxEnt {
     }
 
     @Test(dataProvider="titles")
-    public void testMaxEnt(String title, String expected) {
+    public void getCategory(String title, String expected) {
         String category = maxent.getCategory(title);
         assertEquals(category, expected);
     }

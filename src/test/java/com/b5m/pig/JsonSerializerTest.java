@@ -9,6 +9,7 @@ import org.apache.pig.data.Tuple;
 
 import com.b5m.utils.Tuples;
 
+@Test(groups={"pig"})
 public class JsonSerializerTest {
 
     private final JsonSerializer serializer = new JsonSerializer();
