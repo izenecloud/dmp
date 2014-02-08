@@ -3,6 +3,7 @@ package com.b5m.couchbase;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.couchbase.client.CouchbaseClient;
@@ -30,17 +31,22 @@ public class CouchbaseClientIT {
         client.shutdown();
     }
 
-    @Test
-    public void simple() throws Exception {
-        String key = "test-document";
-        String val = "hello couchbase";
+    @DataProvider
+    public Object[][] pairs() {
+        return new Object[][] {
+            { "test-document", "hello couchbase" },
+            { "测试文件","你好couchbase" },
+        };
+    }
 
+    @Test(dataProvider="pairs")
+    public void simple(String key, String value) throws Exception {
         assertNull(client.get(key));
 
-        client.set(key, val).get();
+        client.set(key, value).get();
 
         String retrieved = (String) client.get(key);
-        assertEquals(retrieved, val);
+        assertEquals(retrieved, value);
 
         boolean deleted = client.delete(key).get();
         assertTrue(deleted);
