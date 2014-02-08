@@ -1,8 +1,8 @@
 package com.b5m.couchbase;
 
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.couchbase.client.CouchbaseClient;
@@ -11,26 +11,26 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
-@Test(enabled=false) // it requires a running Couchbase server
-public class TestCouchbaseClient {
+public class CouchbaseClientIT {
 
     private final static String BUCKET = "default";
     private final static String PASSWORD = "";
     private final static String HOST = "http://127.0.0.1:8091/pools";
 
-    private static CouchbaseClient client;
+    private CouchbaseClient client;
 
-    @BeforeClass
-    public static void setup() throws Exception {
+    @BeforeTest
+    public void setup() throws Exception {
         List<URI> hosts = Arrays.asList(new URI(HOST));
         client = new CouchbaseClient(hosts, BUCKET, PASSWORD);
     }
 
-    @AfterClass
-    public static void teardown() {
+    @AfterTest
+    public void teardown() {
         client.shutdown();
     }
 
+    @Test
     public void simple() throws Exception {
         String key = "test-document";
         String val = "hello couchbase";
