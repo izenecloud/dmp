@@ -1,0 +1,22 @@
+name: UnitTests
+
+tests:
+  - name: MaxEnt
+    classes:
+      - com.b5m.maxent.TestMaxEntDataExtractor
+      - com.b5m.maxent.MaxEntTrainerTest
+      - com.b5m.maxent.TestMaxEnt
+  - name: Pig
+    classes:
+      - com.b5m.pig.JsonSerializerTest
+      - com.b5m.pig.udf.TestCouchbaseStorage
+      - com.b5m.pig.udf.TestConvertToMap
+      - com.b5m.pig.udf.TestMergeMaps
+      - com.b5m.pig.udf.TestGetCategory
+      - com.b5m.pig.udf.TestNormalizeMap
+  - name: Utils
+    classes:
+      - com.b5m.utils.DatesGeneratorTest
+      - com.b5m.utils.TestTuples
+
+# vim:sw=2:ts=2:

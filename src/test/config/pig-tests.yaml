@@ -1,0 +1,19 @@
+name: PigSuite
+
+tests:
+  - name: GetCategory
+    classes:
+      - com.b5m.pig.udf.GetCategoryOnPig
+      - com.b5m.pig.udf.GetCategoryEmbedded
+  - name: CouchbaseStorage
+    classes:
+      - com.b5m.couchbase.CouchbaseClientIT
+      - com.b5m.pig.udf.CouchbaseStorageOnPig
+  - name: LogAnalysis
+    classes:
+      - com.b5m.pig.LogAnalysisOnPig
+  - name: UserCategories
+    classes:
+      - com.b5m.pig.UserCategoriesOnPig
+
+# vim:sw=2:ts=2:

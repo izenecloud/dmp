@@ -191,6 +191,14 @@
                 </configuration>
             </plugin>
             <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/config/unit-tests.yaml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
@@ -278,10 +286,9 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <includes>
-                                        <include>**/*OnPig.java</include>
-                                        <include>**/*Embedded.java</include>
-                                    </includes>
+                                    <suiteXmlFiles>
+                                        <suiteXmlFile>src/test/config/pig-tests.yaml</suiteXmlFile>
+                                    </suiteXmlFiles>
                                 </configuration>
                             </execution>
                         </executions>
