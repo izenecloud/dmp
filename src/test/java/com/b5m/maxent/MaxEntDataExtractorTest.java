@@ -3,38 +3,46 @@ package com.b5m.maxent;
 import com.b5m.utils.Files;
 
 import static org.testng.Assert.*;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 
 @Test(groups={"maxent"})
 public class MaxEntDataExtractorTest {
 
-    private final File scdFile;
-    private final File outputDir;
+    private File input;
+    private File outputDir;
 
-    public MaxEntDataExtractorTest() throws IOException {
-        scdFile = Files.getResource("/B-00-201312091124-16026-U-C.SCD");
+    @BeforeTest
+    public void setup() throws Exception {
+        input = new File("src/test/data/test.scd");
         outputDir = Files.tempDir("MaxEntDataExtractor");
     }
 
+    @AfterTest
+    public void cleanup() throws Exception {
+        FileUtils.deleteDirectory(outputDir);
+    }
+
     @Test
-    public void test() throws IOException {
-        MaxEntDataExtractor de = new MaxEntDataExtractor(scdFile, outputDir);
+    public void test() throws Exception {
+        MaxEntDataExtractor de = new MaxEntDataExtractor(input, outputDir);
 
         File out = de.call();
-        assertTrue(out.exists() && out.isFile());
-        assertEquals(out.getName(), "B-00-201312091124-16026-U-C.SCD.out");
-
-        // TODO
-        //checkOutput(out);
+        checkFile(input, out);
     }
 
-    private void checkOutput(File file) throws IOException {
-        System.out.println(FileUtils.readFileToString(file));
     }
+
+    private void checkFile(File input, File actual)
+    throws Exception{
+        assertTrue(actual.isFile());
+        assertEquals(actual.getName(), input.getName() + ".out");
+    }
+
 }
 
