@@ -4,6 +4,7 @@ tests:
   - name: Scd
     classes:
       - com.b5m.scd.DataExtractorTest
+      - com.b5m.scd.ScdFileFilterTest
 
   - name: MaxEnt
     classes:
