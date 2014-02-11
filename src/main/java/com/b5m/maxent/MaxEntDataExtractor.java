@@ -11,10 +11,11 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
- * Get data from SCD file.
+ * Parse an SCD file and output all Title-Category pairs.
  */
-// TODO use Callable
 class MaxEntDataExtractor implements Callable<File> {
 
     private static final Logger log = LoggerFactory.getLogger(MaxEntDataExtractor.class);
@@ -22,6 +23,8 @@ class MaxEntDataExtractor implements Callable<File> {
     private final File scdFile;
     private final File outputDir;
     private final File outputFile;
+
+    private boolean onlyTop = true;
 
     private String title;
     private String category;
@@ -36,6 +39,10 @@ class MaxEntDataExtractor implements Callable<File> {
         log.debug("outputFile: " + outputFile);
     }
 
+    public void onlyTop(boolean val) {
+        onlyTop = val;
+    }
+
     @Override
     public File call() throws IOException {
         log.debug("creating empty output file: " + outputFile);
@@ -46,16 +53,13 @@ class MaxEntDataExtractor implements Callable<File> {
 
         // parse
         while (nextDocument(reader)) {
-            if (title.isEmpty() || category.isEmpty()) {
+            if (StringUtils.isBlank(title) || StringUtils.isBlank(category)) {
                 log.debug("skipping current document due to empty title/category");
                 continue;
             }
-            int topLevelIndex = category.indexOf('>');
-            if (-1 == topLevelIndex)
-                writer.write(title + " " + category + "\n");
-            else
-                writer.write(title + " "
-                        + category.substring(0, topLevelIndex) + "\n");
+
+            // XXX is it better us '\t' instead of ' ' ?
+            writer.append(title).append(' ').append(category).append('\n');
         }
 
         reader.close();
@@ -66,9 +70,6 @@ class MaxEntDataExtractor implements Callable<File> {
     }
 
     private boolean nextDocument(BufferedReader reader) throws IOException {
-        //title = new String();
-        //category = new String();
-        boolean hasNext = false;
         String line = null;
         while (null != (line = reader.readLine())) {
             if (line.startsWith("<DOCID>")) {
@@ -76,16 +77,20 @@ class MaxEntDataExtractor implements Callable<File> {
                     firstDocument = false;
                     continue;
                 }
-                hasNext = true;
-                break;
+                return true;
             } else if (line.startsWith("<Title>")) {
                 title = line.substring(7);
             } else if (line.startsWith("<Category>")) {
-                category = line.substring(10);
+                category = substring(line.substring(10), onlyTop);
             }
         }
 
-        return hasNext;
+        return false;
+    }
+
+    private String substring(String category, boolean first) {
+        int i = first ? category.indexOf('>') : category.lastIndexOf('>');
+        return (i == -1) ? category : category.substring(0, i);
     }
 
 }

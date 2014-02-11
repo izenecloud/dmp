@@ -16,11 +16,15 @@ public class MaxEntDataExtractorTest {
 
     private File input;
     private File outputDir;
+    private File expectedTop;
+    private File expectedFull;
 
     @BeforeTest
     public void setup() throws Exception {
         input = new File("src/test/data/test.scd");
         outputDir = Files.tempDir("MaxEntDataExtractor");
+        expectedTop = new File("src/test/data/title-category-top.txt");
+        expectedFull = new File("src/test/data/title-category-full.txt");
     }
 
     @AfterTest
@@ -29,19 +33,28 @@ public class MaxEntDataExtractorTest {
     }
 
     @Test
-    public void test() throws Exception {
+    public void topCategory() throws Exception {
         MaxEntDataExtractor de = new MaxEntDataExtractor(input, outputDir);
 
         File out = de.call();
-        checkFile(input, out);
+        checkFile(out, expectedTop);
     }
 
+    @Test
+    public void fullCategory() throws Exception {
+        MaxEntDataExtractor de = new MaxEntDataExtractor(input, outputDir);
+        de.onlyTop(false);
+
+        File out = de.call();
+        checkFile(out, expectedFull);
     }
 
-    private void checkFile(File input, File actual)
+    private void checkFile(File actual, File expected)
     throws Exception{
         assertTrue(actual.isFile());
         assertEquals(actual.getName(), input.getName() + ".out");
+        assertEquals(FileUtils.readLines(actual),
+                     FileUtils.readLines(expected));
     }
 
 }
