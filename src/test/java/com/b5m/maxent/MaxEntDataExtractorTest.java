@@ -18,7 +18,7 @@ public class MaxEntDataExtractorTest {
 
     public MaxEntDataExtractorTest() throws IOException {
         scdFile = Files.getResource("/B-00-201312091124-16026-U-C.SCD");
-        outputDir = Files.tempDir("MaxEntDataExtractor", true);
+        outputDir = Files.tempDir("MaxEntDataExtractor");
     }
 
     @Test

@@ -17,7 +17,7 @@ public class MaxEntTrainerTest {
     public MaxEntTrainerTest() throws IOException {
         File scd = Files.getResource("/B-00-201312091124-16026-U-C.SCD");
         scdDir = scd.getParentFile();
-        outDir = Files.tempDir("MaxEntTrainerTest", false);
+        outDir = Files.tempDir("MaxEntTrainerTest");
     }
 
     @Test

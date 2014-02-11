@@ -16,15 +16,10 @@ public class Files {
     }
 
     /** Creates a temporary directory. */
-    public static File tempDir(String name, boolean deleteOnExit) {
-        File dir = new File(tmpdir(), name);
+    public static File tempDir(String name) {
+        File dir = new File(System.getProperty("java.io.tmpdir"), name);
         dir.mkdir();
-        if (deleteOnExit) dir.deleteOnExit();
         return dir;
     }
 
-    /* system temporary directory */
-    private static File tmpdir() {
-        return new File(System.getProperty("java.io.tmpdir"));
-    }
 }
