@@ -1,6 +1,7 @@
 package com.b5m.maxent;
 
 import com.b5m.executors.Shutdown;
+import com.b5m.scd.DataExtractor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,10 +78,10 @@ public class MaxEntTrainer {
         log.info("Extracting Training Data and Test Data from SCD Files...");
         for (File file : fList) {
             if (trainedFiles < trainFiles) {
-                pool.submit(new MaxEntDataExtractor(file, trainDir));
+                pool.submit(new DataExtractor(file, trainDir));
             }
             else {
-                pool.submit(new MaxEntDataExtractor(file, testDir));
+                pool.submit(new DataExtractor(file, testDir));
             }
             trainedFiles++;
         }

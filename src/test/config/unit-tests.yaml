@@ -1,10 +1,13 @@
 name: UnitTests
 
 tests:
+  - name: Scd
+    classes:
+      - com.b5m.scd.DataExtractorTest
+
   - name: MaxEnt
     classes:
       - com.b5m.maxent.MaxEntTest
-      - com.b5m.maxent.MaxEntDataExtractorTest
       - com.b5m.maxent.MaxEntTrainerTest
 
   - name: Pig

@@ -1,4 +1,4 @@
-package com.b5m.maxent;
+package com.b5m.scd;
 
 import com.b5m.utils.Files;
 
@@ -11,8 +11,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 
-@Test(groups={"maxent"})
-public class MaxEntDataExtractorTest {
+@Test(groups={"scd"})
+public class DataExtractorTest {
 
     private File input;
     private File outputDir;
@@ -22,7 +22,7 @@ public class MaxEntDataExtractorTest {
     @BeforeTest
     public void setup() throws Exception {
         input = new File("src/test/data/test.scd");
-        outputDir = Files.tempDir("MaxEntDataExtractor");
+        outputDir = Files.tempDir("DataExtractor");
         expectedTop = new File("src/test/data/title-category-top.txt");
         expectedFull = new File("src/test/data/title-category-full.txt");
     }
@@ -34,7 +34,7 @@ public class MaxEntDataExtractorTest {
 
     @Test
     public void topCategory() throws Exception {
-        MaxEntDataExtractor de = new MaxEntDataExtractor(input, outputDir);
+        DataExtractor de = new DataExtractor(input, outputDir);
 
         File out = de.call();
         checkFile(out, expectedTop);
@@ -42,7 +42,7 @@ public class MaxEntDataExtractorTest {
 
     @Test
     public void fullCategory() throws Exception {
-        MaxEntDataExtractor de = new MaxEntDataExtractor(input, outputDir);
+        DataExtractor de = new DataExtractor(input, outputDir);
         de.onlyTop(false);
 
         File out = de.call();

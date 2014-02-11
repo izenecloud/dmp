@@ -1,4 +1,4 @@
-package com.b5m.maxent;
+package com.b5m.scd;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,12 +16,11 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Parse an SCD file and output all Title-Category pairs.
  */
-class MaxEntDataExtractor implements Callable<File> {
+public class DataExtractor implements Callable<File> {
 
-    private static final Logger log = LoggerFactory.getLogger(MaxEntDataExtractor.class);
+    private static final Logger log = LoggerFactory.getLogger(DataExtractor.class);
 
     private final File scdFile;
-    private final File outputDir;
     private final File outputFile;
 
     private boolean onlyTop = true;
@@ -30,13 +29,9 @@ class MaxEntDataExtractor implements Callable<File> {
     private String category;
     private boolean firstDocument = true;
 
-    MaxEntDataExtractor(File scdFile, File outputDir) {
+    public DataExtractor(File scdFile, File outputDir) {
         this.scdFile = scdFile;
-        this.outputDir = outputDir;
-        outputFile = new File(outputDir, scdFile.getName() + ".out");
-
-        log.debug("scdFile   : " + scdFile);
-        log.debug("outputFile: " + outputFile);
+        this.outputFile = new File(outputDir, scdFile.getName() + ".out");
     }
 
     public void onlyTop(boolean val) {
@@ -52,6 +47,7 @@ class MaxEntDataExtractor implements Callable<File> {
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
 
         // parse
+        long counter = 0L;
         while (nextDocument(reader)) {
             if (StringUtils.isBlank(title) || StringUtils.isBlank(category)) {
                 log.debug("skipping current document due to empty title/category");
@@ -60,12 +56,13 @@ class MaxEntDataExtractor implements Callable<File> {
 
             // XXX is it better us '\t' instead of ' ' ?
             writer.append(title).append(' ').append(category).append('\n');
+            counter++;
         }
 
         reader.close();
         writer.close();
 
-        log.debug("done");
+        log.debug("found {} items", counter);
         return outputFile;
     }
 
