@@ -10,8 +10,8 @@ tests:
     classes:
       - com.b5m.maxent.TitleCategoryEventStreamTest
       - com.b5m.maxent.FilesEventStreamTest
-      - com.b5m.maxent.MaxEntTest
       - com.b5m.maxent.MaxEntTrainerTest
+      - com.b5m.maxent.MaxEntCategoryClassifierTest
 
   - name: Pig
     classes:

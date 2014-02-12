@@ -15,32 +15,38 @@ import java.io.File;
 public class MaxEntTrainerTest {
 
     private File scdDir;
-    private File outDir;
+    private File modelFile;
     private File expected;
+
+    private File tempdir;
 
     @BeforeTest()
     public void setup() throws Exception {
-        File scd = new File("src/test/data/test.scd");
-        scdDir = scd.getParentFile();
-        outDir = Files.tempDir("MaxEntTrainerTest");
+        scdDir = new File("src/test/data/maxent");
+        modelFile = new File(Files.systemTmpDir(), "Model.txt");
         expected = new File("src/test/data/Model.out");
     }
 
     @AfterTest
     public void cleanup() throws Exception {
-        FileUtils.deleteDirectory(outDir);
+        FileUtils.deleteDirectory(tempdir);
+        modelFile.delete();
     }
 
     @Test
     public void test() throws Exception {
-        MaxEntTrainer trainer = new MaxEntTrainer(scdDir, outDir);
+        MaxEntTrainer trainer = new MaxEntTrainer(scdDir, modelFile);
 
-        File model = trainer.train();
-        assertTrue(model.isFile());
-        assertTrue(FileUtils.contentEquals(model, expected));
+        trainer.train();
+        assertTrue(modelFile.isFile());
+        assertTrue(FileUtils.contentEquals(modelFile, expected));
 
         TrainResults results = trainer.test();
-        //assertTrue(results.goodCases + results.badCases > 0);
+        assertTrue(results.goodCases >= 0);
+        assertTrue(results.badCases >= 0);
+        assertTrue(results.goodCases + results.badCases > 0);
+
+        tempdir = trainer.getTempDir();
     }
 
 }

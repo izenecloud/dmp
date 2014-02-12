@@ -17,9 +17,14 @@ public class Files {
 
     /** Creates a temporary directory. */
     public static File tempDir(String name) {
-        File dir = new File(System.getProperty("java.io.tmpdir"), name);
+        File dir = new File(systemTmpDir(), name);
         dir.mkdir();
         return dir;
+    }
+
+    /** Gets the default temporary directory. */
+    public static File systemTmpDir() {
+        return new File(System.getProperty("java.io.tmpdir"));
     }
 
 }

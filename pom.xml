@@ -203,7 +203,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.b5m.maxent.MaxEntTrainer</mainClass>
+                            <mainClass>com.b5m.maxent.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptors>
