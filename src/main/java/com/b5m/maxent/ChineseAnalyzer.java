@@ -18,7 +18,7 @@ class ChineseAnalyzer {
 
     private static final Logger log = LoggerFactory.getLogger(ChineseAnalyzer.class);
 
-    final private Analyzer analyzer = new SmartChineseAnalyzer(Version.LUCENE_43);
+    final private Analyzer analyzer = new SmartChineseAnalyzer(Version.LUCENE_46);
 
     String[] tokenize(String document) {
         try {
