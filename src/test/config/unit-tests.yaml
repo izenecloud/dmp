@@ -8,6 +8,7 @@ tests:
 
   - name: MaxEnt
     classes:
+      - com.b5m.maxent.TitleCategoryEventStreamTest
       - com.b5m.maxent.MaxEntTest
       - com.b5m.maxent.MaxEntTrainerTest
 
