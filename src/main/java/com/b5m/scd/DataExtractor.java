@@ -18,6 +18,8 @@ import org.apache.commons.lang.StringUtils;
  */
 public class DataExtractor implements Callable<File> {
 
+    public final static char SEPARATOR = '\t';
+
     private static final Logger log = LoggerFactory.getLogger(DataExtractor.class);
 
     private final File scdFile;
@@ -54,8 +56,7 @@ public class DataExtractor implements Callable<File> {
                 continue;
             }
 
-            // XXX is it better us '\t' instead of ' ' ?
-            writer.append(title).append(' ').append(category).append('\n');
+            writer.append(title).append(SEPARATOR).append(category).append('\n');
             counter++;
         }
 
