@@ -33,7 +33,7 @@ final class MaxEntTrainer {
 
     private final static Log log = LogFactory.getLog(MaxEntTrainer.class);
 
-    private final static float TRAIN_TEST_RATE   = 0.6f;
+    private final static float FOLD_RATE         = 0.9f;
     private final static int POOL_SIZE           = 4;
     private final static int TRAIN_ITERATIONS    = 100;
     private final static boolean TRAIN_SMOOTHING = false;
@@ -58,7 +58,7 @@ final class MaxEntTrainer {
      */
     void train() throws IOException {
         createDirectories();
-        splitFileList(TRAIN_TEST_RATE);
+        splitFileList(FOLD_RATE);
         extractData();
         doTrain();
     }
