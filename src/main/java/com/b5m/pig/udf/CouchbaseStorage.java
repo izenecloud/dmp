@@ -99,7 +99,8 @@ public final class CouchbaseStorage extends StoreFunc {
         Properties p = udfc.getUDFProperties(getClass(), new String[]{ udfcSignature });
         p.setProperty(SCHEMA_PROPERTY, fieldSchema.toString());
 
-        log.info("stored schema into UDF context: " + fieldSchema);
+        if (log.isInfoEnabled())
+            log.info("stored schema into UDF context: " + fieldSchema);
     }
 
     /*

@@ -5,8 +5,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -16,7 +16,7 @@ import org.apache.lucene.util.Version;
 
 class ChineseAnalyzer {
 
-    private static final Logger log = LoggerFactory.getLogger(ChineseAnalyzer.class);
+    private static final Log log = LogFactory.getLog(ChineseAnalyzer.class);
 
     final private Analyzer analyzer = new SmartChineseAnalyzer(Version.LUCENE_46);
 

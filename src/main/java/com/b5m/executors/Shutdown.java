@@ -1,7 +1,7 @@
 package com.b5m.executors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Shutdown {
 
-    private final static Logger log = LoggerFactory.getLogger(Shutdown.class);
+    private final static Log log = LogFactory.getLog(Shutdown.class);
 
     public static void andWait(ExecutorService pool, long timeout, TimeUnit unit) {
         pool.shutdown();

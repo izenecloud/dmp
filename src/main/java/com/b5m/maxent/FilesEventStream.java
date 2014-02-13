@@ -3,8 +3,8 @@ package com.b5m.maxent;
 import opennlp.model.EventStream;
 import opennlp.model.Event;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.FileReader;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 class FilesEventStream implements EventStream {
 
-    private final static Logger log = LoggerFactory.getLogger(FilesEventStream.class);
+    private final static Log log = LogFactory.getLog(FilesEventStream.class);
 
     private final Iterator<File> iterator;
     private final String separator;

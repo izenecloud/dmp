@@ -4,8 +4,8 @@ import com.b5m.scd.DataExtractor;
 import com.b5m.scd.ScdFileFilter;
 import com.b5m.executors.Shutdown;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import opennlp.model.AbstractModel;
 import opennlp.model.Event;
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 final class MaxEntTrainer {
 
-    private final static Logger log = LoggerFactory.getLogger(MaxEntTrainer.class);
+    private final static Log log = LogFactory.getLog(MaxEntTrainer.class);
 
     private final static float TRAIN_TEST_RATE   = 0.6f;
     private final static int POOL_SIZE           = 4;
@@ -75,7 +75,8 @@ final class MaxEntTrainer {
     }
 
     private void createDirectories() {
-        tempDir = new File(System.getProperty("java.io.tmpdir"), "MaxEntTrainer"+System.currentTimeMillis());
+        tempDir = new File(System.getProperty("java.io.tmpdir"),
+                           "MaxEntTrainer" + System.currentTimeMillis());
         tempDir.mkdir();
 
         trainDir = new File(tempDir, "train");
@@ -88,16 +89,22 @@ final class MaxEntTrainer {
     private void splitFileList(float rate) {
         List<File> files = ScdFileFilter.scdFilesIn(scdDir);
         if (log.isDebugEnabled()) for (File file : files) log.debug("found file: " + file);
-        log.info("Found {} files in {}", files.size(), scdDir);
+
+        if (log.isInfoEnabled())
+            log.info(String.format("Found %d files in %s", files.size(), scdDir));
 
         int index = (int) (files.size() * rate);
         trainFiles = files.subList(0, index);
         testFiles = files.subList(index, files.size());
-        log.info("Using #train = {} and #test = {}", trainFiles.size(), testFiles.size());
+
+        if (log.isInfoEnabled())
+            log.info(String.format("Using #train = %s and #test = %s",
+                                   trainFiles.size(), testFiles.size()));
     }
 
     private void extractData() {
-        log.info("Extracting data from SCD Files...");
+        if (log.isInfoEnabled())
+            log.info("Extracting data from SCD Files...");
 
         int numThreads = Math.min(POOL_SIZE, trainFiles.size());
         ExecutorService pool = Executors.newFixedThreadPool(numThreads);
@@ -110,15 +117,20 @@ final class MaxEntTrainer {
         }
 
         Shutdown.andWait(pool, 60, TimeUnit.SECONDS);
-        log.info("Title-Category pairs extracted from SCD files");
+
+        if (log.isInfoEnabled())
+            log.info("Title-Category pairs extracted from SCD files");
     }
 
     private void doTrain() throws IOException {
-        log.info("Training model ...");
+        if (log.isInfoEnabled())
+            log.info("Training model ...");
 
         List<File> files = Arrays.asList(
                 trainDir.listFiles(new OutFileFilter()));
-        log.info("Found {} train files in {}", files.size(), trainDir);
+
+        if (log.isInfoEnabled())
+            log.info(String.format("Found %d train files in %s", files.size(), trainDir));
 
         EventStream eventStream = new FilesEventStream(files,
                 DataExtractor.SEPARATOR);
@@ -133,15 +145,19 @@ final class MaxEntTrainer {
                 modelFile);
         writer.persist();
 
-        log.info("Model written to file: {}", modelFile);
+        if (log.isInfoEnabled())
+            log.info("Model written to file: " + modelFile);
     }
 
     TrainResults doTest() throws IOException, ExecutionException {
-        log.info("Testing model file: {} ...", modelFile);
+        if (log.isInfoEnabled())
+            log.info("Testing model file: " + modelFile);
 
         List<File> files = Arrays.asList(
                 testDir.listFiles(new OutFileFilter()));
-        log.info("Found {} test files in {}", files.size(), testDir);
+
+        if (log.isInfoEnabled())
+            log.info(String.format("Found %d test files in %s", files.size(), testDir));
 
 
         int numThreads = Math.min(POOL_SIZE, files.size());
@@ -168,7 +184,9 @@ final class MaxEntTrainer {
             }
         }
 
-        log.info("Test Model FINISHED");
+        if (log.isInfoEnabled())
+            log.info("Testing model finished: " + trainResults);
+
         return trainResults;
     }
 

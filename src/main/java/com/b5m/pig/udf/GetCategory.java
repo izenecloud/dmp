@@ -92,8 +92,9 @@ public class GetCategory extends EvalFunc<String> {
 
     private void init() throws IOException {
         File file = new File(isLocal ? filename : "./maxent");
-        getLogger().info(String.format("initializing with file: %s (%s)",
-                                       file, isLocal ? "local" : "cached"));
+        if (getLogger().isInfoEnabled())
+            getLogger().info(String.format("initializing with file: %s (%s)",
+                                           file, isLocal ? "local" : "cached"));
         classifier = new MaxEntCategoryClassifier(file);
     }
 

@@ -8,8 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -20,7 +20,7 @@ public class DataExtractor implements Callable<File> {
 
     public final static char SEPARATOR = '\t';
 
-    private static final Logger log = LoggerFactory.getLogger(DataExtractor.class);
+    private static final Log log = LogFactory.getLog(DataExtractor.class);
 
     private final File scdFile;
     private final File outputFile;
@@ -39,11 +39,15 @@ public class DataExtractor implements Callable<File> {
         this.outputFile = new File(outputDir, scdFile.getName() + ".out");
         this.onlyTopCategory = onlyTopCategory;
 
+        if (log.isDebugEnabled())
+            log.debug(String.format("in: [%s] out: [%s] onlyTop: [%s]",
+                                    scdFile, outputDir, onlyTopCategory));
     }
 
     @Override
     public File call() throws IOException {
-        log.debug("creating empty output file: " + outputFile);
+        if (log.isDebugEnabled())
+            log.debug("creating empty output file: " + outputFile);
         outputFile.createNewFile();
 
         BufferedReader reader = new BufferedReader(new FileReader(scdFile));
@@ -53,7 +57,8 @@ public class DataExtractor implements Callable<File> {
         long counter = 0L;
         while (nextDocument(reader)) {
             if (StringUtils.isBlank(title) || StringUtils.isBlank(category)) {
-                log.debug("skipping current document due to empty title/category");
+                if (log.isDebugEnabled())
+                    log.debug("skipping current document due to empty title/category");
                 continue;
             }
 
@@ -64,7 +69,8 @@ public class DataExtractor implements Callable<File> {
         reader.close();
         writer.close();
 
-        log.debug("found {} items", counter);
+        if (log.isDebugEnabled())
+            log.debug(String.format("found %d items", counter));
         return outputFile;
     }
 

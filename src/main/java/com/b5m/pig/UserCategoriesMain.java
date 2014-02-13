@@ -45,7 +45,8 @@ public final class UserCategoriesMain {
     /* Parse command line. */
     private static boolean parseOptions(Options options, String[] args, Parameters params) {
         if (args.length < 2) return false;
-        log.debug("args: " + Arrays.toString(args));
+
+        if (log.isDebugEnabled()) log.debug("args: " + Arrays.toString(args));
 
         CommandLineParser parser = new BasicParser();
         try {

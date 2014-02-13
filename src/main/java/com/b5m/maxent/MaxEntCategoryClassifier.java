@@ -1,7 +1,7 @@
 package com.b5m.maxent;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import opennlp.maxent.ContextGenerator;
 import opennlp.model.GenericModelReader;
@@ -12,15 +12,18 @@ import java.io.IOException;
 
 public class MaxEntCategoryClassifier implements CategoryClassifier {
 
-    private static final Logger log = LoggerFactory.getLogger(MaxEntCategoryClassifier.class);
+    private static final Log log = LogFactory.getLog(MaxEntCategoryClassifier.class);
 
     private final MaxentModel model;
     private final ContextGenerator contextGenerator;
 
     public MaxEntCategoryClassifier(File modelFile) throws IOException {
-        log.info("Loading model from: " +  modelFile);
+        if (log.isInfoEnabled()) log.info("Loading model from: " +  modelFile);
+
         model = new GenericModelReader(modelFile).getModel();
         contextGenerator = new MaxEntContextGenerator();
+
+        if (log.isInfoEnabled()) log.info("Model loaded");
     }
 
     @Override
