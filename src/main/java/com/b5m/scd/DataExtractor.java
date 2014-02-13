@@ -24,20 +24,21 @@ public class DataExtractor implements Callable<File> {
 
     private final File scdFile;
     private final File outputFile;
-
-    private boolean onlyTop = true;
+    private final boolean onlyTopCategory;
 
     private String title;
     private String category;
     private boolean firstDocument = true;
 
     public DataExtractor(File scdFile, File outputDir) {
-        this.scdFile = scdFile;
-        this.outputFile = new File(outputDir, scdFile.getName() + ".out");
+        this(scdFile, outputDir, true);
     }
 
-    public void onlyTop(boolean val) {
-        onlyTop = val;
+    public DataExtractor(File scdFile, File outputDir, boolean onlyTopCategory) {
+        this.scdFile = scdFile;
+        this.outputFile = new File(outputDir, scdFile.getName() + ".out");
+        this.onlyTopCategory = onlyTopCategory;
+
     }
 
     @Override
@@ -79,15 +80,15 @@ public class DataExtractor implements Callable<File> {
             } else if (line.startsWith("<Title>")) {
                 title = line.substring(7);
             } else if (line.startsWith("<Category>")) {
-                category = substring(line.substring(10), onlyTop);
+                category = substring(line.substring(10));
             }
         }
 
         return false;
     }
 
-    private String substring(String category, boolean first) {
-        int i = first ? category.indexOf('>') : category.lastIndexOf('>');
+    private String substring(String category) {
+        int i = onlyTopCategory ? category.indexOf('>') : category.lastIndexOf('>');
         return (i == -1) ? category : category.substring(0, i);
     }
 

@@ -42,8 +42,7 @@ public class DataExtractorTest {
 
     @Test
     public void fullCategory() throws Exception {
-        DataExtractor de = new DataExtractor(input, outputDir);
-        de.onlyTop(false);
+        DataExtractor de = new DataExtractor(input, outputDir, false);
 
         File out = de.call();
         checkFile(out, expectedFull);
