@@ -66,7 +66,7 @@ final class MaxEntTrainer {
     /**
      * Test a MaxEnt classifier using model agains files in directory.
      */
-    TrainResults test() throws IOException, ExecutionException {
+    TestResults test() throws IOException, ExecutionException {
         return doTest();
     }
 
@@ -149,7 +149,7 @@ final class MaxEntTrainer {
             log.info("Model written to file: " + modelFile);
     }
 
-    TrainResults doTest() throws IOException, ExecutionException {
+    TestResults doTest() throws IOException, ExecutionException {
         if (log.isInfoEnabled())
             log.info("Testing model file: " + modelFile);
 
@@ -159,41 +159,67 @@ final class MaxEntTrainer {
         if (log.isInfoEnabled())
             log.info(String.format("Found %d test files in %s", files.size(), testDir));
 
-
         int numThreads = Math.min(POOL_SIZE, files.size());
         ExecutorService pool = Executors.newFixedThreadPool(numThreads);
 
-        // TODO move this into the task
-        MaxEntCategoryClassifier maxent = new MaxEntCategoryClassifier(modelFile); // is this thread-safe?
-
-        List<Future<TrainResults>> results = new LinkedList<Future<TrainResults>>();
+        List<Future<TestResults>> futures = new LinkedList<Future<TestResults>>();
         for (File file : files) {
-            results.add(pool.submit(new MaxentTestTask(maxent, file)));
+            futures.add(pool.submit(new MaxentTestTask(file)));
         }
         Shutdown.andWait(pool, 60, TimeUnit.SECONDS);
 
-        TrainResults trainResults = new TrainResults();
-        for (Future<TrainResults> future : results) {
+        TestResults results = new TestResults();
+        for (Future<TestResults> future : futures) {
             try {
-                TrainResults res = future.get();
+                TestResults res = future.get();
 
-                trainResults.goodCases += res.goodCases;
-                trainResults.badCases  += res.badCases;
+                results.goodCases += res.goodCases;
+                results.badCases  += res.badCases;
             } catch (InterruptedException e) {
                 log.error("Interrupted", e);
             }
         }
 
         if (log.isInfoEnabled())
-            log.info("Testing model finished: " + trainResults);
+            log.info("Testing model finished: " + results);
 
-        return trainResults;
+        return results;
+    }
+
+    private class MaxentTestTask implements Callable<TestResults> {
+        private final MaxEntCategoryClassifier model;
+        private final File file;
+
+        MaxentTestTask(File testFile) throws IOException {
+            model = new MaxEntCategoryClassifier(modelFile);
+            file = testFile;
+        }
+
+        @Override
+        public TestResults call() throws IOException {
+            FileReader fr = new FileReader(file);
+            EventStream es = new TitleCategoryEventStream(fr,
+                    Character.toString(DataExtractor.SEPARATOR));
+
+            TestResults results = new TestResults();
+
+            while (es.hasNext()) {
+                Event event = es.next();
+                String expected = event.getOutcome();
+                String actual = model.eval(event.getContext());
+                if (expected.equalsIgnoreCase(actual)) {
+                    results.goodCases++;
+                } else {
+                    results.badCases++;
+                }
+            }
+            return results;
+        }
     }
 
 }
 
-// TODO rename to TrainStats
-class TrainResults {
+class TestResults {
     long goodCases = 0L;
     long badCases  = 0L;
 
@@ -202,35 +228,4 @@ class TrainResults {
         return String.format("#good=%d, #bad=%d", goodCases, badCases);
     }
 }
-
-class MaxentTestTask implements Callable<TrainResults> {
-    private final MaxEntCategoryClassifier model;
-    private final File file;
-
-    private TrainResults results = new TrainResults();
-
-    MaxentTestTask(MaxEntCategoryClassifier maxent, File testFile) {
-        model = maxent;
-        file = testFile;
-    }
-
-    @Override
-    public TrainResults call() throws IOException {
-        FileReader fr = new FileReader(file);
-        EventStream es = new TitleCategoryEventStream(fr,
-                Character.toString(DataExtractor.SEPARATOR));
-
-        while (es.hasNext()) {
-            Event event = es.next();
-            String outcome = model.eval(event.getContext());
-            if (event.getOutcome().equalsIgnoreCase(outcome)) {
-                results.goodCases++;
-            } else {
-                results.badCases++;
-            }
-        }
-        return results;
-    }
-}
-
 

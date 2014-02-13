@@ -25,7 +25,7 @@ public class Main {
         MaxEntTrainer trainer = new MaxEntTrainer(scdDir, modelFile);
 
         trainer.train();
-        TrainResults results = trainer.test();
+        TestResults results = trainer.test();
 
         System.out.println("Model Test Results: " + results);
     }

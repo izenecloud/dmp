@@ -41,7 +41,7 @@ public class MaxEntTrainerTest {
         assertTrue(modelFile.isFile());
         assertTrue(FileUtils.contentEquals(modelFile, expected));
 
-        TrainResults results = trainer.test();
+        TestResults results = trainer.test();
         assertTrue(results.goodCases >= 0);
         assertTrue(results.badCases >= 0);
         assertTrue(results.goodCases + results.badCases > 0);
