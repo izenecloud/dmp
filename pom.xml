@@ -10,10 +10,13 @@
 
     <repositories>
         <repository>
+            <id>internal</id>
+            <url>http://10.10.100.72:8082/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>cloudera</id>
             <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
         </repository>
-        <!-- TODO put our nexus here -->
     </repositories>
 
     <properties>
