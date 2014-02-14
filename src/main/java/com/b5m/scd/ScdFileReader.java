@@ -9,21 +9,23 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- *
+ * Read SCD files with Iterator-like interface.
+ * 
  * @author Paolo D'Apice
  */
-class ScdFileReader implements Closeable {
+final class ScdFileReader implements Closeable {
 
     private final static Log log = LogFactory.getLog(ScdFileReader.class);
 
     final static String DOCID_TAG = "<DOCID>";
 
-    private BufferedReader reader;
-    
+    private final BufferedReader reader;
+
+    private Document current;
+    private Document next;
+
     ScdFileReader(InputStream is) {
         reader = new BufferedReader(new InputStreamReader(is));
     }
@@ -41,15 +43,12 @@ class ScdFileReader implements Closeable {
         reader.close();
     }
 
-    private Document current;
-    private Document next;
-
     private boolean nextDocument() throws IOException {
         String line = null;
         while (null != (line = reader.readLine())) {
             if (StringUtils.isBlank(line)) continue;
             
-            Entry e = parse(line);
+            Entry e = Entry.parse(line);
             if (e.tag.equals(DOCID_TAG)) {
                 if (next == null) {
                     if (log.isTraceEnabled()) 
@@ -90,40 +89,6 @@ class ScdFileReader implements Closeable {
         }
 
         return false;
-    }
-
-    Entry parse(String line) {
-        // naive implementation
-        int index = line.indexOf('>') + 1;
-        return new Entry(line.substring(0, index), line.substring(index));
-    }
-
-    class Entry {
-        final String tag;
-        final String value;
-
-        Entry(String tag, String value) {
-            this.tag = tag;
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return tag + value;
-        }
-    }
-
-    class Document {
-        List<Entry> entries = new ArrayList<Entry>();
-
-        void add(Entry entry) {
-            entries.add(entry);
-        }
-
-        @Override
-        public String toString() {
-            return entries.toString();
-        }
     }
 
 }

@@ -31,8 +31,9 @@ public class ScdFileReaderTest {
 
         List<String> actual = new ArrayList<String>();
         while (reader.hasNext()) {
-            ScdFileReader.Document d = reader.next();
-            ScdFileReader.Entry id = d.entries.get(0);
+            Document d = reader.next();
+            Entry id = d.entries.get(0);
+            assertEquals(id.untag(), "DOCID");
             actual.add(id.toString());
         }
 
