@@ -4,7 +4,6 @@ import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +13,9 @@ public class ScdFileFilterTest {
     @Test
     public void filter() {
         List<File> files = ScdFileFilter.scdFilesIn(new File("src/test/data"));
-        assertEquals(files, Arrays.asList(new File("src/test/data/test.scd")));
+        assertEquals(files, Arrays.asList(
+                new File("src/test/data/test.scd"),
+                new File("src/test/data/short.scd")));
     }
 
 }
