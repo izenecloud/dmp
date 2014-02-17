@@ -30,10 +30,10 @@ public class ScdFileReaderTest {
         reader = new ScdFileReader(is);
 
         List<String> actual = new ArrayList<String>();
-        while (reader.hasNext()) {
-            Document d = reader.next();
+        while (reader.nextDocument()) {
+            Document d = reader.getCurrentDocument();
             Entry id = d.entries.get(0);
-            assertEquals(id.untag(), "DOCID");
+            assertEquals(id.getTagName(), "DOCID");
             actual.add(id.toString());
         }
 
@@ -52,8 +52,8 @@ public class ScdFileReaderTest {
         reader = new ScdFileReader(is);
 
         int count = 0;
-        while (reader.hasNext()) {
-            reader.next();
+        while (reader.nextDocument()) {
+            reader.getCurrentDocument();
             count++;
         }
 

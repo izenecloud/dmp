@@ -1,6 +1,7 @@
 package com.b5m.scd;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -8,12 +9,16 @@ import java.util.List;
  * 
  * @author Paolo D'Apice
  */
-class Document {
+public final class Document {
 
-    List<Entry> entries = new ArrayList<Entry>();
+    protected List<Entry> entries = new ArrayList<Entry>();
 
-    void add(Entry entry) {
+    public void add(Entry entry) {
         entries.add(entry);
+    }
+
+    public List<Entry> entries() {
+        return Collections.unmodifiableList(entries);
     }
 
     @Override

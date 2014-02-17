@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
  * 
  * @author Paolo D'Apice
  */
-final class ScdFileReader implements Closeable {
+public final class ScdFileReader implements Closeable {
 
     private final static Log log = LogFactory.getLog(ScdFileReader.class);
 
@@ -26,16 +26,11 @@ final class ScdFileReader implements Closeable {
     private Document current;
     private Document next;
 
-    ScdFileReader(InputStream is) {
+    /**
+     * Create new instance with the given InputStream.
+     */
+    public ScdFileReader(InputStream is) {
         reader = new BufferedReader(new InputStreamReader(is));
-    }
-
-    boolean hasNext() throws IOException {
-        return nextDocument();
-    }
-
-    Document next() {
-        return current;
     }
 
     @Override
@@ -43,7 +38,12 @@ final class ScdFileReader implements Closeable {
         reader.close();
     }
 
-    private boolean nextDocument() throws IOException {
+    /**
+     * Read the next document.
+     * @return true if a new document was read
+     * @throws IOException 
+     */
+    public boolean nextDocument() throws IOException {
         String line = null;
         while (null != (line = reader.readLine())) {
             if (StringUtils.isBlank(line)) continue;
@@ -89,6 +89,14 @@ final class ScdFileReader implements Closeable {
         }
 
         return false;
+    }
+
+    /**
+     * Get the current document.
+     * @return The document that was read.
+     */
+    public Document getCurrentDocument() {
+        return current;
     }
 
 }

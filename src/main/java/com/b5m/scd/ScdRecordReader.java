@@ -44,8 +44,8 @@ final class ScdRecordReader extends RecordReader<Text, MapWritable> {
 
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
-        boolean val = reader.hasNext();
-        if (val) document = reader.next();
+        boolean val = reader.nextDocument();
+        if (val) document = reader.getCurrentDocument();
             
         return val;
     }
@@ -60,7 +60,7 @@ final class ScdRecordReader extends RecordReader<Text, MapWritable> {
     public MapWritable getCurrentValue() throws IOException, InterruptedException {
         MapWritable fields = new MapWritable();
         for (Entry e : document.entries)
-            fields.put(new Text(e.untag()), new Text(e.value));
+            fields.put(new Text(e.getTagName()), new Text(e.value));
         return fields;
     }
 
