@@ -22,7 +22,8 @@ tests:
       - com.b5m.pig.udf.TestGetCategory
       - com.b5m.pig.udf.TestMergeMaps
       - com.b5m.pig.udf.TestNormalizeMap
-
+      - com.b5m.pig.udf.CategoryText
+      
   - name: Utils
     classes:
       - com.b5m.utils.DatesGeneratorTest
