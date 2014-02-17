@@ -23,4 +23,8 @@ tests:
     classes:
       - com.b5m.pig.UserCategoriesOnPig
 
+  - name: MaxEnt
+    classes:
+      - com.b5m.pig.udf.MaxEntPairsOnPig
+
 # vim:sw=2:ts=2:
