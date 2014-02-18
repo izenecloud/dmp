@@ -13,7 +13,7 @@ import com.b5m.utils.Tuples;
 import java.util.Map;
 
 @Test(groups={"pig"})
-public class TestConvertToMap {
+public class ConvertToMapTest {
 
     private final static String SCHEMA = "({(uuid:chararray, category:chararray, count:int)})";
 

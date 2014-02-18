@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Test(groups={"pig"})
-public class UserCategoriesOnPig {
+@Test(groups={"couchbase","pig"})
+public class UserCategoriesIT {
 
     private final static String BUCKET = "default";
     private final static String PASSWORD = "";

@@ -15,7 +15,7 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
 import java.io.File;
 
 @Test(groups={"pig"})
-public class TestGetCategory {
+public class GetCategoryTest {
 
     private EvalFunc<String> func;
 

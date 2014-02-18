@@ -1,30 +1,30 @@
 name: PigSuite
 
 tests:
-  - name: GetCategory
-    classes:
-      - com.b5m.pig.udf.GetCategoryOnPig
-
-  - name: ScdLoader
-    classes:
-      - com.b5m.pig.udf.ScdLoaderOnPig
-
   - name: CouchbaseStorage
     classes:
       - com.b5m.couchbase.CouchbaseClientIT
-      - com.b5m.pig.udf.CouchbaseStorageOnPig
-
+      - com.b5m.pig.udf.CouchbaseStorageIT
+      
+  - name: GetCategory
+    classes:
+      - com.b5m.pig.udf.GetCategoryIT
+      
   - name: LogAnalysis
     classes:
-      - com.b5m.pig.LogAnalysisOnPig
-
-  - name: UserCategories
-    classes:
-      - com.b5m.pig.UserCategoriesOnPig
-
+      - com.b5m.pig.LogAnalysisIT
+      
   - name: MaxEnt
     classes:
-      - com.b5m.pig.udf.MaxEntPairsOnPig
-      - com.b5m.pig.udf.MaxEntClassifierBuilderOnPig
+      - com.b5m.pig.udf.MaxEntPairsIT
+      - com.b5m.pig.udf.MaxEntClassifierBuilderIT
+      
+  - name: ScdLoader
+    classes:
+      - com.b5m.pig.udf.ScdLoaderIT
+      
+  - name: UserCategories
+    classes:
+      - com.b5m.pig.UserCategoriesIT
 
 # vim:sw=2:ts=2:

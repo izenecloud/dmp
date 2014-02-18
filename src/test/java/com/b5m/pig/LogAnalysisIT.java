@@ -9,7 +9,7 @@ import java.io.File;
 import org.testng.annotations.BeforeTest;
 
 @Test(groups={"pig"})
-public class LogAnalysisOnPig {
+public class LogAnalysisIT {
 
     private String[] expected;
 

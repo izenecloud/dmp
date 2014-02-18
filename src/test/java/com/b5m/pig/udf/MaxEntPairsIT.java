@@ -4,7 +4,7 @@ import org.apache.pig.pigunit.PigTest;
 import org.testng.annotations.Test;
 
 @Test(groups={"pig"})
-public class MaxEntPairsOnPig {
+public class MaxEntPairsIT {
 
     @Test
     public void pairs() throws Exception {

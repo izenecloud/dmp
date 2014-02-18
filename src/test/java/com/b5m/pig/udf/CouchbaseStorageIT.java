@@ -17,8 +17,8 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
-@Test(groups={"pig"})
-public class CouchbaseStorageOnPig {
+@Test(groups={"couchbase","pig"})
+public class CouchbaseStorageIT {
 
     private final static String BUCKET = "default";
     private final static String PASSWORD = "";

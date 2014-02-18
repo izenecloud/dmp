@@ -13,7 +13,7 @@ import com.b5m.utils.Tuples;
 import java.util.Map;
 
 @Test(groups={"pig"})
-public class TestNormalizeMap {
+public class NormalizeMapTest {
 
     private final EvalFunc<Map> func = new NormalizeMap();
 

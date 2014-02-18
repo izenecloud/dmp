@@ -14,7 +14,7 @@ import java.util.Map;
 import org.apache.pig.pigunit.PigTest;
 
 @Test(groups={"pig"})
-public class GetCategoryOnPig {
+public class GetCategoryIT {
 
     private PigServer pigServer = null;
 

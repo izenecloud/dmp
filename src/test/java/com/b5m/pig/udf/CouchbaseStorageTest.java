@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import org.apache.pig.StoreFunc;
 
 @Test(groups={"pig"})
-public class TestCouchbaseStorage {
+public class CouchbaseStorageTest {
 
     private final StoreFunc func = new CouchbaseStorage();
 

@@ -12,6 +12,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
+@Test(groups={"couchbase"})
 public class CouchbaseClientIT {
 
     private final static String BUCKET = "default";

@@ -9,7 +9,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 
 @Test(groups={"pig"})
-public class MaxEntClassifierBuilderOnPig {
+public class MaxEntClassifierBuilderIT {
     
     @Test
     public void train() throws Exception{

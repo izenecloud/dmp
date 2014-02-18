@@ -11,7 +11,7 @@ import org.apache.pig.data.Tuple;
 import org.apache.pig.pigunit.PigTest;
 
 @Test(groups={"pig"})
-public class ScdLoaderOnPig {
+public class ScdLoaderIT {
 
     @Test
     public void test1() throws Exception {

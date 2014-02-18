@@ -13,7 +13,7 @@ import com.b5m.utils.Tuples;
 import java.util.Map;
 
 @Test(groups={"pig"})
-public class TestMergeMaps {
+public class MergeMapsTest {
 
     private final static String SCHEMA = "([int])";
 

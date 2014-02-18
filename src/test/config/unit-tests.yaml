@@ -1,11 +1,6 @@
 name: UnitTests
 
 tests:
-  - name: Scd
-    classes:
-      - com.b5m.scd.ScdFileFilterTest
-      - com.b5m.scd.ScdFileReaderTest
-
   - name: MaxEnt
     classes:
       - com.b5m.maxent.FilesEventStreamTest
@@ -15,14 +10,19 @@ tests:
   - name: Pig
     classes:
       - com.b5m.pig.JsonSerializerTest
-      - com.b5m.pig.udf.CategoryText
+      - com.b5m.pig.udf.CategoryTextTest
+      - com.b5m.pig.udf.ConvertToMapTest
+      - com.b5m.pig.udf.CouchbaseStorageTest
+      - com.b5m.pig.udf.GetCategoryTest
       - com.b5m.pig.udf.MaxEntClassifierBuilderTest
-      - com.b5m.pig.udf.TestConvertToMap
-      - com.b5m.pig.udf.TestCouchbaseStorage
-      - com.b5m.pig.udf.TestGetCategory
-      - com.b5m.pig.udf.TestMergeMaps
-      - com.b5m.pig.udf.TestNormalizeMap
-      
+      - com.b5m.pig.udf.MergeMapsTest
+      - com.b5m.pig.udf.NormalizeMapTest
+
+  - name: Scd
+    classes:
+      - com.b5m.scd.ScdFileFilterTest
+      - com.b5m.scd.ScdFileReaderTest
+
   - name: Utils
     classes:
       - com.b5m.utils.DatesGeneratorTest
