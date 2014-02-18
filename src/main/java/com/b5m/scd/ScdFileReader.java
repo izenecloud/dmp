@@ -71,6 +71,14 @@ public final class ScdFileReader implements Closeable {
                 return true;
             }
 
+            // trailing entries before docid are discarded
+            if (next == null) {
+                if (log.isTraceEnabled())
+                    log.trace("ignoring trailing entry: " + e.tag);
+                
+                continue;
+            }
+
             if (log.isTraceEnabled())
                 log.trace("add entry: " + e.tag);
 
