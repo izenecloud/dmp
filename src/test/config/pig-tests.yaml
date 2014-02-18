@@ -26,5 +26,6 @@ tests:
   - name: MaxEnt
     classes:
       - com.b5m.pig.udf.MaxEntPairsOnPig
+      - com.b5m.pig.udf.MaxEntClassifierBuilderOnPig
 
 # vim:sw=2:ts=2:
