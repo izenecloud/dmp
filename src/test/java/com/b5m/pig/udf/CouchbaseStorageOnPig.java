@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Test(groups={"pig"})
 public class CouchbaseStorageOnPig {
 
     private final static String BUCKET = "default";

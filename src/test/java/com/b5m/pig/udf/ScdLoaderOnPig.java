@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.pigunit.PigTest;
 
+@Test(groups={"pig","scd"})
 public class ScdLoaderOnPig {
 
     @Test

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Test(groups={"pig"})
 public class GetCategoryEmbedded {
 
     private PigServer pigServer = null;

@@ -8,6 +8,7 @@ import org.apache.pig.tools.parameters.ParseException;
 
 import java.io.IOException;
 
+@Test(groups={"pig"})
 public class GetCategoryOnPig {
 
     @Test
