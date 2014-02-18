@@ -2,6 +2,7 @@ package com.b5m.maxent;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import opennlp.maxent.GIS;
@@ -28,7 +29,7 @@ public final class MaxEntRecordWriter extends RecordWriter<Text, Text> {
 
     private final static Log log = LogFactory.getLog(MaxEntRecordWriter.class);
 
-    private final List<Event> events = new LinkedList<Event>(); // TODO concurrent
+    private final List<Event> events = Collections.synchronizedList(new LinkedList<Event>());
     private final MaxEntEventGenerator generator = new MaxEntEventGenerator();
 
     private final int iterations;
