@@ -11,7 +11,9 @@ import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.pig.ResourceSchema;
+import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.StoreFunc;
+import org.apache.pig.data.DataType;
 import org.apache.pig.data.Tuple;
 
 /**
@@ -49,8 +51,24 @@ public final class MaxEntClassifierBuilder extends StoreFunc {
 
     @Override
     public void checkSchema(ResourceSchema schema) throws IOException {
-        // TODO check that input is (chararray, chararray) 
-        log.warn("TODO check schema");
+        if (log.isDebugEnabled()) log.debug("schema: " + schema);
+        ResourceFieldSchema[] fields = schema.getFields();
+
+        if (fields.length != 2) {
+            String message = String.format("Expected input tuple of size 2, received %d",
+                                           fields.length);
+            throw new IOException(message);
+        }
+
+        byte field1 = fields[0].getType();
+        byte field2 = fields[1].getType();
+        if (field1 != DataType.CHARARRAY || field2 != DataType.CHARARRAY) {
+            String message = String.format("Expected schema (chararray, chararray), "
+                                          +"received (%s, %s)",
+                                           DataType.findTypeName(field1),
+                                           DataType.findTypeName(field2));
+            throw new IOException(message);
+        }
     }    
 
     /*

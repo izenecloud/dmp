@@ -16,6 +16,7 @@ tests:
     classes:
       - com.b5m.pig.JsonSerializerTest
       - com.b5m.pig.udf.CategoryText
+      - com.b5m.pig.udf.MaxEntClassifierBuilderTest
       - com.b5m.pig.udf.TestConvertToMap
       - com.b5m.pig.udf.TestCouchbaseStorage
       - com.b5m.pig.udf.TestGetCategory
