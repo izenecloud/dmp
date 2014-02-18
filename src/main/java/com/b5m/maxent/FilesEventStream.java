@@ -19,7 +19,7 @@ import java.util.List;
  * @author Paolo D'Apice
  */
 @Deprecated
-class FilesEventStream implements EventStream {
+final class FilesEventStream implements EventStream {
 
     private final static Log log = LogFactory.getLog(FilesEventStream.class);
 

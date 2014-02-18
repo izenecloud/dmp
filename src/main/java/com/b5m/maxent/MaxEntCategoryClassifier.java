@@ -10,7 +10,10 @@ import opennlp.model.MaxentModel;
 import java.io.File;
 import java.io.IOException;
 
-public class MaxEntCategoryClassifier implements CategoryClassifier {
+/**
+ * Maximum Entropy category classifier. 
+ */
+public final class MaxEntCategoryClassifier implements CategoryClassifier {
 
     private static final Log log = LogFactory.getLog(MaxEntCategoryClassifier.class);
 

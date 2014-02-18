@@ -16,7 +16,7 @@ public class TestConvertToMap {
 
     private final static String SCHEMA = "({(uuid:chararray, category:chararray, count:int)})";
 
-    private ConvertToMap func = new ConvertToMap();
+    private final ConvertToMap func = new ConvertToMap();
 
     @DataProvider
     public Object[][] tuples() throws Exception {

@@ -1,6 +1,5 @@
 package com.b5m.pig.udf;
 
-import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
 import org.apache.pig.pigunit.PigTest;

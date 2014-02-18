@@ -6,7 +6,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import org.apache.pig.PigServer;
-import org.apache.pig.data.Tuple;
 import org.apache.pig.backend.executionengine.ExecJob;
 
 import java.io.IOException;

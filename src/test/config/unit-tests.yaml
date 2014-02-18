@@ -8,19 +8,19 @@ tests:
 
   - name: MaxEnt
     classes:
-      - com.b5m.maxent.TitleCategoryEventStreamTest
       - com.b5m.maxent.FilesEventStreamTest
       - com.b5m.maxent.MaxEntCategoryClassifierTest
+      - com.b5m.maxent.TitleCategoryEventStreamTest
 
   - name: Pig
     classes:
       - com.b5m.pig.JsonSerializerTest
+      - com.b5m.pig.udf.CategoryText
       - com.b5m.pig.udf.TestConvertToMap
       - com.b5m.pig.udf.TestCouchbaseStorage
       - com.b5m.pig.udf.TestGetCategory
       - com.b5m.pig.udf.TestMergeMaps
       - com.b5m.pig.udf.TestNormalizeMap
-      - com.b5m.pig.udf.CategoryText
       
   - name: Utils
     classes:

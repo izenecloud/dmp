@@ -143,7 +143,6 @@ public final class CouchbaseStorage extends StoreFunc {
             log.error("Interrupted", e);
             throw new IOException(e);
         }
-        System.out.println(tuple.toString());
     }
 
     @Override

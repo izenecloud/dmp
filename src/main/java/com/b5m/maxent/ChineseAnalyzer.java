@@ -14,7 +14,7 @@ import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.util.Version;
 
-class ChineseAnalyzer {
+final class ChineseAnalyzer {
 
     private static final Log log = LogFactory.getLog(ChineseAnalyzer.class);
 
@@ -22,7 +22,7 @@ class ChineseAnalyzer {
 
     String[] tokenize(String document) {
         try {
-            TokenStream tokenStream = analyzer.tokenStream(new String("field"),
+            TokenStream tokenStream = analyzer.tokenStream("field",
                     new StringReader(document));
 
             List<String> tokens = new ArrayList<String>();

@@ -16,7 +16,7 @@ import java.io.FileReader;
  * @author Paolo D'Apice
  */
 @Deprecated
-class TitleCategoryEventStream extends AbstractEventStream {
+final class TitleCategoryEventStream extends AbstractEventStream {
 
     private final DataStream dataStream;
     private final String separator;

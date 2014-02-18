@@ -6,12 +6,10 @@ import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import org.apache.pig.ResourceSchema;
-
 @Test(groups={"pig"})
 public class TestCouchbaseStorage {
 
-    private CouchbaseStorage func = new CouchbaseStorage();
+    private final CouchbaseStorage func = new CouchbaseStorage();
 
     @DataProvider
     public Object[][] schemas() {

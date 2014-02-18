@@ -11,7 +11,6 @@ import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.executionengine.ExecJob;
 import org.apache.pig.data.Tuple;
 
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,7 +29,7 @@ public class UserCategories implements Callable<ExecJob> {
 
     private final static Log log = LogFactory.getLog(UserCategories.class);
 
-    private String date;
+    private final String date;
     private final int count;
 
     private Properties properties = new Properties();
