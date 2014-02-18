@@ -47,7 +47,7 @@ public final class CouchbaseStorage extends StoreFunc {
 
     @Override
     public OutputFormat getOutputFormat() throws IOException {
-        return new CouchbaseOutputFormat<Text, Text>(conf);
+        return new CouchbaseOutputFormat(conf);
     }
 
     @Override
@@ -99,7 +99,8 @@ public final class CouchbaseStorage extends StoreFunc {
         Properties p = udfc.getUDFProperties(getClass(), new String[]{ udfcSignature });
         p.setProperty(SCHEMA_PROPERTY, fieldSchema.toString());
 
-        log.info("stored schema into UDF context: " + fieldSchema);
+        if (log.isInfoEnabled())
+            log.info("stored schema into UDF context: " + fieldSchema);
     }
 
     /*
@@ -142,7 +143,6 @@ public final class CouchbaseStorage extends StoreFunc {
             log.error("Interrupted", e);
             throw new IOException(e);
         }
-        System.out.println(tuple.toString());
     }
 
     @Override

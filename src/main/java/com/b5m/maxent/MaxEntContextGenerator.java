@@ -2,10 +2,14 @@ package com.b5m.maxent;
 
 import opennlp.maxent.ContextGenerator;
 
-class MaxEntContextGenerator implements ContextGenerator {
+/**
+ * Context generator for Chinese language.
+ */
+final class MaxEntContextGenerator implements ContextGenerator {
 
-    private ChineseAnalyzer analyzer = new ChineseAnalyzer();
+    private final ChineseAnalyzer analyzer = new ChineseAnalyzer();
 
+    @Override
     public String[] getContext(Object o) {
         String s = (String) o;
         return analyzer.tokenize(s);

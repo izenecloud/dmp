@@ -6,6 +6,10 @@ tests:
       - com.b5m.pig.udf.GetCategoryOnPig
       - com.b5m.pig.udf.GetCategoryEmbedded
 
+  - name: ScdLoader
+    classes:
+      - com.b5m.pig.udf.ScdLoaderOnPig
+
   - name: CouchbaseStorage
     classes:
       - com.b5m.couchbase.CouchbaseClientIT
@@ -18,5 +22,10 @@ tests:
   - name: UserCategories
     classes:
       - com.b5m.pig.UserCategoriesOnPig
+
+  - name: MaxEnt
+    classes:
+      - com.b5m.pig.udf.MaxEntPairsOnPig
+      - com.b5m.pig.udf.MaxEntClassifierBuilderOnPig
 
 # vim:sw=2:ts=2:

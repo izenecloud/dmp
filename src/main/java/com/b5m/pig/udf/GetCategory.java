@@ -1,7 +1,7 @@
 package com.b5m.pig.udf;
 
 import com.b5m.maxent.CategoryClassifier;
-import com.b5m.maxent.MaxEnt;
+import com.b5m.maxent.MaxEntCategoryClassifier;
 
 import org.apache.pig.EvalFunc;
 import org.apache.pig.data.DataType;
@@ -92,9 +92,10 @@ public class GetCategory extends EvalFunc<String> {
 
     private void init() throws IOException {
         File file = new File(isLocal ? filename : "./maxent");
-        getLogger().info(String.format("initializing with file: %s (%s)",
-                                       file, isLocal ? "local" : "cached"));
-        classifier = new MaxEnt(file);
+        if (getLogger().isInfoEnabled())
+            getLogger().info(String.format("initializing with file: %s (%s)",
+                                           file, isLocal ? "local" : "cached"));
+        classifier = new MaxEntCategoryClassifier(file);
     }
 
 }

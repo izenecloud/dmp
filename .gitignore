@@ -2,3 +2,5 @@ target
 tags
 dist
 dmp
+maxent-test
+nbactions.xml

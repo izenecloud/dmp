@@ -6,7 +6,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import org.apache.pig.PigServer;
-import org.apache.pig.data.Tuple;
 import org.apache.pig.backend.executionengine.ExecJob;
 
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Test(groups={"pig"})
 public class GetCategoryEmbedded {
 
     private PigServer pigServer = null;

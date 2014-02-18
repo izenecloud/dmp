@@ -26,8 +26,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Paolo D'Apice
  */
-final class CouchbaseRecordWriter<K extends Text, V extends Text>
-extends RecordWriter<K, V> {
+final class CouchbaseRecordWriter extends RecordWriter<Text, Text> {
 
     private final static Log log = LogFactory.getLog(CouchbaseRecordWriter.class);
 
@@ -52,7 +51,7 @@ extends RecordWriter<K, V> {
     }
 
     @Override
-    public void write(K key, V value) throws IOException, InterruptedException {
+    public void write(Text key, Text value) throws IOException, InterruptedException {
         if (queue.size() > batchSize) {
             drainQueue();
         }

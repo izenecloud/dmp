@@ -181,7 +181,6 @@ public class JsonSerializer {
             }
 
             json.writeEndArray();
-            return;
         }
     }
 

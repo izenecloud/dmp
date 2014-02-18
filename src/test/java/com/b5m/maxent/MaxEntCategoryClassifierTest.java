@@ -4,17 +4,19 @@ import com.b5m.utils.Files;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 
 @Test(groups={"maxent"})
-public class MaxEntTest {
+public class MaxEntCategoryClassifierTest {
 
-    private final MaxEnt maxent;
+    private CategoryClassifier classifier;
 
-    public MaxEntTest() throws IOException {
-        maxent = new MaxEnt(Files.getResource("/Model.txt"));
+    @BeforeTest
+    public void setup() throws IOException {
+        classifier = new MaxEntCategoryClassifier(Files.getResource("/Model.txt"));
     }
 
     @DataProvider
@@ -30,7 +32,7 @@ public class MaxEntTest {
 
     @Test(dataProvider="titles")
     public void getCategory(String title, String expected) {
-        String category = maxent.getCategory(title);
+        String category = classifier.getCategory(title);
         assertEquals(category, expected);
     }
 
