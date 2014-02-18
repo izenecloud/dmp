@@ -8,7 +8,7 @@ import org.apache.pig.pigunit.PigTest;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
 
-@Test(groups={"pig","maxent"})
+@Test(groups={"pig"})
 public class MaxEntClassifierBuilderOnPig {
     
     @Test

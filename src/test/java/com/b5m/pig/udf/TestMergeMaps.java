@@ -4,6 +4,7 @@ import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import org.apache.pig.EvalFunc;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 
@@ -16,7 +17,7 @@ public class TestMergeMaps {
 
     private final static String SCHEMA = "([int])";
 
-    private MergeMaps func = new MergeMaps();
+    private final EvalFunc<Map> func = new MergeMaps();
 
     @DataProvider
     public Object[][] tuples() throws Exception {

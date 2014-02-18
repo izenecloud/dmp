@@ -4,7 +4,6 @@ tests:
   - name: GetCategory
     classes:
       - com.b5m.pig.udf.GetCategoryOnPig
-      - com.b5m.pig.udf.GetCategoryEmbedded
 
   - name: ScdLoader
     classes:

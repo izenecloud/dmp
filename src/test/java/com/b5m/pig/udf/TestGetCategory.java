@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import org.apache.pig.EvalFunc;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 
@@ -16,7 +17,7 @@ import java.io.File;
 @Test(groups={"pig"})
 public class TestGetCategory {
 
-    private GetCategory func;
+    private EvalFunc<String> func;
 
     @BeforeTest
     public void setUp() throws Exception {

@@ -6,10 +6,12 @@ import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import org.apache.pig.StoreFunc;
+
 @Test(groups={"pig"})
 public class TestCouchbaseStorage {
 
-    private final CouchbaseStorage func = new CouchbaseStorage();
+    private final StoreFunc func = new CouchbaseStorage();
 
     @DataProvider
     public Object[][] schemas() {
@@ -35,7 +37,6 @@ public class TestCouchbaseStorage {
     public void checkSchema(String schema, boolean valid) {
         try {
             func.checkSchema(Tuples.resourceSchema(schema));
-            //func.prepareToWrite(null);
             assertTrue(valid);
         } catch (Exception e) {
             assertFalse(valid, e.getMessage());

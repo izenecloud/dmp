@@ -1,10 +1,10 @@
 package com.b5m.pig.udf;
 
-import com.b5m.pig.Record;
+import com.b5m.utils.Record;
 
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import org.apache.pig.pigunit.PigTest;
@@ -16,7 +16,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Test(groups={"pig"})
 public class CouchbaseStorageOnPig {
@@ -25,18 +24,19 @@ public class CouchbaseStorageOnPig {
     private final static String PASSWORD = "";
     private final static String HOST = "http://127.0.0.1:8091/pools";
 
-    private static CouchbaseClient client;
-    private static List<String> expected;
+    private CouchbaseClient client;
+    private List<String> expected;
 
-    @BeforeClass
-    public static void connect() throws Exception {
+    @BeforeTest
+    public void connect() throws Exception {
         List<URI> hosts = Arrays.asList(new URI(HOST));
         client = new CouchbaseClient(hosts, BUCKET, PASSWORD);
     }
 
-    @BeforeClass
-    private static void getExpected() throws Exception {
-        expected = FileUtils.readLines(new File("src/test/data/couchbase-expected.txt"));
+    @BeforeTest
+    public void getExpected() throws Exception {
+        File file = new File("src/test/data/couchbase-expected.txt");
+        expected = FileUtils.readLines(file);
     }
 
     @Test
@@ -58,12 +58,13 @@ public class CouchbaseStorageOnPig {
         }
     }
 
-    @AfterClass
-    public static void cleanup() throws Exception {
+    @AfterTest
+    public void cleanup() throws Exception {
         for (String json : expected) {
             String key = Record.fromJson(json).getUuid();
             assertTrue(client.delete(key).get());
         }
+
         client.shutdown();
     }
 

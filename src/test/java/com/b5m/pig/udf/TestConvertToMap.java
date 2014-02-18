@@ -4,6 +4,7 @@ import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import org.apache.pig.EvalFunc;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 
@@ -16,7 +17,7 @@ public class TestConvertToMap {
 
     private final static String SCHEMA = "({(uuid:chararray, category:chararray, count:int)})";
 
-    private final ConvertToMap func = new ConvertToMap();
+    private final EvalFunc<Map> func = new ConvertToMap();
 
     @DataProvider
     public Object[][] tuples() throws Exception {

@@ -1,24 +1,22 @@
 package com.b5m.pig;
 
-import static org.testng.Assert.*;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.pig.pigunit.PigTest;
 
 import java.io.File;
-import java.util.Date;
-import java.util.List;
+import org.testng.annotations.BeforeTest;
 
+@Test(groups={"pig"})
 public class LogAnalysisOnPig {
 
-    private static String[] expected;
+    private String[] expected;
 
-    @BeforeClass
-    private static void getExpected() throws Exception {
-        List<String> lines = FileUtils.readLines(new File("src/test/data/log_analysis.output"));
-        expected = lines.toArray(new String[lines.size()]);
+    @BeforeTest
+    private void getExpected() throws Exception {
+        File file = new File("src/test/data/log_analysis.output");
+        expected = FileUtils.readLines(file).toArray(new String[]{});
     }
 
     @Test

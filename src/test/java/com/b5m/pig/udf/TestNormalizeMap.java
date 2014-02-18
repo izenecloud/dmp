@@ -4,6 +4,7 @@ import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import org.apache.pig.EvalFunc;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 @Test(groups={"pig"})
 public class TestNormalizeMap {
 
-    private NormalizeMap func = new NormalizeMap();
+    private final EvalFunc<Map> func = new NormalizeMap();
 
     @DataProvider
     public Object[][] tuples() throws Exception {

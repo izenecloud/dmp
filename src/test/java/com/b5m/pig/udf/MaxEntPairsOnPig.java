@@ -3,7 +3,7 @@ package com.b5m.pig.udf;
 import org.apache.pig.pigunit.PigTest;
 import org.testng.annotations.Test;
 
-@Test(groups={"pig","maxent"})
+@Test(groups={"pig"})
 public class MaxEntPairsOnPig {
 
     @Test
