@@ -14,9 +14,11 @@ import java.util.List;
 
 /**
  * EventStream reading from multiple files.
+ * @deprecated Training is performed on Hadoop with Pig.
  *
  * @author Paolo D'Apice
  */
+@Deprecated
 class FilesEventStream implements EventStream {
 
     private final static Log log = LogFactory.getLog(FilesEventStream.class);
@@ -26,10 +28,6 @@ class FilesEventStream implements EventStream {
 
     private FileReader fileReader;
     private TitleCategoryEventStream eventStream;
-
-    FilesEventStream(List<File> files, char separator) throws IOException {
-        this(files, Character.toString(separator));
-    }
 
     FilesEventStream(List<File> files, String separator) throws IOException {
         this.iterator = files.iterator();

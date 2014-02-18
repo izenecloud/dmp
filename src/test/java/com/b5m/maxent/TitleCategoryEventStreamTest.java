@@ -1,7 +1,5 @@
 package com.b5m.maxent;
 
-import com.b5m.scd.DataExtractor;
-
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -13,8 +11,11 @@ import opennlp.model.Event;
 import java.io.File;
 import java.io.FileReader;
 
+@SuppressWarnings("deprecation")
 @Test(groups={"maxent"})
 public class TitleCategoryEventStreamTest {
+
+    private final static String SEPARATOR = "\t";
 
     private FileReader fr;
 
@@ -30,7 +31,7 @@ public class TitleCategoryEventStreamTest {
 
     @Test
     public void top() throws Exception {
-        EventStream es = new TitleCategoryEventStream(fr, Character.toString(DataExtractor.SEPARATOR));
+        EventStream es = new TitleCategoryEventStream(fr, SEPARATOR);
 
         int numEvents = 0;
         while (es.hasNext()) {

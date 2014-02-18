@@ -11,9 +11,11 @@ import java.io.FileReader;
 
 /**
  * EventStream reading title-category pairs from file.
- *
+ * @deprecated Training is performed on Hadoop with Pig.
+ * 
  * @author Paolo D'Apice
  */
+@Deprecated
 class TitleCategoryEventStream extends AbstractEventStream {
 
     private final DataStream dataStream;

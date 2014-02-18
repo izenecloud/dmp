@@ -3,7 +3,6 @@ name: UnitTests
 tests:
   - name: Scd
     classes:
-      - com.b5m.scd.DataExtractorTest
       - com.b5m.scd.ScdFileFilterTest
       - com.b5m.scd.ScdFileReaderTest
 
@@ -11,7 +10,6 @@ tests:
     classes:
       - com.b5m.maxent.TitleCategoryEventStreamTest
       - com.b5m.maxent.FilesEventStreamTest
-      - com.b5m.maxent.MaxEntTrainerTest
       - com.b5m.maxent.MaxEntCategoryClassifierTest
 
   - name: Pig

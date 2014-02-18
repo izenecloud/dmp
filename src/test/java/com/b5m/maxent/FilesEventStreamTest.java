@@ -1,7 +1,5 @@
 package com.b5m.maxent;
 
-import com.b5m.scd.DataExtractor;
-
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -13,10 +11,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 @Test(groups={"maxent"})
 public class FilesEventStreamTest {
 
-    private final static String SEP = Character.toString(DataExtractor.SEPARATOR);
+    private final static String SEPARATOR = "\t";
 
     private List<File> files;
 
@@ -30,13 +29,13 @@ public class FilesEventStreamTest {
 
     @Test
     public void none() throws Exception {
-        EventStream es = new FilesEventStream(Collections.<File>emptyList(), SEP);
+        EventStream es = new FilesEventStream(Collections.<File>emptyList(), SEPARATOR);
         assertFalse(es.hasNext());
     }
 
     @Test
     public void top() throws Exception {
-        EventStream es = new FilesEventStream(files, SEP);
+        EventStream es = new FilesEventStream(files, SEPARATOR);
         int numEvents = 0;
         while (es.hasNext()) {
             es.next();
