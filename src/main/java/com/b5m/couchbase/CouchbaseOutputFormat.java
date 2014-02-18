@@ -14,8 +14,7 @@ import java.io.IOException;
  *
  * @author Paolo D'Apice
  */
-public final class CouchbaseOutputFormat<K extends Text, V extends Text>
-extends OutputFormat<K, V> {
+public final class CouchbaseOutputFormat extends OutputFormat<Text, Text> {
 
     private final CouchbaseConfiguration conf;
 
@@ -63,9 +62,9 @@ extends OutputFormat<K, V> {
     }
 
     @Override
-    public RecordWriter<K, V> getRecordWriter(TaskAttemptContext context)
+    public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext context)
     throws IOException, InterruptedException {
-        return new CouchbaseRecordWriter<K, V>(conf);
+        return new CouchbaseRecordWriter(conf);
     }
 
 }

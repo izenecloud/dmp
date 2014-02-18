@@ -47,7 +47,7 @@ public final class CouchbaseStorage extends StoreFunc {
 
     @Override
     public OutputFormat getOutputFormat() throws IOException {
-        return new CouchbaseOutputFormat<Text, Text>(conf);
+        return new CouchbaseOutputFormat(conf);
     }
 
     @Override
