@@ -118,6 +118,7 @@ public final class UserCategoriesMain {
             System.exit(1);
         }
 
+        // TODO maybe, load properties and add date and count
         UserCategories job = new UserCategories(params.date, params.count);
         job.loadProperties(params.file);
         job.call();

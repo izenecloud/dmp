@@ -7,9 +7,10 @@ bucket = bucketname
 # password: couchbase password (if required)
 password = secret
 
-# batchSize: how many records to write at once
+# batchSize: couchbase commit batch size
 batchSize = 10000
 
 # basedir: HDFS path to logs directory
 basedir = /path/to/logs
 
+# vim:ft=jproperties:nospell:
