@@ -10,15 +10,4 @@ pigdir = /path/to/pig/dir
 # udfdir = path to pig-udfs.jar on local machine
 udf_file = /path/to/pig-udfs.jar
 
-# hosts: URIs to couchbase servers
-hosts = couchbase1,couchbase2
-
-# bucket: couchbase bucket
-bucket = bucketname
-
-# password: couchbase password (if required)
-password = secret
-
-# batchSize: how many records to write at once
-batchSize = 10000
-
+# vim:ft=jproperties:nospell:

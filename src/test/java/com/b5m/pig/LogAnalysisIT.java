@@ -27,7 +27,7 @@ public class LogAnalysisIT {
 
         PigTest test = new PigTest("src/main/pig/log_analysis.pig", null, args);
 
-        test.assertOutput("data5", expected);
+        test.assertOutput("uuid_categories_map", expected);
     }
 
 }
