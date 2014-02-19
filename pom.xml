@@ -206,7 +206,8 @@
 
     <profiles>
         <profile>
-            <id>pig</id>
+            <!-- integration testing -->
+            <id>it</id>
             <build>
                 <plugins>
                     <plugin>
