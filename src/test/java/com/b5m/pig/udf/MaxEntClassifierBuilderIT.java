@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 
 @Test(groups={"pig"})
 public class MaxEntClassifierBuilderIT {
-    
+
     @Test
     public void train() throws Exception{
         File model = new File("target/Model.txt");
@@ -18,15 +18,16 @@ public class MaxEntClassifierBuilderIT {
 
         String[] args = {
             "input=src/test/data/maxent",
-            "output=" + model,
+            "model_file=" + model,
+            "udf_file=dist/pig-udfs.jar",
         };
 
-        PigTest test = new PigTest("src/test/pig/maxent_train.pig", args);
+        PigTest test = new PigTest("src/main/pig/model_training.pig", args);
         test.unoverride("STORE");
         test.runScript();
 
         assertTrue(model.isFile());
         assertTrue(FileUtils.contentEquals(model, new File("src/test/data/Model.out")));
     }
-    
+
 }

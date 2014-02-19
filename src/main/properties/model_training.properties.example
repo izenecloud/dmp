@@ -1,0 +1,10 @@
+# input: path to SCD file or directory on HDFS
+input = /path/to/scd
+
+# model_file: path where to save the model on HDFS
+model_file = /path/to/Model.txt
+
+# udfdir = path to pig-udfs.jar on local machine
+udf_file = /path/to/pig-udfs.jar
+
+# vim:ft=jproperties:nospell:

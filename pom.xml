@@ -248,10 +248,11 @@
                                             tofile="${udf.outputDir}/pig-udfs.jar" overwrite="true"/>
                                         <copy todir="${udf.outputDir}" overwrite="true" flatten="true">
                                             <resources>
+                                                <file file="src/main/pig/model_training.pig"/>
+                                                <file file="src/main/properties/model_training.properties.example"/>
                                                 <file file="src/main/pig/log_analysis.pig"/>
                                                 <file file="src/main/properties/log_analysis.properties.example"/>
                                                 <file file="src/main/properties/user_categories.properties.example"/>
-                                                <file file="src/test/data/Model.txt"/>
                                             </resources>
                                         </copy>
                                     </target>
