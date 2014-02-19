@@ -33,13 +33,11 @@ public class Extractor {
 			Integer numTopics, Integer maxIteration, Integer numLabelPerDoc,
 			Double converage, Path topicTermPath,
 			Path topWeightTopicTermDictPath) throws Exception {
-//		log.info(
-//				"Begin to extact topic, numTopics:{}, maxIteraton:{}, number of labels per document:{}, converage:{}, top weight topic term:{}, top weight topic term dict:{}",
-//				numTopics, maxIteration, numLabelPerDoc, converage,
-//				topicTermPath, topWeightTopicTermDictPath);
-
+		log.info(
+				"Begin to extact topic, numTopics:{}, maxIteraton:{}, number of labels per document:{}, converage:{}, top weight topic term:{}, top weight topic term dict:{}",
+				numTopics, maxIteration, numLabelPerDoc, converage,
+				topicTermPath, topWeightTopicTermDictPath);
 		Path tempOutput = new Path(output.getParent(), "TMEP");
-
 		Path docPath = new Path(tempOutput, DOC_PATH);
 		DocumentProcessor.preprocess(input, docPath, conf);
 
@@ -62,9 +60,9 @@ public class Extractor {
 				DocumentProcessor.getDictionaryPath(conf), tempOutput, conf);
 		HadoopUtil.delete(conf, tempOutput);
 
-//		log.info(
-//				"Finished topic extract procedure, each document's label is saved in:{}, top weight topic term:{} is updated, top weight topic term dict:{} is updated",
-//				output, topicTermPath, topWeightTopicTermDictPath);
+		log.info(
+				"Finished topic extract procedure, each document's label is saved in:{}, top weight topic term:{} is updated, top weight topic term dict:{} is updated",
+				output, topicTermPath, topWeightTopicTermDictPath);
 	}
 
 	public static void runUNspLSA(Path input, Path dictionary, Path dateOutput,
@@ -89,13 +87,13 @@ public class Extractor {
 	 */
 
 	public static void main(String[] args) throws Exception {
-		Path input = new Path(args[0]);
-		Path output = new Path(args[1]);
-		int numTopic = Integer.valueOf(args[2]);
-		int maxIteration = Integer.valueOf(args[3]);
-		int numTopicPerDoc = Integer.valueOf(args[4]);
-		Path topicTerm = new Path(args[5]);
-		Path termDict = new Path(args[6]);
+		Path input = new Path(args[1]);
+		Path output = new Path(args[2]);
+		int numTopic = Integer.valueOf(args[3]);
+		int maxIteration = Integer.valueOf(args[4]);
+		int numTopicPerDoc = Integer.valueOf(args[5]);
+		Path topicTerm = new Path(args[6]);
+		Path termDict = new Path(args[7]);
 		run(input, output, new Configuration(), numTopic, maxIteration, numTopicPerDoc, null, topicTerm, termDict);
 	}
 }
