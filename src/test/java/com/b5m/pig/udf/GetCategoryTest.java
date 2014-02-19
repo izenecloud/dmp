@@ -1,6 +1,5 @@
 package com.b5m.pig.udf;
 
-import com.b5m.utils.Files;
 import com.b5m.utils.Tuples;
 
 import static org.testng.Assert.*;
@@ -21,7 +20,7 @@ public class GetCategoryTest {
 
     @BeforeTest
     public void setUp() throws Exception {
-        File file = Files.getResource("/Model.txt");
+        File file = new File("src/test/data/Model.txt");
         func = new GetCategory(file.toString(), "local");
     }
 

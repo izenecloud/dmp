@@ -31,7 +31,7 @@ public class GetCategoryIT {
     @Test
     public void onPig() throws Exception {
         String[] args = {
-            "model_file=./src/test/resources/Model.txt",
+            "model_file=./src/test/data/Model.txt",
         };
 
         PigTest test = new PigTest("./src/test/pig/getCategory.pig", args);
@@ -57,7 +57,7 @@ public class GetCategoryIT {
         pigServer.registerJar("dist/pig-udfs.jar");
         pigServer.registerFunction("GET_CATEGORY",
                 new org.apache.pig.FuncSpec("com.b5m.pig.udf.GetCategory",
-                    new String[] { "src/test/resources/Model.txt", "local" }
+                    new String[] { "src/test/data/Model.txt", "local" }
                     )
                 );
         pigServer.registerQuery("titles = LOAD 'src/test/data/sample-logs.avro' AS (title:chararray);");
@@ -74,7 +74,7 @@ public class GetCategoryIT {
     @Test
     public void loadEmbedded() throws Exception {
         Map<String, String> params = new HashMap<String, String>();
-        params.put("model_file", "src/test/resources/Model.txt");
+        params.put("model_file", "src/test/data/Model.txt");
         params.put("input", "src/test/data/sample-logs.avro");
 
         pigServer.registerScript("src/test/pig/getCategory.pig", params);

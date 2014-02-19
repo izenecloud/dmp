@@ -1,13 +1,11 @@
 package com.b5m.maxent;
 
-import com.b5m.utils.Files;
-
 import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
+import java.io.File;
 
 @Test(groups={"maxent"})
 public class MaxEntCategoryClassifierTest {
@@ -15,8 +13,9 @@ public class MaxEntCategoryClassifierTest {
     private CategoryClassifier classifier;
 
     @BeforeTest
-    public void setup() throws IOException {
-        classifier = new MaxEntCategoryClassifier(Files.getResource("/Model.txt"));
+    public void setup() throws Exception {
+        File model = new File("src/test/data/Model.txt");
+        classifier = new MaxEntCategoryClassifier(model);
     }
 
     @DataProvider
