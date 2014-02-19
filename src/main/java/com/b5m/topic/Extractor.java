@@ -12,11 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import com.b5m.topic.model.UNspLSA.UNspLSADriver;
 import com.b5m.topic.model.UNspLSA.ExternalProcessor;
-import com.b5m.topic.model.Util.TopicDriver;
 import com.b5m.topic.util.DocumentProcessor;
 
-public class TopicExtractor {
-	private static final Logger log = LoggerFactory.getLogger(TopicExtractor.class);
+public class Extractor {
+	private static final Logger log = LoggerFactory.getLogger(Extractor.class);
 
 	private static final int DEFAULT_NUM_TOPICS = 20;
 	private static final int DEFAULT_MAX_ITERATION = 20;
@@ -34,38 +33,38 @@ public class TopicExtractor {
 			Integer numTopics, Integer maxIteration, Integer numLabelPerDoc,
 			Double converage, Path topicTermPath,
 			Path topWeightTopicTermDictPath) throws Exception {
-		log.info(
-				"Begin to extact topic, numTopics:{}, maxIteraton:{}, number of labels per document:{}, converage:{}, top weight topic term:{}, top weight topic term dict:{}",
-				numTopics, maxIteration, numLabelPerDoc, converage,
-				topicTermPath, topWeightTopicTermDictPath);
+//		log.info(
+//				"Begin to extact topic, numTopics:{}, maxIteraton:{}, number of labels per document:{}, converage:{}, top weight topic term:{}, top weight topic term dict:{}",
+//				numTopics, maxIteration, numLabelPerDoc, converage,
+//				topicTermPath, topWeightTopicTermDictPath);
 
 		Path tempOutput = new Path(output.getParent(), "TMEP");
 
 		Path docPath = new Path(tempOutput, DOC_PATH);
 		DocumentProcessor.preprocess(input, docPath, conf);
 
-		TopicDriver.setMaxIterations(conf,
+		Driver.setMaxIterations(conf,
 				null == maxIteration ? DEFAULT_MAX_ITERATION : maxIteration);
-		TopicDriver.setNumTopics(conf, null == numTopics ? DEFAULT_NUM_TOPICS
+		Driver.setNumTopics(conf, null == numTopics ? DEFAULT_NUM_TOPICS
 				: numTopics);
-		TopicDriver.setConvergence(
+		Driver.setConvergence(
 				conf,
 				null == converage ? DEFAULT_CONVERAGE_THRESHOLD : converage
 						.floatValue());
-		TopicDriver.setTopTermPath(conf, topicTermPath);
-		TopicDriver.setTopTermDic(conf, topWeightTopicTermDictPath);
-		TopicDriver.setNumLabelPerDoc(conf,
+		Driver.setTopTermPath(conf, topicTermPath);
+		Driver.setTopTermDic(conf, topWeightTopicTermDictPath);
+		Driver.setNumLabelPerDoc(conf,
 				null == numLabelPerDoc ? DEFAULT_NUM_LABEL_PER_DOC
 						: numLabelPerDoc);
-		TopicDriver.setTopDocLabel(conf, output);
+		Driver.setTopDocLabel(conf, output);
 
 		runUNspLSA(DocumentProcessor.getDocWordVectorPath(conf),
 				DocumentProcessor.getDictionaryPath(conf), tempOutput, conf);
 		HadoopUtil.delete(conf, tempOutput);
 
-		log.info(
-				"Finished topic extract procedure, each document's label is saved in:{}, top weight topic term:{} is updated, top weight topic term dict:{} is updated",
-				output, topicTermPath, topWeightTopicTermDictPath);
+//		log.info(
+//				"Finished topic extract procedure, each document's label is saved in:{}, top weight topic term:{} is updated, top weight topic term dict:{} is updated",
+//				output, topicTermPath, topWeightTopicTermDictPath);
 	}
 
 	public static void runUNspLSA(Path input, Path dictionary, Path dateOutput,
@@ -84,11 +83,19 @@ public class TopicExtractor {
 		ExternalProcessor.postProcess(pLSAModel, docTopic, conf);
 	}
 
+	/*
+	 * Usage:
+	 * Extractor -i input -o output -n numTopic -m maxIteration -l numTopicPerDoc -t topicTerm -d termDict
+	 */
+
 	public static void main(String[] args) throws Exception {
 		Path input = new Path(args[0]);
 		Path output = new Path(args[1]);
-		Path topicTermPath = new Path(args[2]);
-		Path topWeightTopicTermDictPath = new Path(args[3]);
-		run(input, output, new Configuration(), null, null, null, null, topicTermPath, topWeightTopicTermDictPath);
+		int numTopic = Integer.valueOf(args[2]);
+		int maxIteration = Integer.valueOf(args[3]);
+		int numTopicPerDoc = Integer.valueOf(args[4]);
+		Path topicTerm = new Path(args[5]);
+		Path termDict = new Path(args[6]);
+		run(input, output, new Configuration(), numTopic, maxIteration, numTopicPerDoc, null, topicTerm, termDict);
 	}
 }

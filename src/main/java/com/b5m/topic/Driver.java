@@ -1,4 +1,4 @@
-package com.b5m.topic.model.Util;
+package com.b5m.topic;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -9,7 +9,7 @@ import org.apache.mahout.common.Pair;
 import org.apache.mahout.common.iterator.sequencefile.PathType;
 import org.apache.mahout.common.iterator.sequencefile.SequenceFileDirIterable;
 
-public abstract class TopicDriver extends AbstractJob {
+public abstract class Driver extends AbstractJob {
 	private static final String NUM_TOPICS = "numTopics";
 	private static final String NUM_TERMS = "numTerms";
 	private static final String NUM_DOCS = "numDocs";
@@ -156,5 +156,10 @@ public abstract class TopicDriver extends AbstractJob {
 
 	public static int getNumClasses(Configuration conf) {
 		return conf.getInt(NUM_CATE, 0);
+	}
+	@Override
+	public int run(String[] arg0) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

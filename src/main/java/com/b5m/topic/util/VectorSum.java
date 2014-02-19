@@ -1,4 +1,4 @@
-package com.b5m.topic.model.Util;
+package com.b5m.topic.util;
 
 import java.io.IOException;
 

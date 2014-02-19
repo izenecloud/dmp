@@ -28,10 +28,10 @@ import org.apache.mahout.math.VectorWritable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.b5m.topic.model.Util.TopicDriver;
-import com.b5m.topic.model.Util.VectorSum;
+import com.b5m.topic.Driver;
+import com.b5m.topic.util.VectorSum;
 
-public class UNspLSADriver extends TopicDriver {
+public class UNspLSADriver extends Driver {
 
 	private static final Logger log = LoggerFactory.getLogger(UNspLSADriver.class);
 

@@ -36,8 +36,8 @@ import org.apache.mahout.math.VectorWritable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.b5m.topic.model.Util.MatrixHelper;
-import com.b5m.topic.model.Util.TopicDriver;
+import com.b5m.topic.Driver;
+import com.b5m.topic.util.MatrixHelper;
 import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
 
@@ -122,7 +122,7 @@ public class ExternalProcessor {
 				numDoc++;
 			}
 			numDoc++;
-			TopicDriver.setNumDocs(conf, numDoc);
+			Driver.setNumDocs(conf, numDoc);
 		} finally {
 			Closeables.close(indexWriter, false);
 			Closeables.close(matrixWriter, false);
@@ -203,7 +203,7 @@ public class ExternalProcessor {
 			throws IOException, ClassNotFoundException, InterruptedException {
 		HadoopUtil.delete(conf, output);
 		Path topicTermPath = new Path(input, TopicModel.TOPIC_TERM + "-r-*");
-		Path topicTermDictPath = TopicDriver.getDicPath(conf);
+		Path topicTermDictPath = Driver.getDicPath(conf);
 		Path topicMapPath = new Path(output, TOPIC_MAP_PATH);
 		setTopicMapPath(conf, topicMapPath);
 

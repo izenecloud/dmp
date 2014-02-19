@@ -1,4 +1,4 @@
-package com.b5m.topic.model.Util;
+package com.b5m.topic.util;
 
 import org.apache.mahout.math.Matrix;
 import org.apache.mahout.math.Vector;

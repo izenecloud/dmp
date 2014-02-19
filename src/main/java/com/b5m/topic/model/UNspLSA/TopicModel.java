@@ -1,6 +1,6 @@
 package com.b5m.topic.model.UNspLSA;
 
-import com.b5m.topic.model.Util.MatrixHelper;
+import com.b5m.topic.util.MatrixHelper;
 
 import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configuration;
