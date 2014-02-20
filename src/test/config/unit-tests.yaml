@@ -3,9 +3,9 @@ name: UnitTests
 tests:
   - name: MaxEnt
     classes:
+      - com.b5m.maxent.FileEventStreamTest
       - com.b5m.maxent.FilesEventStreamTest
       - com.b5m.maxent.MaxEntCategoryClassifierTest
-      - com.b5m.maxent.TitleCategoryEventStreamTest
 
   - name: Pig
     classes:

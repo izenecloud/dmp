@@ -5,41 +5,37 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import opennlp.model.EventStream;
 import opennlp.model.Event;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.Reader;
 
-@SuppressWarnings("deprecation")
 @Test(groups={"maxent"})
-public class TitleCategoryEventStreamTest {
+public class FileEventStreamTest {
 
-    private final static String SEPARATOR = "\t";
-
-    private FileReader fr;
-
+    private Reader reader;
+    private FileEventStream eventStream;
+    
     @BeforeTest
     public void setup() throws Exception {
-        fr = new FileReader(new File("src/test/data/title-category-top.txt"));
+        reader = new FileReader(new File("src/test/data/title-category-top.txt"));
     }
 
     @AfterTest
     public void teardown() throws Exception {
-        fr.close();
+        reader.close();
     }
 
     @Test
-    public void top() throws Exception {
-        EventStream es = new TitleCategoryEventStream(fr, SEPARATOR);
+    public void test() throws Exception {
+        eventStream = new FileEventStream(reader);
 
         int numEvents = 0;
-        while (es.hasNext()) {
-            Event e = es.next();
-            System.out.println(e);
+        while (eventStream.hasNext()) {
+            Event e = eventStream.next();
             numEvents++;
         }
-
         assertEquals(numEvents, 84);
     }
 

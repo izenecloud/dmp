@@ -9,16 +9,15 @@ import org.apache.commons.logging.LogFactory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * EventStream reading from multiple files.
- * @deprecated Training is performed on Hadoop with Pig.
  *
  * @author Paolo D'Apice
  */
-@Deprecated
 final class FilesEventStream implements EventStream {
 
     private final static Log log = LogFactory.getLog(FilesEventStream.class);
@@ -26,8 +25,8 @@ final class FilesEventStream implements EventStream {
     private final Iterator<File> iterator;
     private final String separator;
 
-    private FileReader fileReader;
-    private TitleCategoryEventStream eventStream;
+    private Reader reader;
+    private FileEventStream eventStream;
 
     FilesEventStream(List<File> files, String separator) throws IOException {
         this.iterator = files.iterator();
@@ -40,13 +39,13 @@ final class FilesEventStream implements EventStream {
 
     private boolean nextFile() throws IOException {
         if (iterator.hasNext()) {
-            if (fileReader != null) fileReader.close();
+            if (reader != null) reader.close();
 
             File file = iterator.next();
             if (log.isDebugEnabled()) log.debug("streaming from file: " + file);
 
-            fileReader = new FileReader(file);
-            eventStream = new TitleCategoryEventStream(fileReader, separator);
+            reader = new FileReader(file);
+            eventStream = new FileEventStream(reader);
 
             return true;
         }

@@ -1,33 +1,28 @@
 package com.b5m.maxent;
 
-import opennlp.maxent.ContextGenerator;
 import opennlp.maxent.DataStream;
 import opennlp.maxent.PlainTextByLineDataStream;
-import opennlp.model.AbstractEventStream;
 import opennlp.model.Event;
+import opennlp.model.EventStream;
 
 import java.io.IOException;
-import java.io.FileReader;
+import java.io.Reader;
 
 /**
- * EventStream reading title-category pairs from file.
- * @deprecated Training is performed on Hadoop with Pig.
+ * EventStream reading from single file.
  * 
  * @author Paolo D'Apice
  */
-@Deprecated
-final class TitleCategoryEventStream extends AbstractEventStream {
+final class FileEventStream implements EventStream {
 
+    private final MaxEntEventGenerator generator;
     private final DataStream dataStream;
-    private final String separator;
-    private final ContextGenerator contextGenerator;
 
     private Event next;
 
-    TitleCategoryEventStream(FileReader reader, String separator) {
+    FileEventStream(Reader reader) {
+        this.generator = new MaxEntEventGenerator();
         this.dataStream = new PlainTextByLineDataStream(reader);
-        this.separator = separator;
-        this.contextGenerator = new MaxEntContextGenerator();
 
         if (dataStream.hasNext())
             next = createEvent();
@@ -52,13 +47,7 @@ final class TitleCategoryEventStream extends AbstractEventStream {
 
     private Event createEvent() {
         String token = (String) dataStream.nextToken();
-        int index = token.lastIndexOf(separator);
-
-        if (index == -1)
-            return null;
-
-        return new Event(token.substring(index + 1),
-                         contextGenerator.getContext(token.substring(0, index)));
+        return generator.newEvent(token);
     }
 
 }
