@@ -1,19 +1,20 @@
 package com.b5m.maxent;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import opennlp.maxent.GIS;
 import opennlp.maxent.GISModel;
-import opennlp.maxent.io.GISModelWriter;
 import opennlp.maxent.io.SuffixSensitiveGISModelWriter;
-import opennlp.model.Event;
-import opennlp.model.ListEventStream;
+import opennlp.model.EventStream;
 import opennlp.model.OnePassDataIndexer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.RecordWriter;
@@ -29,15 +30,25 @@ public final class MaxEntRecordWriter extends RecordWriter<Text, Text> {
 
     private final static Log log = LogFactory.getLog(MaxEntRecordWriter.class);
 
-    private final List<Event> events = Collections.synchronizedList(new LinkedList<Event>());
     private final MaxEntEventGenerator generator = new MaxEntEventGenerator();
 
     private final int iterations;
     private final boolean smoothing;
+    
+    private final Path file;
+    private final Writer writer;
 
-    public MaxEntRecordWriter(int iterations, boolean smoothing) {
+    public MaxEntRecordWriter(int iterations, boolean smoothing,
+            TaskAttemptContext context) throws IOException {
         this.iterations = iterations;
         this.smoothing = smoothing;
+
+        FileSystem fs = FileSystem.getLocal(context.getConfiguration());
+        this.file = new Path(FileOutputFormat.getUniqueFile(context, "maxent-train", ".txt"));
+        this.writer = new BufferedWriter(new OutputStreamWriter(fs.create(file)));
+
+        if (log.isInfoEnabled())
+            log.info("Using temporary file: " + file);
     }
     
     @Override
@@ -46,31 +57,44 @@ public final class MaxEntRecordWriter extends RecordWriter<Text, Text> {
         String outcome = key.toString();
         String context = value.toString();
         
-        events.add(generator.newEvent(outcome, context));
+        writer.write(generator.newEventString(outcome, context));
     }
 
     @Override
     public void close(TaskAttemptContext context)
     throws IOException, InterruptedException {
+        if (log.isDebugEnabled())
+            log.debug("finished writing");
+
+        writer.close();
+
         if (log.isInfoEnabled())
             log.info("Training model ...");
 
+        FileSystem fs = FileSystem.getLocal(context.getConfiguration());
+        Reader reader = new InputStreamReader(fs.open(file));
+        EventStream eventStream = new FileEventStream(reader);
+
         GISModel model = GIS.trainModel(
                 iterations,
-                new OnePassDataIndexer(new ListEventStream(events)),
+                new OnePassDataIndexer(eventStream),
                 smoothing);
 
         if (log.isInfoEnabled())
             log.info("Model trained");
         
-        Path path = FileOutputFormat.getOutputPath(context);
-        File file = new File(path.toUri());
-    
-        GISModelWriter writer = new SuffixSensitiveGISModelWriter(model, file);
-        writer.persist();
+        reader.close();
+        fs.delete(file, true);
 
         if (log.isInfoEnabled())
-            log.info("Model written to file: " + file);
+            log.info("Deleted temporary file: " + fs.exists(file));
+
+        Path path = FileOutputFormat.getOutputPath(context);
+        File modelFile = new File(path.toUri());
+        new SuffixSensitiveGISModelWriter(model, modelFile).persist();
+
+        if (log.isInfoEnabled())
+            log.info("Model written to file: " + modelFile);
     }
-    
+
 }

@@ -34,14 +34,14 @@ public final class MaxEntOutputFormat extends OutputFormat<Text, Text> {
     @Override
     public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext context)
     throws IOException, InterruptedException {
-        return new MaxEntRecordWriter(iterations, smoothing);
+        return new MaxEntRecordWriter(iterations, smoothing, context);
     }
 
     @Override
     public void checkOutputSpecs(JobContext context)
     throws IOException, InterruptedException {
         Path path = FileOutputFormat.getOutputPath(context);
-        if (log.isDebugEnabled()) log.debug("path: " + path);
+        if (log.isDebugEnabled()) log.debug("output path: " + path);
 
         if (path == null) {
             String message = "Output path is not set";
