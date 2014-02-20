@@ -215,8 +215,7 @@
 
     <profiles>
         <profile>
-            <!-- integration testing -->
-            <id>it</id>
+            <id>pig</id>
             <build>
                 <plugins>
                     <plugin>
