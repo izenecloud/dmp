@@ -26,7 +26,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
  * 
  * @author Paolo D'Apice
  */
-public final class MaxEntRecordWriter extends RecordWriter<Text, Text> {
+final class MaxEntRecordWriter extends RecordWriter<Text, Text> {
 
     private final static Log log = LogFactory.getLog(MaxEntRecordWriter.class);
 
@@ -38,7 +38,7 @@ public final class MaxEntRecordWriter extends RecordWriter<Text, Text> {
     private final Path file;
     private final Writer writer;
 
-    public MaxEntRecordWriter(int iterations, boolean smoothing,
+    MaxEntRecordWriter(int iterations, boolean smoothing,
             TaskAttemptContext context) throws IOException {
         this.iterations = iterations;
         this.smoothing = smoothing;

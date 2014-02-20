@@ -1,7 +1,7 @@
 package com.b5m.pig.udf;
 
 import com.b5m.maxent.MaxEntOutputFormat;
-import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.Path;
@@ -16,6 +16,7 @@ import org.apache.pig.StoreFunc;
 import org.apache.pig.data.DataType;
 import org.apache.pig.data.Tuple;
 
+import java.io.IOException;
 /**
  * Train a Maximum Entropy classifier.
  * 
