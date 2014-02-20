@@ -3,8 +3,8 @@ package com.b5m.maxent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import opennlp.maxent.io.SuffixSensitiveGISModelReader;
 import opennlp.maxent.ContextGenerator;
-import opennlp.model.GenericModelReader;
 import opennlp.model.MaxentModel;
 
 import java.io.File;
@@ -23,7 +23,7 @@ public final class MaxEntCategoryClassifier implements CategoryClassifier {
     public MaxEntCategoryClassifier(File modelFile) throws IOException {
         if (log.isInfoEnabled()) log.info("Loading model from: " +  modelFile);
 
-        model = new GenericModelReader(modelFile).getModel();
+        model = new SuffixSensitiveGISModelReader(modelFile).getModel();
         contextGenerator = new MaxEntContextGenerator();
 
         if (log.isInfoEnabled()) log.info("Model loaded");
