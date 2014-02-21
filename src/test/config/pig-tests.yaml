@@ -5,6 +5,10 @@ tests:
     classes:
       - com.b5m.couchbase.CouchbaseClientIT
       - com.b5m.pig.udf.CouchbaseStorageIT
+
+  - name: DateStorage
+    classes:
+      - com.b5m.pig.udf.DateStorageIT
       
   - name: GetCategory
     classes:
