@@ -1,3 +1,12 @@
+# date: target start date
+date = YYYY-MM-DD
+
+# count: time interval in days
+count = N
+
+# input: HDFS path to results of log_analysis script
+input = /path/to/input
+
 # hosts: URIS to couchbase servers
 hosts = couchbase1,couchbase2
 
@@ -10,7 +19,7 @@ password = secret
 # batchSize: couchbase commit batch size
 batchSize = 10000
 
-# basedir: HDFS path to logs directory
-basedir = /path/to/logs
+# udfdir = path to pig-udfs.jar on local machine
+udf_file = /path/to/pig-udfs.jar
 
 # vim:ft=jproperties:nospell:

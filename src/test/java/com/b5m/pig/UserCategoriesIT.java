@@ -10,32 +10,35 @@ import com.b5m.utils.Record;
 import com.couchbase.client.CouchbaseClient;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.pig.backend.executionengine.ExecJob;
+import org.apache.pig.pigunit.PigTest;
 
 import java.io.File;
+import java.io.FileReader;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @Test(groups={"couchbase","pig"})
 public class UserCategoriesIT {
 
-    private final static String BUCKET = "default";
-    private final static String PASSWORD = "";
-    private final static String HOST = "http://127.0.0.1:8091/pools";
-
     private final static String DATE = "2014-01-21";
 
+    private final List<Record> expectedOneDay = new ArrayList<Record>();
+    private final List<Record> expectedMultiDays = new ArrayList<Record>();
+
     private CouchbaseClient client;
-    private List<Record> expectedOneDay = new ArrayList<Record>();
-    private List<Record> expectedMultiDays = new ArrayList<Record>();
 
     @BeforeTest
     public void connect() throws Exception {
-        List<URI> hosts = Arrays.asList(new URI(HOST));
-        client = new CouchbaseClient(hosts, BUCKET, PASSWORD);
+        Properties props = new Properties();
+        props.load(new FileReader("src/test/properties/user_categories.properties"));
+        List<URI> hosts = Arrays.asList(new URI(props.getProperty("hosts")));
+        client = new CouchbaseClient(hosts,
+                props.getProperty("bucket"),
+                props.getProperty("password").replaceAll("\"", ""));
     }
 
     @AfterTest
@@ -58,40 +61,52 @@ public class UserCategoriesIT {
 
     @Test
     public void oneDay() throws Exception {
-        UserCategories job = new UserCategories(DATE, 1);
-        job.loadProperties("src/test/properties/user_categories.properties");
+        String[] args = {
+            "date=" + DATE,
+            "count=1",
+        };
+        
+        String[] params = {
+            "src/test/properties/user_categories.properties"
+        };
 
-        ExecJob results = job.call();
-        check(results);
+        PigTest pig = new PigTest("src/main/pig/user_categories.pig", args, params);
+        pig.unoverride("STORE");
+        pig.runScript();
 
-        for (Record record : expectedOneDay) check(record);
+        check(expectedOneDay);
     }
 
     @Test
     public void multiDays() throws Exception {
-        UserCategories job = new UserCategories(DATE, 3);
-        job.loadProperties("src/test/properties/user_categories.properties");
+        String[] args = {
+            "date=" + DATE,
+            "count=3",
+        };
+        
+        String[] params = {
+            "src/test/properties/user_categories.properties"
+        };
 
-        ExecJob results = job.call();
-        check(results);
+        PigTest pig = new PigTest("src/main/pig/user_categories.pig", args, params);
+        pig.unoverride("STORE");
+        pig.runScript();
 
-        for (Record record : expectedMultiDays) check(record);
+        check(expectedMultiDays);
     }
 
-    private void check(ExecJob result) {
-        assertEquals(result.getStatus(), ExecJob.JOB_STATUS.COMPLETED);
-    }
+    private void check(List<Record> expected) throws Exception {
+        for (Record record : expected) {
+            String key = String.format("%s::%s", record.getUuid(), record.getDate());
 
-    private void check(Record record) throws Exception {
-        String key = String.format("%s::%s", record.getUuid(), record.getDate());
+            String json = (String) client.get(key);
+            assertNotNull(json);
 
-        String json = (String) client.get(key);
-        assertNotNull(json);
+            Record retrieved = Record.fromJson(json);
+            assertEquals(retrieved, record);
 
-        Record retrieved = Record.fromJson(json);
-        assertEquals(retrieved, record);
-
-        assertTrue(client.delete(key).get());
+            assertTrue(client.delete(key).get());
+        }
     }
 
 }

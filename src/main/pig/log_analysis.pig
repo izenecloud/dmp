@@ -28,6 +28,7 @@ REGISTER $udf_file
 DEFINE AvroStorage org.apache.pig.piggybank.storage.avro.AvroStorage();
 DEFINE GetCategory com.b5m.pig.udf.GetCategory('$model_file', '$mode');
 DEFINE CategoryMap com.b5m.pig.udf.ConvertToMap();
+DEFINE DateStorage com.b5m.pig.udf.DateStorage('$today');
 
 records = LOAD '$input' USING AvroStorage();
 entries = FOREACH records GENERATE
@@ -51,6 +52,6 @@ uuid_categories_map = FOREACH uuid_categories GENERATE
             group AS uuid,
             CategoryMap(uuid_category_count) AS categories;
 
-STORE uuid_categories_map INTO '$output_dir/$today';
+STORE uuid_categories_map INTO '$output_dir' USING DateStorage();
 
 -- vim:ft=pig:nospell:
