@@ -1,6 +1,6 @@
 package com.b5m.pig;
 
-import com.b5m.utils.Dates;
+import com.b5m.utils.DateParser;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,7 +62,7 @@ public final class UserCategoriesMain {
             if (line.hasOption("date")) {
                 String date = line.getOptionValue("date");
                 try {
-                    Dates.fromString(date, "yyyy-MM-dd");
+                    DateParser.fromString(date, "yyyy-MM-dd");
                     params.date = date;
                 } catch (IllegalArgumentException ex) {
                     System.out.println("Invalid date: " + date);
