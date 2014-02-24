@@ -114,15 +114,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/pig</directory>
-                <includes>
-                    <include>user_categories.pig</include>
-                </includes>
-            </resource>
-        </resources>
-        
         <pluginManagement>
             <plugins>
                 <plugin>
