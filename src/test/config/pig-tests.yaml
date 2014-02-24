@@ -27,8 +27,8 @@ tests:
     classes:
       - com.b5m.pig.udf.ScdLoaderIT
       
-  - name: UserCategories
+  - name: UserProfiles
     classes:
-      - com.b5m.pig.UserCategoriesIT
+      - com.b5m.pig.UserProfilesIT
 
 # vim:sw=2:ts=2:

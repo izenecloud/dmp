@@ -22,7 +22,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @Test(groups={"couchbase","pig"})
-public class UserCategoriesIT {
+public class UserProfilesIT {
 
     private final static String DATE = "2014-01-21";
 
@@ -34,7 +34,7 @@ public class UserCategoriesIT {
     @BeforeTest
     public void connect() throws Exception {
         Properties props = new Properties();
-        props.load(new FileReader("src/test/properties/user_categories.properties"));
+        props.load(new FileReader("src/test/properties/user_profiles.properties"));
         List<URI> hosts = Arrays.asList(new URI(props.getProperty("hosts")));
         client = new CouchbaseClient(hosts,
                 props.getProperty("bucket"),
@@ -48,8 +48,8 @@ public class UserCategoriesIT {
 
     @BeforeTest
     public void getExpected() throws Exception {
-        getRecords("src/test/data/user_categories_one.output", expectedOneDay);
-        getRecords("src/test/data/user_categories_multi.output", expectedMultiDays);
+        getRecords("src/test/data/user_profiles_one.output", expectedOneDay);
+        getRecords("src/test/data/user_profiles_multi.output", expectedMultiDays);
     }
 
     private void getRecords(String file, List<Record> list) throws Exception {
@@ -67,10 +67,10 @@ public class UserCategoriesIT {
         };
         
         String[] params = {
-            "src/test/properties/user_categories.properties"
+            "src/test/properties/user_profiles.properties"
         };
 
-        PigTest pig = new PigTest("src/main/pig/user_categories.pig", args, params);
+        PigTest pig = new PigTest("src/main/pig/user_profiles.pig", args, params);
         pig.unoverride("STORE");
         pig.runScript();
 
@@ -85,10 +85,10 @@ public class UserCategoriesIT {
         };
         
         String[] params = {
-            "src/test/properties/user_categories.properties"
+            "src/test/properties/user_profiles.properties"
         };
 
-        PigTest pig = new PigTest("src/main/pig/user_categories.pig", args, params);
+        PigTest pig = new PigTest("src/main/pig/user_profiles.pig", args, params);
         pig.unoverride("STORE");
         pig.runScript();
 

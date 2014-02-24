@@ -251,8 +251,8 @@
                                                 <file file="src/main/properties/model_training.properties.example"/>
                                                 <file file="src/main/pig/log_analysis.pig"/>
                                                 <file file="src/main/properties/log_analysis.properties.example"/>
-                                                <file file="src/main/pig/user_categories.pig"/>
-                                                <file file="src/main/properties/user_categories.properties.example"/>
+                                                <file file="src/main/pig/user_profiles.pig"/>
+                                                <file file="src/main/properties/user_profiles.properties.example"/>
                                             </resources>
                                         </copy>
                                     </target>
