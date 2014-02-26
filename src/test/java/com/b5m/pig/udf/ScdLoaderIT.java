@@ -19,7 +19,7 @@ public class ScdLoaderIT {
             "input = src/test/data/test.scd"
         };
 
-        PigTest test = new PigTest("src/test/pig/scdLoader.pig", params);
+        PigTest test = new PigTest("src/test/pig/scd_loader.pig", params);
 
         String[] expected = {
             "(89)"
@@ -52,7 +52,7 @@ public class ScdLoaderIT {
                 "图书音像>")
         );
 
-        PigTest test = new PigTest("src/test/pig/scdLoader.pig", params);
+        PigTest test = new PigTest("src/test/pig/scd_loader.pig", params);
 
         Iterator<Tuple> it = test.getAlias("data");
         Iterator<TestTuple> et = expected.iterator();

@@ -10,6 +10,7 @@ Required parameters:
 - udf_file      path to pig-udfs.jar
 */
 
+%default password ''
 %default expiration 0
 
 DEFINE DateStorage com.b5m.pig.udf.DateStorage('$date', '$count');

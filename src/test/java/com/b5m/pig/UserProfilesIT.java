@@ -38,7 +38,7 @@ public class UserProfilesIT {
         List<URI> hosts = Arrays.asList(new URI(props.getProperty("hosts")));
         client = new CouchbaseClient(hosts,
                 props.getProperty("bucket"),
-                props.getProperty("password").replaceAll("\"", ""));
+                props.getProperty("password", ""));
     }
 
     @AfterTest
@@ -65,7 +65,7 @@ public class UserProfilesIT {
             "date=" + DATE,
             "count=1",
         };
-        
+
         String[] params = {
             "src/test/properties/user_profiles.properties"
         };
@@ -83,7 +83,7 @@ public class UserProfilesIT {
             "date=" + DATE,
             "count=3",
         };
-        
+
         String[] params = {
             "src/test/properties/user_profiles.properties"
         };

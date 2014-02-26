@@ -31,18 +31,18 @@ public class GetCategory extends EvalFunc<String> {
 
     /**
      * @param filename file containing the MaxEnt model
-     * @param local flag indicating whether the model is on local filesystem
+     * @param mode flag indicating whether the model is on local filesystem
      */
-    public GetCategory(String filename, String local) {
+    public GetCategory(String filename, String mode) {
         this.filename = filename;
-        this.isLocal = local.equals("local");
+        this.isLocal = "local".equals(mode);
     }
 
     /**
      * @param filename file containing the MaxEnt model
      */
     public GetCategory(String filename) {
-        this(filename, "mapreduce"); // actually any string but "local" is ok here
+        this(filename, null); // actually any string but "local" is ok here
     }
 
     @Override

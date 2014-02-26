@@ -31,10 +31,11 @@ public class GetCategoryIT {
     @Test
     public void onPig() throws Exception {
         String[] args = {
-            "model_file=./src/test/data/Model.txt",
+            "input=unused",
+            "model_file=src/test/data/Model.txt",
         };
 
-        PigTest test = new PigTest("./src/test/pig/getCategory.pig", args);
+        PigTest test = new PigTest("src/test/pig/get_category.pig", args);
 
         String[] input = {
             "蔻玲2013冬新款女狐狸毛领羊绒呢子短款大衣寇玲原价1999专柜正品",
@@ -53,7 +54,7 @@ public class GetCategoryIT {
     }
 
     @Test
-    public void runEmbedded() throws Exception {
+    public void embedded() throws Exception {
         pigServer.registerJar("dist/pig-udfs.jar");
         pigServer.registerFunction("GET_CATEGORY",
                 new org.apache.pig.FuncSpec("com.b5m.pig.udf.GetCategory",
@@ -72,12 +73,12 @@ public class GetCategoryIT {
     }
 
     @Test
-    public void loadEmbedded() throws Exception {
+    public void registerScript() throws Exception {
         Map<String, String> params = new HashMap<String, String>();
         params.put("model_file", "src/test/data/Model.txt");
         params.put("input", "src/test/data/sample-logs.avro");
 
-        pigServer.registerScript("src/test/pig/getCategory.pig", params);
+        pigServer.registerScript("src/test/pig/get_category.pig", params);
 
         pigServer.setBatchOn();
         List<ExecJob> jobs = pigServer.executeBatch();

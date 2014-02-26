@@ -1,5 +1,4 @@
-define ScdLoader com.b5m.pig.udf.ScdLoader();
-data = LOAD '$input' USING ScdLoader();
+data = LOAD '$input' USING com.b5m.pig.udf.ScdLoader();
 grouped = GROUP data ALL;
 num = FOREACH grouped GENERATE COUNT(data);
 dump num

@@ -47,7 +47,7 @@ public class CouchbaseStorageIT {
             "input=src/test/data/pig-output.txt",
         };
 
-        PigTest test = new PigTest("src/test/pig/couchbaseStorage.pig", args);
+        PigTest test = new PigTest("src/test/pig/couchbase_storage.pig", args);
 
         test.unoverride("STORE"); // enables write to couchbase
         test.runScript();
