@@ -41,6 +41,10 @@ public final class CouchbaseStorage extends StoreFunc {
     private ResourceFieldSchema[] fieldSchema = null;
     private JsonSerializer jsonSerializer = null;
 
+    public CouchbaseStorage(String uris, String bucket) {
+        this(uris, bucket, "", "0"); // no password, no expiration
+    }
+
     public CouchbaseStorage(String uris, String bucket, String password) {
         this(uris, bucket, password, "0"); // no expiration
     }

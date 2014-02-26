@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -96,31 +97,35 @@ final class CouchbaseRecordWriter extends RecordWriter<Text, Text> {
                     TimeUnit.MILLISECONDS.sleep(10); // XXX magic value
                     enqueue(kv.key, kv.value);
                 }
-            } catch (Exception e) {
+            } catch (ExecutionException e) {
                 log.warn("error while draining queue: " + e.getMessage());
-
-                // put back into the queue this kv and all the others
-                enqueue(kv.key, kv.value);
-                while ((kv = list.poll()) != null) {
-                    enqueue(kv.key, kv.value);
-                }
+                retry(kv, list);
+            } catch (InterruptedException e) {
+                log.warn("error while draining queue: " + e.getMessage());
+                retry(kv, list);
             }
         }
     }
-}
 
-/*
- * Key-Value pair holding values sent to Couchbase and the set operation result.
- */
-final class KV {
-    final String key;
-    final String value;
-    final Future<Boolean> status;
-
-    KV(String key, String value, Future<Boolean> status) {
-        this.key = key;
-        this.value = value;
-        this.status = status;
+    // put back into the queue this kv and all the others in list
+    private void retry(KV kv, Queue<KV> list) {
+        enqueue(kv.key, kv.value);
+        while ((kv = list.poll()) != null) {
+            enqueue(kv.key, kv.value);
+        }
     }
-}
 
+    // Key-Value pair holding values sent to Couchbase and the set operation result.
+    private class KV {
+        final String key;
+        final String value;
+        final Future<Boolean> status;
+
+        KV(String key, String value, Future<Boolean> status) {
+            this.key = key;
+            this.value = value;
+            this.status = status;
+        }
+    }
+
+}

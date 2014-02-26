@@ -1,6 +1,6 @@
 REGISTER ./dist/pig-udfs.jar
 
-DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password');
+DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket');
 
 data = LOAD '$input' as (uuid:chararray, date:chararray, period:int, categories:map[int]);
 documents = FOREACH data GENERATE uuid, TOTUPLE(*);
