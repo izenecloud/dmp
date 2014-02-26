@@ -11,6 +11,7 @@ import com.couchbase.client.CouchbaseClient;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Test(groups={"couchbase"})
 public class CouchbaseClientIT {
@@ -41,15 +42,28 @@ public class CouchbaseClientIT {
     }
 
     @Test(dataProvider="pairs")
-    public void simple(String key, String value) throws Exception {
+    public void usage(String key, String value) throws Exception {
+        assertTrue(client.set(key, value).get());
+        assertEquals(client.get(key), value);
+        assertTrue(client.delete(key).get());
         assertNull(client.get(key));
+    }
 
-        client.set(key, value).get();
+    @Test
+    public void expiration() throws Exception {
+        int expire = 1; // seconds
+        
+        for (Object[] oo: pairs()) {
+            String key = (String) oo[0];
+            assertTrue(client.set(key, expire, oo[1]).get());
+            assertNotNull(client.get(key));
+        }
 
-        String retrieved = (String) client.get(key);
-        assertEquals(retrieved, value);
-
-        boolean deleted = client.delete(key).get();
-        assertTrue(deleted);
+        TimeUnit.SECONDS.sleep(expire + 1);
+        
+        for (Object[] oo: pairs()) {
+            String key = (String) oo[0];
+            assertNull(client.get(key));
+        }
     }
 }
