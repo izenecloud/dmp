@@ -16,6 +16,9 @@ bucket = bucketname
 # password: couchbase password (if required)
 password = secret
 
+# expiration: couchbase record expiration (in seconds if less than 30 days
+#             or Unix epoch time for)
+expiration = 0
 
 # udfdir = path to pig-udfs.jar on local machine
 udf_file = /path/to/pig-udfs.jar

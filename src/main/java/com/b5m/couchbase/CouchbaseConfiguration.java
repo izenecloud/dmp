@@ -16,11 +16,13 @@ public class CouchbaseConfiguration {
     private final List<String> uris;
     private final String bucket;
     private final String password;
+    private final int expiration;
 
-    public CouchbaseConfiguration(String uris, String bucket, String password) {
+    public CouchbaseConfiguration(String uris, String bucket, String password, String expiration) {
         this.uris = Arrays.asList(uris.split(","));
         this.bucket = bucket;
         this.password = password;
+        this.expiration = Integer.parseInt(expiration);
     }
 
     public List<String> getUris() {
@@ -33,6 +35,10 @@ public class CouchbaseConfiguration {
 
     public String getPassword() {
         return password;
+    }
+
+    public int getExpiration() {
+        return expiration;
     }
 
     @Override

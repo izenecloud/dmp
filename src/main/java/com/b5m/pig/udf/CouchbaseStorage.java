@@ -42,7 +42,11 @@ public final class CouchbaseStorage extends StoreFunc {
     private JsonSerializer jsonSerializer = null;
 
     public CouchbaseStorage(String uris, String bucket, String password) {
-        conf = new CouchbaseConfiguration(uris, bucket, password);
+        this(uris, bucket, password, "0"); // no expiration
+    }
+
+    public CouchbaseStorage(String uris, String bucket, String password, String expiration) {
+        conf = new CouchbaseConfiguration(uris, bucket, password, expiration);
     }
 
     @Override

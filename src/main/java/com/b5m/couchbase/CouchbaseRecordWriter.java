@@ -32,6 +32,7 @@ final class CouchbaseRecordWriter extends RecordWriter<Text, Text> {
 
     private final static int BATCH_SIZE = 10000;
 
+    private final int expiration;
     private final CouchbaseClient client;
 
     private final BlockingQueue<KV> queue = new LinkedBlockingQueue<KV>();
@@ -47,6 +48,7 @@ final class CouchbaseRecordWriter extends RecordWriter<Text, Text> {
             throw new IOException(e);
         }
 
+        this.expiration = conf.getExpiration();
         this.client = new CouchbaseClient(hosts, conf.getBucket(), conf.getPassword());
     }
 
@@ -74,7 +76,7 @@ final class CouchbaseRecordWriter extends RecordWriter<Text, Text> {
 
     // Writes to Couchbase and keep record into the queue.
     private void enqueue(String key, String value) {
-        queue.add(new KV(key, value, client.set(key, 0, value)));
+        queue.add(new KV(key, value, client.set(key, expiration, value)));
         if (log.isDebugEnabled()) log.debug("enqueued: key=" + key +" value=" + value);
     }
 
