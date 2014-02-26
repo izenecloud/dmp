@@ -30,7 +30,8 @@ final class CouchbaseRecordWriter extends RecordWriter<Text, Text> {
 
     private final static Log log = LogFactory.getLog(CouchbaseRecordWriter.class);
 
-    private final int batchSize;
+    private final static int BATCH_SIZE = 10000;
+
     private final CouchbaseClient client;
 
     private final BlockingQueue<KV> queue = new LinkedBlockingQueue<KV>();
@@ -46,13 +47,12 @@ final class CouchbaseRecordWriter extends RecordWriter<Text, Text> {
             throw new IOException(e);
         }
 
-        this.batchSize = conf.getBatchSize();
         this.client = new CouchbaseClient(hosts, conf.getBucket(), conf.getPassword());
     }
 
     @Override
     public void write(Text key, Text value) throws IOException, InterruptedException {
-        if (queue.size() > batchSize) {
+        if (queue.size() > BATCH_SIZE) {
             drainQueue();
         }
 

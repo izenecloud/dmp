@@ -6,14 +6,15 @@ Required parameters:
 - hosts         URIS to couchbase servers
 - bucket        couchbase bucket
 - password      couchbase password (if required)
-- batchSize     couchbase commit batch size
 - udf_file      path to pig-udfs.jar
 */
+
+%default expiration 0
 
 DEFINE DateStorage com.b5m.pig.udf.DateStorage('$date', '$count');
 DEFINE Normalize com.b5m.pig.udf.NormalizeMap();
 DEFINE Merge com.b5m.pig.udf.MergeMaps();
-DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password', '$batchSize');
+DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password');
 
 daily = LOAD '$input' USING DateStorage() AS (uuid:chararray, categories:[int]);
 grouped = GROUP daily BY uuid;

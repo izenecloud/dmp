@@ -41,8 +41,8 @@ public final class CouchbaseStorage extends StoreFunc {
     private ResourceFieldSchema[] fieldSchema = null;
     private JsonSerializer jsonSerializer = null;
 
-    public CouchbaseStorage(String uris, String bucket, String password, String batchSize) {
-        conf = new CouchbaseConfiguration(uris, bucket, password, batchSize);
+    public CouchbaseStorage(String uris, String bucket, String password) {
+        conf = new CouchbaseConfiguration(uris, bucket, password);
     }
 
     @Override
