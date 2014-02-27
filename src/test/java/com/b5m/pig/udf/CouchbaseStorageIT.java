@@ -16,6 +16,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Test(groups={"couchbase","pig"})
 public class CouchbaseStorageIT {
@@ -33,6 +34,11 @@ public class CouchbaseStorageIT {
         client = new CouchbaseClient(hosts, BUCKET, PASSWORD);
     }
 
+    @AfterTest
+    public void shutdown() {
+        client.shutdown();
+    }
+
     @BeforeTest
     public void getExpected() throws Exception {
         File file = new File("src/test/data/couchbase-expected.txt");
@@ -40,7 +46,7 @@ public class CouchbaseStorageIT {
     }
 
     @Test
-    public void test() throws Exception {
+    public void store() throws Exception {
         String[] args = {
             "hosts=" + HOST,
             "bucket=" + BUCKET,
@@ -55,17 +61,32 @@ public class CouchbaseStorageIT {
         for (String json : expected) {
             String key = Record.fromJson(json).getUuid();
             assertEquals(client.get(key), json);
+
+            assertTrue(client.delete(key).get());
         }
     }
 
-    @AfterTest
-    public void cleanup() throws Exception {
+    @Test
+    public void expire() throws Exception {
+        int expire = 1;
+        String[] args = {
+            "hosts=" + HOST,
+            "bucket=" + BUCKET,
+            "input=src/test/data/pig-output.txt",
+            "expire=" + expire,
+        };
+
+        PigTest test = new PigTest("src/test/pig/couchbase_storage.pig", args);
+
+        test.unoverride("STORE"); // enables write to couchbase
+        test.runScript();
+
+        TimeUnit.SECONDS.sleep(expire + 1);
+
         for (String json : expected) {
             String key = Record.fromJson(json).getUuid();
-            assertTrue(client.delete(key).get());
+            assertNull(client.get(key));
         }
-
-        client.shutdown();
     }
 
 }
