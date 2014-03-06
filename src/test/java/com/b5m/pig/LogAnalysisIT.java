@@ -14,7 +14,7 @@ public class LogAnalysisIT {
     private String[] expected;
 
     @BeforeTest
-    private void getExpected() throws Exception {
+    public void getExpected() throws Exception {
         File file = new File("src/test/data/log_analysis.output");
         expected = FileUtils.readLines(file).toArray(new String[]{});
     }
