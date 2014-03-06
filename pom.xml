@@ -21,7 +21,8 @@
 
     <properties>
         <java.version>1.6</java.version>
-        <pig.version>0.11.0-cdh4.5.0</pig.version>
+        <cloudera.version>cdh5.0.0-beta-2</cloudera.version>
+        <pig.version>0.12.0-${cloudera.version}</pig.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <udf.outputDir>dist</udf.outputDir>
     </properties>
