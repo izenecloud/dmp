@@ -23,6 +23,10 @@ tests:
       - com.b5m.pig.udf.MaxEntPairsIT
       - com.b5m.pig.udf.MaxEntClassifierBuilderIT
       
+  - name: Pig
+    classes:
+      - com.b5m.pig.PigUsageIT
+      
   - name: ScdLoader
     classes:
       - com.b5m.pig.udf.ScdLoaderIT
