@@ -21,19 +21,12 @@
 
     <properties>
         <java.version>1.6</java.version>
-        <hadoop.version>2.0.0-cdh4.5.0</hadoop.version>
-        <hadoop.mr1.version>2.0.0-mr1-cdh4.5.0</hadoop.mr1.version>
         <pig.version>0.11.0-cdh4.5.0</pig.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <udf.outputDir>dist</udf.outputDir>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client</artifactId>
-            <version>${hadoop.mr1.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.pig</groupId>
             <artifactId>pig</artifactId>
@@ -43,6 +36,7 @@
             <groupId>org.apache.pig</groupId>
             <artifactId>pigunit</artifactId>
             <version>${pig.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
