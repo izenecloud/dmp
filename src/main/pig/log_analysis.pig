@@ -54,27 +54,42 @@ entries = FOREACH records GENERATE
             args#'sr'  AS source:chararray;
 
 clean = FILTER entries BY NOT (uuid MATCHES '$uuid_filter_regex');
-clean = FILTER clean BY (url MATCHES '$url_match_regex');
+/*  clean = FILTER clean BY (url MATCHES '$url_match_regex');   */
+
 
 clean_title = FILTER clean BY title IS NOT NULL;
 uuid_page_categories = category_map_macro(clean_title, title, 'page_categories');
-store uuid_page_categories into 'pages';
 
 clean_product = FILTER clean BY product IS NOT NULL;
 uuid_product_categories = category_map_macro(clean_product, product, 'product_categories');
-store uuid_product_categories into 'products';
 
-uuid_categories_joined = JOIN uuid_page_categories BY uuid FULL OUTER, uuid_product_categories BY uuid;
-describe uuid_categories_joined
 
-/*uuid_categories = FOREACH uuid_categories_grouped GENERATE*/
-                    /*group AS uuid,*/
-                    /*flatten(uuid_page_categories) AS page_categories,*/
-                    /*flatten(uuid_product_categories) AS product_categories;*/
-/*describe uuid_categories*/
+clean_price = FILTER clean BY price IS NOT NULL;
+uuid_price_group = GROUP clean_price BY (uuid, price); 
+uuid_price_count = FOREACH uuid_price_group GENERATE group.uuid, group.price, COUNT(clean_price) AS counts;      
+uuid_prices = GROUP uuid_price_count BY uuid;
+uuid_price_map = FOREACH uuid_prices GENERATE
+                group AS uuid,
+                CategoryMap(uuid_price_count) AS price_map;
 
 /*
-STORE uuid_categories INTO '$output_dir' USING DateStorage();
+clean_source = FILTER clean BY source IS NOT NULL;
+uuid_source_group = GROUP clean_source BY (uuid, source); 
+uuid_source_count = FOREACH uuid_source_group GENERATE group.uuid, group.source, COUNT(clean_source) AS counts;      
+uuid_sources = GROUP uuid_source_count BY uuid;
+uuid_source_map = FOREACH uuid_sources GENERATE
+                group AS uuid,
+                CategoryMap(uuid_source_count) AS source_map;
+
+store uuid_source_map into 'source'; 
 */
 
--- vim:ft=pig:nospell:
+co = COGROUP uuid_price_map BY (uuid), 
+			 uuid_page_categories BY (uuid), 
+			 uuid_product_categories BY (uuid); 
+uuid_product_categories_price = FOREACH co GENERATE group AS uuid, 
+			 uuid_page_categories.page_categories AS page_categories,
+			 uuid_product_categories.product_categories AS product_categories, 
+			 uuid_price_map.price_map AS price_map;
+			 
+STORE uuid_product_categories_price INTO '$output_dir' USING DateStorage();
