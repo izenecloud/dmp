@@ -27,8 +27,9 @@ REGISTER $udf_file
 
 DEFINE AvroStorage org.apache.pig.piggybank.storage.avro.AvroStorage();
 DEFINE GetCategory com.b5m.pig.udf.GetCategory('$model_file', '$mode');
-DEFINE CategoryMap com.b5m.pig.udf.ConvertToMap();
+DEFINE ConvertToMap com.b5m.pig.udf.ConvertToMap();
 DEFINE DateStorage com.b5m.pig.udf.DateStorage('$today');
+DEFINE PriceRange com.b5m.pig.udf.PriceToRange();
 
 DEFINE category_map_macro(records, title_field, alias)
 RETURNS uuid_categories_map {
@@ -41,7 +42,7 @@ RETURNS uuid_categories_map {
     uuid_categories = GROUP uuid_category_count BY uuid;
     $uuid_categories_map = FOREACH uuid_categories GENERATE
                 group AS uuid,
-                CategoryMap(uuid_category_count) AS $alias;
+                ConvertToMap(uuid_category_count) AS $alias;
 };
 
 records = LOAD '$input' USING AvroStorage();
@@ -65,24 +66,13 @@ uuid_product_categories = category_map_macro(clean_product, product, 'product_ca
 
 
 clean_price = FILTER clean BY price IS NOT NULL;
-uuid_price_group = GROUP clean_price BY (uuid, price); 
-uuid_price_count = FOREACH uuid_price_group GENERATE group.uuid, group.price, COUNT(clean_price) AS counts;      
+uuid_price_range = FOREACH clean_price GENERATE uuid AS uuid, PriceRange(price) AS price_range;
+uuid_price_group = GROUP uuid_price_range BY (uuid, price_range); 
+uuid_price_count = FOREACH uuid_price_group GENERATE group.uuid, group.price_range, COUNT(uuid_price_range) AS counts;      
 uuid_prices = GROUP uuid_price_count BY uuid;
 uuid_price_map = FOREACH uuid_prices GENERATE
                 group AS uuid,
-                CategoryMap(uuid_price_count) AS price_map;
-
-/*
-clean_source = FILTER clean BY source IS NOT NULL;
-uuid_source_group = GROUP clean_source BY (uuid, source); 
-uuid_source_count = FOREACH uuid_source_group GENERATE group.uuid, group.source, COUNT(clean_source) AS counts;      
-uuid_sources = GROUP uuid_source_count BY uuid;
-uuid_source_map = FOREACH uuid_sources GENERATE
-                group AS uuid,
-                CategoryMap(uuid_source_count) AS source_map;
-
-store uuid_source_map into 'source'; 
-*/
+                ConvertToMap(uuid_price_count) AS price_map;
 
 co = COGROUP uuid_price_map BY (uuid), 
 			 uuid_page_categories BY (uuid), 
