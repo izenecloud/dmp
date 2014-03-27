@@ -30,6 +30,9 @@ public class MergeMaps extends EvalFunc<Map> {
         Map<String, Integer> outmap = new TreeMap<String, Integer>();
 
         DataBag bag = (DataBag) input.get(0);
+        if (null == bag) {
+        	return outmap;
+        }
         for (Iterator<Tuple> it = bag.iterator(); it.hasNext();) {
             Tuple t = it.next();
 
@@ -39,6 +42,9 @@ public class MergeMaps extends EvalFunc<Map> {
              */
             @SuppressWarnings("unchecked")
             Map<String, Object> inmap = (Map<String, Object>) t.get(0);
+            if (null == inmap) {
+            	return outmap;
+            }
 
             for (Map.Entry<String, Object> me : inmap.entrySet()) {
                 String key = me.getKey();
