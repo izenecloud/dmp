@@ -24,7 +24,7 @@
         <cloudera.version>cdh5.0.0-beta-2</cloudera.version>
         <pig.version>0.12.0-${cloudera.version}</pig.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <udf.outputDir>dist</udf.outputDir>
+        <udf.outputDir>dmp</udf.outputDir>
     </properties>
 
     <dependencies>
@@ -243,6 +243,7 @@
                                                 <file file="src/main/properties/log_analysis.properties.example"/>
                                                 <file file="src/main/pig/user_profiles.pig"/>
                                                 <file file="src/main/properties/user_profiles.properties.example"/>
+                                                <file file="src/test/data/Model.txt"/>
                                             </resources>
                                         </copy>
                                     </target>

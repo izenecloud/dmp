@@ -93,15 +93,15 @@ final class CouchbaseRecordWriter extends RecordWriter<Text, Text> {
         while ((kv = list.poll()) != null) {
             try {
                 if (!kv.status.get().booleanValue()) { // record not written
-                    log.warn(String.format("record with key [%s] not written, retrying", kv.key));
+                    //log.warn(String.format("record with key [%s] not written, retrying", kv.key));
                     TimeUnit.MILLISECONDS.sleep(10); // XXX magic value
                     enqueue(kv.key, kv.value);
                 }
             } catch (ExecutionException e) {
-                log.warn("error while draining queue: " + e.getMessage());
+                //log.warn("error while draining queue: " + e.getMessage());
                 retry(kv, list);
             } catch (InterruptedException e) {
-                log.warn("error while draining queue: " + e.getMessage());
+                //log.warn("error while draining queue: " + e.getMessage());
                 retry(kv, list);
             }
         }
