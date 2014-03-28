@@ -21,29 +21,38 @@ DEFINE Merge com.b5m.pig.udf.MergeMaps();
 DEFINE CouchbaseStorage com.b5m.pig.udf.CouchbaseStorage('$hosts', '$bucket', '$password', '$expiration');
 
 daily = LOAD '$input' USING DateStorage() AS (uuid:chararray, 
-		page_categories:[int], 
-		product_categories:[int], 
-		price_range:[int]);
+		page_category_count:[int], 
+		product_category_count:[int], 
+		price_count:[int],
+        source_count:[int]);
 		
 grouped = GROUP daily BY uuid;
 
 analytics = FOREACH grouped {
-                page_merged = Merge(daily.page_categories);
+                page_merged = Merge(daily.page_category_count);
                 page_normalized = Normalize(page_merged);
-                product_merged = Merge(daily.product_categories);
+                product_merged = Merge(daily.product_category_count);
                 product_normalized = Normalize(product_merged);
-                price_merged = Merge(daily.price_range);
+                price_merged = Merge(daily.price_count);
                 price_normalized = Normalize(price_merged);
+                source_merged = Merge(daily.source_count);
+                source_normalized = Normalize(source_merged);
                 GENERATE group AS uuid, 
                 	page_normalized AS page_categories,
                 	product_normalized AS product_categories,
-                	price_normalized AS price_range;
+                	price_normalized AS product_price,
+                    source_normalized AS product_source;
             }
             
 documents = FOREACH analytics GENERATE
                 CONCAT(uuid, '::$date') AS key,
-                TOTUPLE(uuid, '$date', $count, page_categories, product_categories, price_range)
-                    AS value:(uuid:chararray, date:chararray, period:int, page_categories:[double], product_categories:[double], price_range:[double]);
+                TOTUPLE(uuid, '$date', $count, page_categories, 
+                        product_categories, product_price, product_source)
+                    AS value:(uuid:chararray, date:chararray, period:int, 
+                        page_categories:[double], 
+                        product_categories:[double], 
+                        product_price:[double], 
+                        product_source:[double]);
 STORE documents INTO 'unused' USING CouchbaseStorage();
 
 -- vim:ft=pig:nospell:
