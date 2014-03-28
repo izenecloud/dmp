@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-@Test(groups={"couchbase","pig"})
+//@Test(groups={"couchbase","pig"})
 public class UserProfilesIT {
 
     private final static String DATE = "2014-01-21";
@@ -31,7 +31,7 @@ public class UserProfilesIT {
 
     private CouchbaseClient client;
 
-    @BeforeTest
+    //@BeforeTest
     public void connect() throws Exception {
         Properties props = new Properties();
         props.load(new FileReader("src/test/properties/user_profiles.properties"));
@@ -41,12 +41,12 @@ public class UserProfilesIT {
                 props.getProperty("password", ""));
     }
 
-    @AfterTest
+    //@AfterTest
     public void shutdown() {
         client.shutdown(1, TimeUnit.SECONDS);
     }
 
-    @BeforeTest
+    //@BeforeTest
     public void getExpected() throws Exception {
         getRecords("src/test/data/user_profiles_one.output", expectedOneDay);
         getRecords("src/test/data/user_profiles_multi.output", expectedMultiDays);
@@ -59,7 +59,7 @@ public class UserProfilesIT {
         }
     }
 
-    @Test
+    //TODO
     public void oneDay() throws Exception {
         String[] args = {
             "date=" + DATE,
@@ -77,7 +77,7 @@ public class UserProfilesIT {
         check(expectedOneDay);
     }
 
-    @Test
+    //TODO
     public void multiDays() throws Exception {
         String[] args = {
             "date=" + DATE,
@@ -91,7 +91,7 @@ public class UserProfilesIT {
         PigTest pig = new PigTest("src/main/pig/user_profiles.pig", args, params);
         pig.unoverride("STORE");
         pig.runScript();
-
+       
         check(expectedMultiDays);
     }
 
