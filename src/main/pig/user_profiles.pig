@@ -45,7 +45,7 @@ analytics = FOREACH grouped {
             }
             
 documents = FOREACH analytics GENERATE
-                CONCAT(uuid, '::$date') AS key,
+                uuid AS key,
                 TOTUPLE(uuid, '$date', $count, page_categories, 
                         product_categories, product_price, product_source)
                     AS value:(uuid:chararray, date:chararray, period:int, 
