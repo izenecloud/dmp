@@ -12,6 +12,7 @@ Required parameters:
 
 %default password ''
 %default expiration 0
+%default date `date +%Y-%m-%d`
 
 REGISTER $udf_file
 

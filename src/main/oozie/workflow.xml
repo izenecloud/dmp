@@ -11,7 +11,7 @@
                 </property>
             </configuration>
             <script>log_analysis.pig</script>
-            <param>input=flume/logging/b5t/2014-03-27</param>
+            <param>input=${b5tLogRoot}</param>
             <param>output_dir=${dailyStore}</param>
             <param>model_file = ${dmpRoot}/apps/Model.txt</param>
             <param>udf_file = ${appsRoot}/pig-udfs.jar</param>
@@ -31,7 +31,6 @@
                 </property>
             </configuration>
             <script>user_profiles.pig</script>
-            <param>date=2014-04-21</param>
             <param>count=1</param>
 	        <param>udf_file = ${appsRoot}/pig-udfs.jar</param>
             <param>pigdir = ${appsRoot}/piggybank/</param>

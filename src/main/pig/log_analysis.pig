@@ -45,7 +45,7 @@ RETURNS uuid_categories_map {
                 ConvertToMap(uuid_category_count) AS $alias;
 };
 
-records = LOAD '$input' USING AvroStorage();
+records = LOAD '$input/$today' USING AvroStorage();
 entries = FOREACH records GENERATE
             args#'uid' AS uuid:chararray,
             args#'dl'  AS url:chararray,
@@ -57,8 +57,6 @@ entries = FOREACH records GENERATE
             args#'sr'  AS source:chararray;
 
 clean = FILTER entries BY NOT (uuid MATCHES '$uuid_filter_regex');
-/*  clean = FILTER clean BY (url MATCHES '$url_match_regex');   */
-
 
 clean_title = FILTER clean BY title IS NOT NULL;
 uuid_page_categories = category_map_macro(clean_title, title, 'category_count');

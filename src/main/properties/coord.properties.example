@@ -6,10 +6,12 @@ dmpRoot=DMP_COORD
 couchbase=http://10.10.103.123:8091/pools
 bucketname=test
 
+b5tLogRoot=flume/logging/b5t/
+
 appsRoot=${nameNode}/user/${user.name}/${dmpRoot}/apps
 dailyStore = ${nameNode}/user/${user.name}/DMP_HDFS_STORE
 
 oozie.use.system.libpath=true
 start=2014-04-21T00:00Z
-end=2020-01-01T01:00Z
+end=2020-04-22T01:00Z
 oozie.coord.application.path=${nameNode}/user/${user.name}/${dmpRoot}/apps/coordinator.xml
