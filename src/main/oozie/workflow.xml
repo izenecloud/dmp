@@ -1,0 +1,50 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="b5m-dmp-wf">
+    <start to="daily-analyze"/>
+    <action name="daily-analyze">
+        <pig>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <script>log_analysis.pig</script>
+            <param>input=flume/logging/b5t/2014-03-27</param>
+            <param>output_dir=${dailyStore}</param>
+            <param>model_file = ${dmpRoot}/apps/Model.txt</param>
+            <param>udf_file = ${appsRoot}/pig-udfs.jar</param>
+            <param>pigdir = ${appsRoot}/piggybank/</param>
+        </pig>
+        <ok to="user_profile_analyze"/>
+        <error to="fail"/>
+    </action>
+    <action name="user_profile_analyze">
+        <pig>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <script>user_profiles.pig</script>
+            <param>date=2014-04-21</param>
+            <param>count=1</param>
+	        <param>udf_file = ${appsRoot}/pig-udfs.jar</param>
+            <param>pigdir = ${appsRoot}/piggybank/</param>
+            <param>input=${dailyStore}</param>
+	        <param>hosts = ${couchbase}</param>
+	        <param>bucket = ${bucketname}</param>
+        </pig>
+        <ok to="end"/>
+        <error to="end"/>
+    </action>
+    <kill name="fail">
+        <message>daily-analyze failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
+
