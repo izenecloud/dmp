@@ -1,14 +1,15 @@
 nameNode=hdfs://master01.hdb5m.com:8020
 jobTracker=http://master01.hdb5m.com:8021
 queueName=sf1
-dmpRoot=DMP_PACKAGR
+dmpRoot=DMP_COORD
             
 couchbase=http://10.10.103.123:8091/pools
 bucketname=test
 
-oozie.use.system.libpath=true
-
-oozie.wf.application.path=${nameNode}/user/${user.name}/${dmpRoot}/apps
-
 appsRoot=${nameNode}/user/${user.name}/${dmpRoot}/apps
 dailyStore = ${nameNode}/user/${user.name}/DMP_HDFS_STORE
+
+oozie.use.system.libpath=true
+start=2014-04-21T00:00Z
+end=2020-01-01T01:00Z
+oozie.coord.application.path=${nameNode}/user/${user.name}/${dmpRoot}/apps/coordinator.xml

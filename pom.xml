@@ -24,7 +24,7 @@
         <cloudera.version>cdh5.0.0-beta-2</cloudera.version>
         <pig.version>0.12.0-${cloudera.version}</pig.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <udf.outputDir>dmp</udf.outputDir>
+        <udf.outputDir>DMP_COORD</udf.outputDir>
     </properties>
 
     <dependencies>
@@ -234,8 +234,8 @@
                                 <configuration>
                                     <target name="copy-files">
                                         <copy file="target/${project.build.finalName}-jar-for-pig.jar"
-                                            tofile="${udf.outputDir}/pig-udfs.jar" overwrite="true"/>
-                                        <copy todir="${udf.outputDir}" overwrite="true" flatten="true">
+                                            tofile="${udf.outputDir}/apps/pig-udfs.jar" overwrite="true"/>
+                                        <copy todir="${udf.outputDir}/apps/" overwrite="true" flatten="true">
                                             <resources>
                                                 <file file="src/main/pig/model_training.pig"/>
                                                 <file file="src/main/properties/model_training.properties.example"/>
@@ -243,6 +243,9 @@
                                                 <file file="src/main/properties/log_analysis.properties.example"/>
                                                 <file file="src/main/pig/user_profiles.pig"/>
                                                 <file file="src/main/properties/user_profiles.properties.example"/>
+                                                <file file="src/main/oozie/coordinator.xml"/>
+                                                <file file="src/main/oozie/workflow.xml"/>
+                                                <file file="src/main/properties/coord.properties.example"/>
                                                 <file file="src/test/data/Model.txt"/>
                                             </resources>
                                         </copy>
