@@ -39,10 +39,10 @@
 	        <param>bucket = ${bucketname}</param>
         </pig>
         <ok to="end"/>
-        <error to="end"/>
+        <error to="fail"/>
     </action>
     <kill name="fail">
-        <message>daily-analyze failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+        <message>log-analyze failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
     </kill>
     <end name="end"/>
 </workflow-app>
