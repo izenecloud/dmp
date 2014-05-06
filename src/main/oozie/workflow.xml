@@ -16,6 +16,7 @@
             <param>model_file = ${dmpRoot}/apps/Model.txt</param>
             <param>udf_file = ${appsRoot}/pig-udfs.jar</param>
             <param>pigdir = ${appsRoot}/piggybank/</param>
+            <param>today = ${trim(replaceAll(timestamp(), "T.*", ""))}</param>
         </pig>
         <ok to="user_profile_analyze"/>
         <error to="fail"/>
@@ -37,6 +38,7 @@
             <param>input=${dailyStore}</param>
 	        <param>hosts = ${couchbase}</param>
 	        <param>bucket = ${bucketname}</param>
+            <param>date = ${trim(replaceAll(timestamp(), "T.*", ""))}</param>
         </pig>
         <ok to="end"/>
         <error to="fail"/>
