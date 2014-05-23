@@ -39,6 +39,7 @@
 	        <param>hosts = ${couchbase}</param>
 	        <param>bucket = ${bucketname}</param>
             <param>date = ${trim(replaceAll(timestamp(), "T.*", ""))}</param>
+            <param>expiration = ${expirationTime}</param>
         </pig>
         <ok to="end"/>
         <error to="fail"/>

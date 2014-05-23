@@ -14,4 +14,5 @@ dailyStore = ${nameNode}/user/${user.name}/DMP_HDFS_STORE
 oozie.use.system.libpath=true
 start=2014-04-21T00:00Z
 end=2020-04-22T01:00Z
+expirationTime=604800
 oozie.coord.application.path=${nameNode}/user/${user.name}/${dmpRoot}/apps/coordinator.xml
